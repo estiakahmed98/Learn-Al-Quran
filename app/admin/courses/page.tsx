@@ -7,17 +7,12 @@ export default async function AdminCoursesPage() {
   const courses = await prisma.course
     .findMany({
       include: { _count: { select: { enrollments: true } } },
-      orderBy: { sortOrder: "asc" }
+      orderBy: { sortOrder: "asc" },
     })
     .catch(() => []);
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-primary-dark">Courses</h1>
-      <p className="mt-1 text-sm text-gray-500">
-        Manage the courses shown on your website. Changes are saved directly to the database.
-      </p>
-
       <div className="mt-6">
         <CoursesTable initialCourses={JSON.parse(JSON.stringify(courses))} />
       </div>

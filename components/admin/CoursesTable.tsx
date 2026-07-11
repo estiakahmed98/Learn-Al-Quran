@@ -17,7 +17,11 @@ export interface CourseRow {
   _count: { enrollments: number };
 }
 
-export default function CoursesTable({ initialCourses }: { initialCourses: CourseRow[] }) {
+export default function CoursesTable({
+  initialCourses,
+}: {
+  initialCourses: CourseRow[];
+}) {
   const router = useRouter();
   const [courses, setCourses] = useState(initialCourses);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -28,11 +32,13 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
     const res = await fetch(`/api/admin/courses/${course.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !course.isActive })
+      body: JSON.stringify({ isActive: !course.isActive }),
     });
     if (res.ok) {
       const updated = await res.json();
-      setCourses((prev) => prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)));
+      setCourses((prev) =>
+        prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)),
+      );
     }
     setSavingId(null);
   }
@@ -42,11 +48,13 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
     const res = await fetch(`/api/admin/courses/${course.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fee })
+      body: JSON.stringify({ fee }),
     });
     if (res.ok) {
       const updated = await res.json();
-      setCourses((prev) => prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)));
+      setCourses((prev) =>
+        prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)),
+      );
     }
     setSavingId(null);
   }
@@ -54,12 +62,14 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
   async function remove(course: CourseRow) {
     if (
       !confirm(
-        `Delete "${course.title}"? All ${course._count.enrollments} enrollment(s) of this course will also be deleted. This cannot be undone.`
+        `Delete "${course.title}"? All ${course._count.enrollments} enrollment(s) of this course will also be deleted. This cannot be undone.`,
       )
     )
       return;
     setSavingId(course.id);
-    const res = await fetch(`/api/admin/courses/${course.id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/courses/${course.id}`, {
+      method: "DELETE",
+    });
     if (res.ok) {
       setCourses((prev) => prev.filter((c) => c.id !== course.id));
     }
@@ -68,7 +78,18 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex justify-between">
+        <div>
+          {" "}
+          <h1 className="font-heading text-2xl font-bold text-primary-dark">
+            Courses
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Manage the courses shown on your website. Changes are saved directly
+            to the database.
+          </p>
+        </div>
+
         <button
           onClick={() => setShowAddModal(true)}
           className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
@@ -120,7 +141,8 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
                     href={`/admin/courses/${course.id}`}
                     className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
                   >
-                    {course._count.enrollments} student{course._count.enrollments === 1 ? "" : "s"}
+                    {course._count.enrollments} student
+                    {course._count.enrollments === 1 ? "" : "s"}
                   </Link>
                 </td>
                 <td className="px-4 py-3">
@@ -128,7 +150,9 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
                     onClick={() => toggleActive(course)}
                     disabled={savingId === course.id}
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      course.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                      course.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-500"
                     }`}
                   >
                     {course.isActive ? "Active" : "Hidden"}
@@ -172,7 +196,9 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-heading text-lg font-bold text-primary-dark">Add New Course</h2>
+              <h2 className="font-heading text-lg font-bold text-primary-dark">
+                Add New Course
+              </h2>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -183,7 +209,10 @@ export default function CoursesTable({ initialCourses }: { initialCourses: Cours
             </div>
             <CourseForm
               onSaved={(created) => {
-                setCourses((prev) => [...prev, { ...created, _count: { enrollments: 0 } }]);
+                setCourses((prev) => [
+                  ...prev,
+                  { ...created, _count: { enrollments: 0 } },
+                ]);
                 setShowAddModal(false);
                 router.refresh();
               }}

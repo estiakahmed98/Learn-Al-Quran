@@ -1,3 +1,4 @@
+//app/student/dashboard/page.tsx
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
@@ -5,25 +6,11 @@ import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import SignOutButton from "@/components/admin/SignOutButton";
+import StudentCourseCard from "@/components/dashboard/StudentCourseCard";
 
 export const metadata = {
   title: "Student Dashboard",
-  robots: { index: false, follow: false }
-};
-
-const enrollmentStatusStyles: Record<string, string> = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  APPROVED: "bg-blue-100 text-blue-800",
-  ACTIVE: "bg-green-100 text-green-800",
-  COMPLETED: "bg-primary/10 text-primary-dark",
-  CANCELLED: "bg-red-100 text-red-700"
-};
-
-const paymentStatusStyles: Record<string, string> = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  PAID: "bg-blue-100 text-blue-800",
-  VERIFIED: "bg-green-100 text-green-800",
-  REJECTED: "bg-red-100 text-red-700"
+  robots: { index: false, follow: false },
 };
 
 export default async function StudentDashboardPage() {
@@ -38,15 +25,44 @@ export default async function StudentDashboardPage() {
 
   const enrollments = await prisma.enrollment.findMany({
     where: {
-      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])]
+      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])],
     },
-    include: { course: true },
-    orderBy: { createdAt: "desc" }
+    include: {
+      course: true,
+      results: { orderBy: { examDate: "desc" } },
+    },
+    orderBy: { createdAt: "desc" },
   });
 
-  const activeCount = enrollments.filter((e) => e.enrollmentStatus === "ACTIVE").length;
-  const pendingCount = enrollments.filter((e) => e.enrollmentStatus === "PENDING").length;
-  const completedCount = enrollments.filter((e) => e.enrollmentStatus === "COMPLETED").length;
+  const dashboardLabels = {
+    details: t("details"),
+    payment: t("payment"),
+    results: t("results"),
+    duration: t("duration"),
+    description: t("description"),
+    paymentMethod: t("paymentMethod"),
+    transactionId: t("transactionId"),
+    amount: t("amount"),
+    paymentStatus: t("paymentStatus"),
+    noResults: t("noResults"),
+    exam: t("exam"),
+    marks: t("marks"),
+    grade: t("grade"),
+    remarks: t("remarks"),
+    date: t("date"),
+    viewCourse: t("viewCourse"),
+    enrolled: t("enrolled"),
+  };
+
+  const activeCount = enrollments.filter(
+    (e) => e.enrollmentStatus === "ACTIVE",
+  ).length;
+  const pendingCount = enrollments.filter(
+    (e) => e.enrollmentStatus === "PENDING",
+  ).length;
+  const completedCount = enrollments.filter(
+    (e) => e.enrollmentStatus === "COMPLETED",
+  ).length;
 
   return (
     <div className="min-h-screen bg-cream py-10">
@@ -87,17 +103,23 @@ export default async function StudentDashboardPage() {
         {/* Stats */}
         <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            { label: t("totalEnrollments"), value: enrollments.length, icon: "📚" },
+            {
+              label: t("totalEnrollments"),
+              value: enrollments.length,
+              icon: "📚",
+            },
             { label: t("activeCourses"), value: activeCount, icon: "🟢" },
             { label: t("pending"), value: pendingCount, icon: "⏳" },
-            { label: t("completed"), value: completedCount, icon: "🎓" }
+            { label: t("completed"), value: completedCount, icon: "🎓" },
           ].map((s) => (
             <div
               key={s.label}
               className="rounded-2xl border border-gold/20 bg-white p-5 shadow-sm"
             >
               <p className="text-2xl">{s.icon}</p>
-              <p className="mt-2 font-heading text-2xl font-bold text-primary-dark">{s.value}</p>
+              <p className="mt-2 font-heading text-2xl font-bold text-primary-dark">
+                {s.value}
+              </p>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {s.label}
               </p>
@@ -107,12 +129,16 @@ export default async function StudentDashboardPage() {
 
         {/* Enrollments */}
         <div className="mt-8">
-          <h2 className="font-heading text-lg font-bold text-primary-dark">{t("myCourses")}</h2>
+          <h2 className="font-heading text-lg font-bold text-primary-dark">
+            {t("myCourses")}
+          </h2>
 
           {enrollments.length === 0 ? (
             <div className="mt-4 rounded-2xl border border-gold/20 bg-white p-10 text-center shadow-sm">
               <p className="text-3xl">📖</p>
-              <p className="mt-3 font-semibold text-gray-700">{t("noCourses")}</p>
+              <p className="mt-3 font-semibold text-gray-700">
+                {t("noCourses")}
+              </p>
               <Link
                 href="/courses"
                 className="mt-4 inline-block rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark"
@@ -123,45 +149,35 @@ export default async function StudentDashboardPage() {
           ) : (
             <div className="mt-4 space-y-4">
               {enrollments.map((e) => (
-                <div
+                <StudentCourseCard
                   key={e.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-gold/20 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <Link
-                      href={`/courses/${e.course.slug}`}
-                      className="font-heading text-base font-bold text-primary-dark hover:text-primary"
-                    >
-                      {e.course.title}
-                    </Link>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {t("enrolled")}: {new Date(e.createdAt).toLocaleDateString("en-GB")} · {t("fee")}: ৳
-                      {e.paymentAmount}
-                      {e.transactionId ? ` · TrxID: ${e.transactionId}` : ""}
-                    </p>
-                    {e.adminNote && (
-                      <p className="mt-1 rounded bg-cream px-2 py-1 text-xs text-gray-600">
-                        📝 {e.adminNote}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex shrink-0 gap-2">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        enrollmentStatusStyles[e.enrollmentStatus] || "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {e.enrollmentStatus}
-                    </span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        paymentStatusStyles[e.paymentStatus] || "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      💳 {e.paymentStatus}
-                    </span>
-                  </div>
-                </div>
+                  labels={dashboardLabels}
+                  enrollment={{
+                    id: e.id,
+                    paymentMethod: e.paymentMethod,
+                    transactionId: e.transactionId,
+                    paymentAmount: e.paymentAmount,
+                    paymentStatus: e.paymentStatus,
+                    enrollmentStatus: e.enrollmentStatus,
+                    adminNote: e.adminNote,
+                    createdAt: e.createdAt.toISOString(),
+                    results: e.results.map((r) => ({
+                      id: r.id,
+                      examName: r.examName,
+                      marks: r.marks,
+                      grade: r.grade,
+                      remarks: r.remarks,
+                      examDate: r.examDate.toISOString(),
+                    })),
+                    course: {
+                      title: e.course.title,
+                      slug: e.course.slug,
+                      duration: e.course.duration,
+                      description: e.course.description,
+                      thumbnail: e.course.thumbnail,
+                    },
+                  }}
+                />
               ))}
             </div>
           )}

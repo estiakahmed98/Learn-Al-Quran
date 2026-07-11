@@ -99,6 +99,22 @@
     "noCourses": "আপনি এখনো কোনো কোর্সে ভর্তি হননি।",
     "browseCourses": "কোর্স দেখুন",
     "enrolled": "ভর্তির তারিখ",
-    "fee": "ফি"
+    "fee": "ফি",
+    "details": "বিস্তারিত",
+    "payment": "পেমেন্ট",
+    "results": "ফলাফল",
+    "duration": "মেয়াদ",
+    "description": "বিবরণ",
+    "paymentMethod": "মাধ্যম",
+    "transactionId": "ট্রানজেকশন আইডি",
+    "amount": "পরিমাণ",
+    "paymentStatus": "পেমেন্ট স্ট্যাটাস",
+    "noResults": "এখনো কোনো ফলাফল প্রকাশ করা হয়নি।",
+    "exam": "পরীক্ষা",
+    "marks": "নম্বর",
+    "grade": "গ্রেড",
+    "remarks": "মন্তব্য",
+    "date": "তারিখ",
+    "viewCourse": "কোর্স পেজ দেখুন"
   }
 }

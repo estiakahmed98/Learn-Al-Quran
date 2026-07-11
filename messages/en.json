@@ -99,6 +99,22 @@
     "noCourses": "You have not enrolled in any course yet.",
     "browseCourses": "Browse Courses",
     "enrolled": "Enrolled",
-    "fee": "Fee"
+    "fee": "Fee",
+    "details": "Details",
+    "payment": "Payment",
+    "results": "Results",
+    "duration": "Duration",
+    "description": "Description",
+    "paymentMethod": "Method",
+    "transactionId": "Transaction ID",
+    "amount": "Amount",
+    "paymentStatus": "Payment Status",
+    "noResults": "No results published yet.",
+    "exam": "Exam",
+    "marks": "Marks",
+    "grade": "Grade",
+    "remarks": "Remarks",
+    "date": "Date",
+    "viewCourse": "View Course Page"
   }
 }

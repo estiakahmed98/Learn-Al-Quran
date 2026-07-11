@@ -107,8 +107,9 @@ model Enrollment {
   enrollmentStatus EnrollmentStatus @default(PENDING)
   adminNote        String?          @db.Text
 
-  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  results Result[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -116,6 +117,25 @@ model Enrollment {
   @@index([userId])
   @@index([courseId])
   @@index([paymentStatus])
+}
+
+model Result {
+  id           String  @id @default(cuid())
+  enrollmentId String
+
+  examName String
+  marks    Int?
+  grade    String?
+  remarks  String? @db.Text
+
+  examDate DateTime @default(now())
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enrollmentId])
 }
 
 model Content {

@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import CourseForm from "@/components/admin/CourseForm";
+import { formatDate } from "@/lib/utils";
+import UserForm from "@/components/admin/UserForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminCourseDetailPage({ params }: { params: { id: string } }) {
-  const course = await prisma.course
+export default async function AdminUserDetailPage({ params }: { params: { id: string } }) {
+  const user = await prisma.user
     .findUnique({
       where: { id: params.id },
       include: {
@@ -22,48 +23,53 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
     })
     .catch(() => null);
 
-  if (!course) notFound();
+  if (!user) notFound();
 
-  const enrollments = course.enrollments;
+  const enrollments = user.enrollments;
   const stats = {
     total: enrollments.length,
-    pending: enrollments.filter((e) => e.enrollmentStatus === "PENDING").length,
     active: enrollments.filter((e) => ["APPROVED", "ACTIVE"].includes(e.enrollmentStatus)).length,
     completed: enrollments.filter((e) => e.enrollmentStatus === "COMPLETED").length,
-    verifiedRevenue: enrollments
+    verifiedPaid: enrollments
       .filter((e) => e.paymentStatus === "VERIFIED")
       .reduce((sum, e) => sum + e.paymentAmount, 0)
   };
 
   const statCards = [
-    { label: "Total Students", value: stats.total, color: "text-primary-dark" },
-    { label: "Pending", value: stats.pending, color: "text-amber-600" },
+    { label: "Total Enrollments", value: stats.total, color: "text-primary-dark" },
     { label: "Active / Approved", value: stats.active, color: "text-green-600" },
     { label: "Completed", value: stats.completed, color: "text-blue-600" },
-    { label: "Verified Revenue (৳)", value: stats.verifiedRevenue.toLocaleString(), color: "text-primary-dark" }
+    { label: "Verified Paid (৳)", value: stats.verifiedPaid.toLocaleString(), color: "text-primary-dark" }
   ];
 
   return (
     <div>
-      <Link href="/admin/courses" className="text-sm font-semibold text-primary hover:underline">
-        &larr; Back to Courses
+      <Link href="/admin/users" className="text-sm font-semibold text-primary hover:underline">
+        &larr; Back to Users
       </Link>
 
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="font-heading text-2xl font-bold text-primary-dark">{course.title}</h1>
+        <h1 className="font-heading text-2xl font-bold text-primary-dark">{user.name}</h1>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            course.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+            user.role === "ADMIN" ? "bg-purple-100 text-purple-700" : "bg-blue-50 text-blue-700"
           }`}
         >
-          {course.isActive ? "Active" : "Hidden"}
+          {user.role}
+        </span>
+        <span
+          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            user.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+          }`}
+        >
+          {user.isActive ? "Active" : "Blocked"}
         </span>
       </div>
       <p className="mt-1 text-sm text-gray-500">
-        Edit this course and manage its enrolled students below.
+        {user.email} · Joined {formatDate(user.createdAt)}
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((card) => (
           <div key={card.label} className="rounded-2xl border border-gray-200 bg-white p-4">
             <p className="text-xs font-semibold text-gray-500">{card.label}</p>
@@ -73,32 +79,28 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
       </div>
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Course Details</h2>
-        <CourseForm
-          courseId={course.id}
+        <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Profile & Account</h2>
+        <UserForm
+          userId={user.id}
           initial={{
-            title: course.title,
-            slug: course.slug,
-            description: course.description,
-            fee: course.fee,
-            duration: course.duration ?? "",
-            thumbnail: course.thumbnail ?? "",
-            bannerImage: course.bannerImage ?? "",
-            sortOrder: course.sortOrder,
-            isActive: course.isActive,
-            isFeatured: course.isFeatured,
-            metaTitle: course.metaTitle ?? "",
-            metaDescription: course.metaDescription ?? ""
+            name: user.name,
+            email: user.email,
+            phone: user.phone ?? "",
+            whatsapp: user.whatsapp ?? "",
+            address: user.address ?? "",
+            imageURL: user.imageURL ?? "",
+            role: user.role,
+            isActive: user.isActive
           }}
         />
       </div>
 
       <div className="mt-8">
         <h2 className="font-heading text-lg font-bold text-primary-dark">
-          Students ({stats.total})
+          Enrollments ({stats.total})
         </h2>
         <p className="mt-1 text-sm text-gray-500">
-          Enrollments for this course. Update payment and enrollment status directly.
+          All courses this user has enrolled in. Update payment and enrollment status directly.
         </p>
         <div className="mt-4">
           <EnrollmentsTable initialEnrollments={JSON.parse(JSON.stringify(enrollments))} />
