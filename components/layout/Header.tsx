@@ -143,7 +143,7 @@ export default function Header({ phone }: { phone: string }) {
                       <p className="truncate text-xs text-gray-500">{user.email}</p>
                     </div>
                     <Link
-                      href={user.role === "ADMIN" ? "/admin" : "/dashboard"}
+                      href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-cream hover:text-primary"
                     >
                       {user.role === "ADMIN" ? `🛠 ${t("adminPanel")}` : `🎓 ${t("myDashboard")}`}
@@ -169,7 +169,7 @@ export default function Header({ phone }: { phone: string }) {
 
         <div className="flex items-center gap-3 lg:hidden">
           {status !== "loading" && user && (
-            <Link href={user.role === "ADMIN" ? "/admin" : "/dashboard"} aria-label={t("myDashboard")}>
+            <Link href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"} aria-label={t("myDashboard")}>
               <UserAvatar name={user.name} image={user.image} size="h-8 w-8" />
             </Link>
           )}
@@ -210,7 +210,7 @@ export default function Header({ phone }: { phone: string }) {
           {user ? (
             <>
               <Link
-                href={user.role === "ADMIN" ? "/admin" : "/dashboard"}
+                href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
                 className="block py-2 text-sm font-medium text-primary"
               >
                 {user.role === "ADMIN" ? `🛠 ${t("adminPanel")}` : `🎓 ${t("myDashboard")}`}

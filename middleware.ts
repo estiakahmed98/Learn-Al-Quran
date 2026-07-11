@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/student")) {
     if (!token) {
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
@@ -27,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/dashboard", "/dashboard/:path*"]
+  matcher: ["/admin", "/admin/:path*", "/student", "/student/:path*"]
 };

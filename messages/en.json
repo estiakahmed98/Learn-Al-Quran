@@ -115,6 +115,7 @@
     "grade": "Grade",
     "remarks": "Remarks",
     "date": "Date",
-    "viewCourse": "View Course Page"
+    "viewCourse": "View Course Page",
+    "manage": "Manage"
   }
 }

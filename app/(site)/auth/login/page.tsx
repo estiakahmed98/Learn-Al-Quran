@@ -35,7 +35,7 @@ function LoginForm() {
 
     const session = await getSession();
     const destination =
-      callbackUrl || (session?.user?.role === "ADMIN" ? "/admin" : "/dashboard");
+      callbackUrl || (session?.user?.role === "ADMIN" ? "/admin" : "/student/dashboard");
 
     router.push(destination);
     router.refresh();

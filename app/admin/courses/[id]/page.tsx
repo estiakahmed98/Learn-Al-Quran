@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CourseForm from "@/components/admin/CourseForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
+import ClassScheduleManager from "@/components/admin/ClassScheduleManager";
+import NotesManager from "@/components/admin/NotesManager";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,9 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
             results: { orderBy: { examDate: "desc" } }
           },
           orderBy: { createdAt: "desc" }
-        }
+        },
+        classSchedules: { orderBy: { dayOfWeek: "asc" } },
+        notes: { orderBy: { createdAt: "desc" } }
       }
     })
     .catch(() => null);
@@ -91,6 +95,19 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
             metaDescription: course.metaDescription ?? ""
           }}
         />
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+        <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Class Routine</h2>
+        <ClassScheduleManager
+          courseId={course.id}
+          initialSchedules={JSON.parse(JSON.stringify(course.classSchedules))}
+        />
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+        <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Notes</h2>
+        <NotesManager courseId={course.id} initialNotes={JSON.parse(JSON.stringify(course.notes))} />
       </div>
 
       <div className="mt-8">

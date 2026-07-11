@@ -81,12 +81,52 @@ model Course {
   metaTitle       String?
   metaDescription String? @db.Text
 
-  enrollments Enrollment[]
+  enrollments    Enrollment[]
+  classSchedules ClassSchedule[]
+  notes          Note[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([isActive, sortOrder])
+}
+
+model ClassSchedule {
+  id       String @id @default(cuid())
+  courseId String
+
+  dayOfWeek   Int
+  startTime   String
+  endTime     String?
+  teacherName String?
+  meetingLink String?
+  note        String? @db.Text
+
+  isActive Boolean @default(true)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model Note {
+  id       String @id @default(cuid())
+  courseId String
+
+  title       String
+  content     String? @db.Text
+  fileUrl     String?
+  isPublished Boolean @default(true)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
 }
 
 model Enrollment {
@@ -120,7 +160,7 @@ model Enrollment {
 }
 
 model Result {
-  id           String  @id @default(cuid())
+  id           String @id @default(cuid())
   enrollmentId String
 
   examName String
