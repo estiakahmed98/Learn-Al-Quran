@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  STUDENT
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  VERIFIED
+  REJECTED
+}
+
+enum PaymentMethod {
+  BKASH
+  NAGAD
+  ROCKET
+  WESTERN_UNION
+  BANK_TRANSFER
+}
+
+enum ContentType {
+  PAGE
+  HOME_SECTION
+  TEACHER
+  REVIEW
+  FAQ
+  BLOG
+  BOOK
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  whatsapp     String?
+  address      String?  @db.Text
+  imageURL     String?
+  passwordHash String
+  role         UserRole @default(STUDENT)
+  isActive     Boolean  @default(true)
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String  @db.Text
+  thumbnail   String?
+  bannerImage String?
+
+  fee        Int     @default(1500)
+  duration   String?
+  curriculum Json?
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+  sortOrder  Int     @default(0)
+
+  metaTitle       String?
+  metaDescription String? @db.Text
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+model Enrollment {
+  id       String  @id @default(cuid())
+  userId   String?
+  courseId String
+
+  studentName    String
+  whatsappNumber String
+  email          String?
+  contactNumber  String
+
+  paymentMethod PaymentMethod
+  transactionId String?
+  paymentAmount Int           @default(1500)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  enrollmentStatus EnrollmentStatus @default(PENDING)
+  adminNote        String?          @db.Text
+
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([paymentStatus])
+}
+
+model Content {
+  id   String      @id @default(cuid())
+  type ContentType
+
+  title       String
+  slug        String  @unique
+  subtitle    String?
+  description String? @db.Text
+  image       String?
+  data        Json?
+
+  isPublished Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([isPublished, sortOrder])
+}
+
+model SiteSetting {
+  id String @id @default(cuid())
+
+  siteName String  @default("Learn Al Quran Online BD")
+  logo     String?
+  favicon  String?
+
+  phone    String?
+  whatsapp String?
+  email    String?
+  address  String? @db.Text
+
+  bkashNumber      String?
+  nagadNumber      String?
+  rocketNumber     String?
+  bankAccount      String?
+  westernUnionInfo String?
+
+  facebookUrl  String?
+  youtubeUrl   String?
+  instagramUrl String?
+  linkedinUrl  String?
+
+  googleMapUrl String? @db.Text
+
+  ga4Id String?
+
+  copyrightText String?
+  privacyPolicy String? @db.Text
+  terms         String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

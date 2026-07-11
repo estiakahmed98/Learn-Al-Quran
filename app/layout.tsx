@@ -1,0 +1,134 @@
+import type { Metadata, Viewport } from "next";
+import { Poppins, Hind_Siliguri } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
+import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
+import JsonLd from "@/components/shared/JsonLd";
+import { getSiteSettings, siteUrl } from "@/lib/site-config";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-heading",
+  display: "swap"
+});
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["latin", "bengali"],
+  weight: ["400", "500", "600"],
+  variable: "--font-bangla",
+  display: "swap"
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
+    template: "%s | Learn Al Quran Online BD"
+  },
+  description:
+    "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes for students worldwide. Book a free trial class today.",
+  keywords: [
+    "Learn Quran Online",
+    "Online Quran Classes Bangladesh",
+    "Tajweed Course",
+    "Hifzul Quran Online",
+    "Nazera Quran",
+    "Online Madrasa BD",
+    "Quran teacher online",
+    "Adult Quran Learning"
+  ],
+  authors: [{ name: "Learn Al Quran Online BD" }],
+  creator: "Learn Al Quran Online BD",
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    alternateLocale: "bn_BD",
+    url: siteUrl,
+    siteName: "Learn Al Quran Online BD",
+    title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
+    description:
+      "Personalized live online Quran, Tajweed & Hifz classes for kids and adults, with certified Huffaz and Qaris. Book your free trial class today.",
+    images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: "Learn Al Quran Online BD" }]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Al Quran Online BD",
+    description:
+      "Learn the Holy Quran online with certified Huffaz and Qaris. Book a free trial class today.",
+    images: ["/images/og-image.jpg"]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1
+    }
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined
+  },
+  icons: {
+    icon: "/favicon.ico"
+  }
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0F6B4C",
+  width: "device-width",
+  initialScale: 1
+};
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings();
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "Learn Al Quran Online BD",
+    url: siteUrl,
+    logo: `${siteUrl}/images/logo.png`,
+    description:
+      "Online Madrasa offering Quran, Tajweed, Hifz and Islamic education courses for students worldwide.",
+    telephone: settings.phone,
+    email: settings.email,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Dhaka",
+      addressCountry: "BD"
+    },
+    sameAs: [settings.facebookUrl, settings.youtubeUrl, settings.instagramUrl].filter(Boolean)
+  };
+
+  return (
+    <html lang="en" className={`${poppins.variable} ${hindSiliguri.variable}`}>
+      <body className="font-body">
+        <GoogleAnalytics gaId={settings.ga4Id || ""} />
+        <JsonLd data={organizationJsonLd} />
+        <Header phone={settings.phone || ""} />
+        <main>{children}</main>
+        <Footer
+          phone={settings.phone || ""}
+          whatsapp={settings.whatsapp || ""}
+          email={settings.email || ""}
+          address={settings.address || ""}
+          facebookUrl={settings.facebookUrl}
+          youtubeUrl={settings.youtubeUrl}
+          instagramUrl={settings.instagramUrl}
+          linkedinUrl={settings.linkedinUrl}
+          googleMapUrl={settings.googleMapUrl}
+          copyrightText={settings.copyrightText}
+        />
+        <WhatsAppFloat whatsapp={settings.whatsapp || ""} />
+      </body>
+    </html>
+  );
+}
