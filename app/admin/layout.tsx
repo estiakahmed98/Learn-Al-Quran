@@ -9,7 +9,7 @@ export const metadata = { robots: { index: false, follow: false } };
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
-  // The /admin/login page has no session and is allowed through by middleware.
+  // Middleware redirects unauthenticated /admin requests to /auth/login.
   if (!session) {
     return <AuthProvider>{children}</AuthProvider>;
   }

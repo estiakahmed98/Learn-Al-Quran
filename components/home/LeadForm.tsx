@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Course } from "@prisma/client";
+import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 
 interface LeadFormProps {
@@ -29,8 +31,10 @@ export default function LeadForm({
   bankAccount,
   embedded = false
 }: LeadFormProps) {
+  const t = useTranslations("leadForm");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [account, setAccount] = useState<{ email: string; password: string } | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -57,11 +61,13 @@ export default function LeadForm({
         body: JSON.stringify(payload)
       });
 
+      const body = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
         throw new Error(body.message || "Something went wrong. Please try again.");
       }
 
+      setAccount(body.account || null);
       trackEvent("generate_lead", { course: payload.courseSlug });
       setStatus("success");
       form.reset();
@@ -80,19 +86,38 @@ export default function LeadForm({
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />
         <div className="relative">
           <p className="text-xs font-bold uppercase tracking-widest text-gold-light">
-            Admission Now
+            {t("admissionNow")}
           </p>
           <h2 className="mt-1 font-heading text-2xl font-bold text-white">
-            Book Your Seat Today!
+            {t("bookSeat")}
           </h2>
 
           {status === "success" ? (
             <div className="mt-6 rounded-xl bg-white/10 p-6 text-center backdrop-blur">
               <p className="text-2xl">✅</p>
-              <p className="mt-2 font-semibold text-white">আপনার আবেদন সফলভাবে জমা হয়েছে!</p>
+              <p className="mt-2 font-semibold text-white">{t("successTitle")}</p>
               <p className="mt-1 text-sm text-cream/80">
-                আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে। ধন্যবাদ।
+                {t("successBody")}
               </p>
+              {account && (
+                <div className="mt-4 rounded-lg bg-white/10 p-4 text-left text-sm text-cream">
+                  <p className="font-semibold text-gold-light">
+                    {t("accountCreated")}
+                  </p>
+                  <p className="mt-2">
+                    {t("emailLabel")}: <span className="font-semibold text-white">{account.email}</span>
+                  </p>
+                  <p>
+                    {t("passwordLabel")}: <span className="font-semibold text-white">{account.password}</span>
+                  </p>
+                  <p className="mt-2 text-xs text-cream/70">
+                    {t("savePassword")}{" "}
+                    <Link href="/auth/login" className="font-semibold text-gold-light underline">
+                      {t("loginNow")}
+                    </Link>
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-5 space-y-3">
@@ -101,13 +126,13 @@ export default function LeadForm({
                   name="studentName"
                   type="text"
                   required
-                  placeholder="Your Name"
+                  placeholder={t("yourName")}
                   className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
                 />
                 <input
                   name="email"
                   type="email"
-                  placeholder="Your Email"
+                  placeholder={t("yourEmail")}
                   className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
                 />
               </div>
@@ -120,7 +145,7 @@ export default function LeadForm({
                   className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 focus:border-gold focus:outline-none"
                 >
                   <option value="" disabled>
-                    Select Course
+                    {t("selectCourse")}
                   </option>
                   {courses.map((c) => (
                     <option key={c.slug} value={c.slug}>
@@ -132,7 +157,7 @@ export default function LeadForm({
                   name="phone"
                   type="tel"
                   required
-                  placeholder="Your Phone Number"
+                  placeholder={t("yourPhone")}
                   className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
                 />
               </div>
@@ -152,13 +177,14 @@ export default function LeadForm({
                 <input
                   name="transactionId"
                   type="text"
-                  placeholder="Transaction ID (optional)"
+                  placeholder={t("transactionIdOptional")}
                   className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
                 />
               </div>
 
               <p className="text-xs text-cream/80">
-                📱 বিকাশ: <span className="font-semibold text-white">{bkashNumber}</span> · নগদ:{" "}
+                📱 {t("bkashNumber")}: <span className="font-semibold text-white">{bkashNumber}</span> ·{" "}
+                {t("nagadNumber")}:{" "}
                 <span className="font-semibold text-white">{nagadNumber}</span> · 🏦{" "}
                 <span className="font-semibold text-white">{bankAccount}</span>
               </p>
@@ -172,7 +198,7 @@ export default function LeadForm({
                 disabled={status === "loading"}
                 className="w-full rounded-lg bg-gold py-3 font-semibold text-white shadow transition hover:bg-gold-light disabled:opacity-60"
               >
-                {status === "loading" ? "Submitting..." : "Submit Now ✈"}
+                {status === "loading" ? t("submitting") : `${t("submitNow")} ✈`}
               </button>
             </form>
           )}
@@ -185,20 +211,20 @@ export default function LeadForm({
     <section id="admission" className="bg-cream py-16">
       <div className="mx-auto max-w-3xl px-4 lg:px-8">
         <div className="text-center">
-          <p className="font-semibold uppercase tracking-wide text-gold">ভর্তি ফর্ম</p>
+          <p className="font-semibold uppercase tracking-wide text-gold">{t("admissionForm")}</p>
           <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
-            Admission Now
+            {t("admissionNow")}
           </h2>
         </div>
 
         <div className="mt-8 rounded-2xl border border-gold/20 bg-white p-6 shadow-sm lg:p-8">
           <div className="rounded-xl bg-primary/5 p-4 text-sm text-gray-700">
-            <p className="font-semibold text-primary-dark">কোর্স ফি: ১৫০০ টাকা</p>
-            <p className="mt-1">অনুগ্রহ করে ফি পরিশোধ করে নিচের ফর্মটি পূরণ করুন।</p>
+            <p className="font-semibold text-primary-dark">{t("feeNotice")}</p>
+            <p className="mt-1">{t("feeInstruction")}</p>
             <ul className="mt-3 space-y-1">
-              <li>📱 বিকাশ নম্বর: <span className="font-semibold">{bkashNumber}</span></li>
-              <li>📱 নগদ নম্বর: <span className="font-semibold">{nagadNumber}</span></li>
-              <li>🏦 ব্যাংক অ্যাকাউন্ট: <span className="font-semibold">{bankAccount}</span></li>
+              <li>📱 {t("bkashNumber")}: <span className="font-semibold">{bkashNumber}</span></li>
+              <li>📱 {t("nagadNumber")}: <span className="font-semibold">{nagadNumber}</span></li>
+              <li>🏦 {t("bankAccount")}: <span className="font-semibold">{bankAccount}</span></li>
             </ul>
           </div>
 
@@ -209,13 +235,32 @@ export default function LeadForm({
                 আপনার আবেদন সফলভাবে জমা হয়েছে!
               </p>
               <p className="mt-1 text-sm text-gray-600">
-                আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে। ধন্যবাদ।
+                {t("successBody")}
               </p>
+              {account && (
+                <div className="mt-4 rounded-lg border border-gold/30 bg-white p-4 text-left text-sm text-gray-700">
+                  <p className="font-semibold text-primary-dark">
+                    {t("accountCreated")}
+                  </p>
+                  <p className="mt-2">
+                    {t("emailLabel")}: <span className="font-semibold">{account.email}</span>
+                  </p>
+                  <p>
+                    {t("passwordLabel")}: <span className="font-semibold">{account.password}</span>
+                  </p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    {t("savePassword")}{" "}
+                    <Link href="/auth/login" className="font-semibold text-primary underline">
+                      {t("loginNow")}
+                    </Link>
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700">কোর্স নির্বাচন করুন</label>
+                <label className="text-sm font-medium text-gray-700">{t("selectCourse")}</label>
                 <select
                   name="courseSlug"
                   required
@@ -223,7 +268,7 @@ export default function LeadForm({
                   className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
                 >
                   <option value="" disabled>
-                    -- Select a course --
+                    -- {t("chooseCourse")} --
                   </option>
                   {courses.map((c) => (
                     <option key={c.slug} value={c.slug}>
@@ -234,18 +279,18 @@ export default function LeadForm({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">Student Name</label>
+                <label className="text-sm font-medium text-gray-700">{t("studentName")}</label>
                 <input
                   name="studentName"
                   type="text"
                   required
                   className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                  placeholder="শিক্ষার্থীর নাম"
+                  placeholder={t("studentName")}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">WhatsApp Number</label>
+                <label className="text-sm font-medium text-gray-700">{t("whatsappNumber")}</label>
                 <input
                   name="whatsappNumber"
                   type="tel"
@@ -256,7 +301,7 @@ export default function LeadForm({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">Email (Optional)</label>
+                <label className="text-sm font-medium text-gray-700">{t("emailOptional")}</label>
                 <input
                   name="email"
                   type="email"
@@ -266,7 +311,7 @@ export default function LeadForm({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">Select Your Payment Plan</label>
+                <label className="text-sm font-medium text-gray-700">{t("paymentPlan")}</label>
                 <select
                   name="paymentMethod"
                   required
@@ -281,17 +326,17 @@ export default function LeadForm({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">Transaction ID</label>
+                <label className="text-sm font-medium text-gray-700">{t("transactionId")}</label>
                 <input
                   name="transactionId"
                   type="text"
                   className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                  placeholder="Payment Transaction ID"
+                  placeholder={t("transactionIdPlaceholder")}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">Contact Number</label>
+                <label className="text-sm font-medium text-gray-700">{t("contactNumber")}</label>
                 <input
                   name="contactNumber"
                   type="tel"
@@ -310,7 +355,7 @@ export default function LeadForm({
                 disabled={status === "loading"}
                 className="w-full rounded-full bg-primary py-3 font-semibold text-white transition hover:bg-primary-light disabled:opacity-60"
               >
-                {status === "loading" ? "Submitting..." : "Submit Now"}
+                {status === "loading" ? t("submitting") : t("submitNow")}
               </button>
             </form>
           )}

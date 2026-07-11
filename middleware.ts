@@ -5,15 +5,20 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/admin/login")) {
-    return NextResponse.next();
-  }
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
     if (!token || (token as any).role !== "ADMIN") {
-      const loginUrl = new URL("/admin/login", request.url);
+      const loginUrl = new URL("/auth/login", request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  if (pathname.startsWith("/dashboard")) {
+    if (!token) {
+      const loginUrl = new URL("/auth/login", request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
   }
@@ -22,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*"]
+  matcher: ["/admin", "/admin/:path*", "/dashboard", "/dashboard/:path*"]
 };

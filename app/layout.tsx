@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, Hind_Siliguri } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
 import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import JsonLd from "@/components/shared/JsonLd";
@@ -89,6 +92,8 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -109,12 +114,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   };
 
   return (
-    <html lang="en" className={`${poppins.variable} ${hindSiliguri.variable}`}>
-      <body className="font-body">
+    <html lang={locale} className={`${poppins.variable} ${hindSiliguri.variable}`}>
+      <body className="flex min-h-screen flex-col font-body">
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
         <JsonLd data={organizationJsonLd} />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+        <AuthProvider>
         <Header phone={settings.phone || ""} />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer
           phone={settings.phone || ""}
           whatsapp={settings.whatsapp || ""}
@@ -128,6 +135,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           copyrightText={settings.copyrightText}
         />
         <WhatsAppFloat whatsapp={settings.whatsapp || ""} />
+        </AuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

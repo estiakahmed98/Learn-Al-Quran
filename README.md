@@ -39,7 +39,7 @@ npm run dev
 Visit `http://localhost:3000` for the website.
 
 ### Default Admin Login
-After seeding, log in to the admin panel at `http://localhost:3000/admin/login`:
+After seeding, log in to the admin panel at `http://localhost:3000/auth/login`:
 
 - **Email:** `admin@learnalquranonlinebd.com`
 - **Password:** `Admin@12345`
@@ -107,7 +107,7 @@ redeploying — the site reads them at request time.
 
 ## 6. Admin Panel
 
-Visit `/admin` (redirects to `/admin/login` if not signed in). Includes:
+Visit `/admin` (redirects to `/auth/login` if not signed in). Includes:
 
 - **Dashboard** — quick stats (courses, enrollments, pending/verified payments)
 - **Courses** — toggle active/hidden, update fee, delete

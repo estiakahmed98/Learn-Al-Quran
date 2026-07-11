@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   phone: string;
@@ -25,6 +26,7 @@ export default function Footer({
   googleMapUrl,
   copyrightText
 }: FooterProps) {
+  const t = useTranslations("footer");
   const socials = [
     { label: "f", title: "Facebook", url: facebookUrl },
     { label: "▶", title: "YouTube", url: youtubeUrl },
@@ -50,14 +52,11 @@ export default function Footer({
               </span>
             </span>
           </div>
-          <p className="mt-4 text-sm text-cream/80">
-            Our mission is to spread the light of Quran education around the world with
-            quality and sincerity.
-          </p>
+          <p className="mt-4 text-sm text-cream/80">{t("mission")}</p>
 
           {socials.length > 0 && (
             <div className="mt-5">
-              <h4 className="text-sm font-semibold text-white">Follow Us</h4>
+              <h4 className="text-sm font-semibold text-white">{t("followUs")}</h4>
               <div className="mt-3 flex gap-2">
                 {socials.map((s) => (
                   <a
@@ -77,7 +76,7 @@ export default function Footer({
         </div>
 
         <div>
-          <h4 className="font-heading font-semibold text-white">Contact Information</h4>
+          <h4 className="font-heading font-semibold text-white">{t("contactInfo")}</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-cream/80">
             <li>
               📞 <a href={`tel:${phone}`} className="hover:text-gold-light">{phone}</a>
@@ -85,7 +84,7 @@ export default function Footer({
             <li>
               💬{" "}
               <a href={`https://wa.me/${whatsapp}`} className="hover:text-gold-light">
-                WhatsApp: {whatsapp}
+                {t("whatsapp")}: {whatsapp}
               </a>
             </li>
             <li>
@@ -96,21 +95,21 @@ export default function Footer({
         </div>
 
         <div>
-          <h4 className="font-heading font-semibold text-white">Quick Links</h4>
+          <h4 className="font-heading font-semibold text-white">{t("quickLinks")}</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-cream/80">
-            <li><Link href="/" className="hover:text-gold-light">Home</Link></li>
-            <li><Link href="/courses" className="hover:text-gold-light">Courses</Link></li>
-            <li><Link href="/#courses" className="hover:text-gold-light">Master Classes</Link></li>
-            <li><Link href="/books" className="hover:text-gold-light">Books</Link></li>
-            <li><Link href="/blog" className="hover:text-gold-light">Blog</Link></li>
-            <li><Link href="/about-us" className="hover:text-gold-light">About Us</Link></li>
-            <li><Link href="/contact-us" className="hover:text-gold-light">Contact Us</Link></li>
-            <li><Link href="/free-trial-class" className="hover:text-gold-light">Free Trial Class</Link></li>
+            <li><Link href="/" className="hover:text-gold-light">{t("home")}</Link></li>
+            <li><Link href="/courses" className="hover:text-gold-light">{t("courses")}</Link></li>
+            <li><Link href="/#courses" className="hover:text-gold-light">{t("masterClasses")}</Link></li>
+            <li><Link href="/books" className="hover:text-gold-light">{t("books")}</Link></li>
+            <li><Link href="/blog" className="hover:text-gold-light">{t("blog")}</Link></li>
+            <li><Link href="/about-us" className="hover:text-gold-light">{t("aboutUs")}</Link></li>
+            <li><Link href="/contact-us" className="hover:text-gold-light">{t("contactUs")}</Link></li>
+            <li><Link href="/free-trial-class" className="hover:text-gold-light">{t("freeTrialClass")}</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="font-heading font-semibold text-white">Google Map</h4>
+          <h4 className="font-heading font-semibold text-white">{t("googleMap")}</h4>
           {googleMapUrl && (
             <div className="mt-4 overflow-hidden rounded-xl">
               <iframe
@@ -128,17 +127,14 @@ export default function Footer({
 
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-cream/70 sm:flex-row lg:px-8">
-          <p>
-            {copyrightText ||
-              `© ${new Date().getFullYear()} Learn Al Quran Online BD. All rights reserved.`}
-          </p>
+          <p>{copyrightText || t("copyright", { year: new Date().getFullYear() })}</p>
           <p className="flex gap-3">
             <Link href="/privacy-policy" className="hover:text-gold-light">
-              Privacy Policy
+              {t("privacyPolicy")}
             </Link>
             <span>|</span>
             <Link href="/terms-and-conditions" className="hover:text-gold-light">
-              Terms &amp; Conditions
+              {t("terms")}
             </Link>
           </p>
         </div>

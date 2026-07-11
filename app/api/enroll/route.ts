@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { randomBytes } from "crypto";
+import bcrypt from "bcryptjs";
+import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
 const enrollSchema = z.object({
   courseSlug: z.string().min(1, "Please select a course"),
@@ -31,9 +35,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Selected course was not found." }, { status: 404 });
     }
 
+    // Link the enrollment to a student account: the logged-in user, an
+    // existing account matching the email, or a freshly auto-created one.
+    const session = await getServerSession(authOptions);
+    let userId: string | undefined = session?.user?.id;
+    let account: { email: string; password: string } | null = null;
+
+    if (!userId && data.email) {
+      const existing = await prisma.user.findUnique({ where: { email: data.email } });
+
+      if (existing) {
+        userId = existing.id;
+      } else {
+        const tempPassword = randomBytes(4).toString("hex");
+        const user = await prisma.user.create({
+          data: {
+            name: data.studentName,
+            email: data.email,
+            phone: data.contactNumber,
+            whatsapp: data.whatsappNumber,
+            passwordHash: await bcrypt.hash(tempPassword, 10),
+            role: "STUDENT"
+          }
+        });
+        userId = user.id;
+        account = { email: data.email, password: tempPassword };
+      }
+    }
+
     const enrollment = await prisma.enrollment.create({
       data: {
         courseId: course.id,
+        userId,
         studentName: data.studentName,
         whatsappNumber: data.whatsappNumber,
         email: data.email || undefined,
@@ -44,7 +77,7 @@ export async function POST(request: Request) {
       }
     });
 
-    return NextResponse.json({ success: true, id: enrollment.id }, { status: 201 });
+    return NextResponse.json({ success: true, id: enrollment.id, account }, { status: 201 });
   } catch (error) {
     console.error("Enrollment error:", error);
     return NextResponse.json(
