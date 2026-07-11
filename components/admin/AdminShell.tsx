@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/admin", label: "📊 Dashboard", title: "Dashboard" },
   { href: "/admin/courses", label: "📚 Courses", title: "Courses" },
   { href: "/admin/users", label: "👥 Users Management", title: "Users Management" },
+  { href: "/admin/payments", label: "💳 Payments", title: "Payments & Approvals" },
   { href: "/admin/content", label: "🗂 Content", title: "Content" },
   { href: "/", label: "🌐 View Site", title: "Admin Panel" }
 ];

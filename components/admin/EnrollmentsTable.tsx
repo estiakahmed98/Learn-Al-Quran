@@ -62,6 +62,21 @@ export default function EnrollmentsTable({
     setResultForm(emptyResultForm);
   }
 
+  async function remove(row: EnrollmentRow) {
+    if (
+      !confirm(
+        `Remove "${row.studentName}" from ${row.course?.title || "this course"}? This deletes the enrollment and its results. This cannot be undone.`
+      )
+    )
+      return;
+    setSavingId(row.id);
+    const res = await fetch(`/api/admin/enrollments/${row.id}`, { method: "DELETE" });
+    if (res.ok) {
+      setRows((prev) => prev.filter((r) => r.id !== row.id));
+    }
+    setSavingId(null);
+  }
+
   async function addResult(enrollmentId: string) {
     if (!resultForm.examName.trim()) return;
     setSavingResult(true);
@@ -116,6 +131,7 @@ export default function EnrollmentsTable({
             <th className="px-4 py-3">Payment Status</th>
             <th className="px-4 py-3">Enrollment Status</th>
             <th className="px-4 py-3">Results</th>
+            <th className="px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -172,11 +188,20 @@ export default function EnrollmentsTable({
                     {row.results?.length ? `${row.results.length} result(s)` : "Add Result"}
                   </button>
                 </td>
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => remove(row)}
+                    disabled={savingId === row.id}
+                    className="text-xs font-semibold text-red-500 hover:underline disabled:opacity-50"
+                  >
+                    Remove
+                  </button>
+                </td>
               </tr>
 
               {expandedId === row.id && (
                 <tr key={`${row.id}-results`} className="border-t border-gray-100 bg-gray-50">
-                  <td colSpan={8} className="px-4 py-4">
+                  <td colSpan={9} className="px-4 py-4">
                     <div className="space-y-3">
                       {(row.results || []).length > 0 && (
                         <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">

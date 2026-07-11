@@ -37,13 +37,24 @@ export default function StudentCourseCard({
   enrollment: StudentEnrollmentSummary;
   labels: { enrolled: string; results: string; manage: string };
 }) {
+  const isApproved =
+    enrollment.paymentStatus === "VERIFIED" &&
+    ["APPROVED", "ACTIVE", "COMPLETED"].includes(enrollment.enrollmentStatus);
+
   return (
     <Link
       href={`/student/courses/${enrollment.course.id}`}
       className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-primary/40 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
     >
       <div>
-        <p className="font-heading text-base font-bold text-primary-dark">{enrollment.course.title}</p>
+        <p className="font-heading text-base font-bold text-primary-dark">
+          {enrollment.course.title}
+          {!isApproved && (
+            <span className="ml-2 align-middle text-xs font-semibold text-amber-600">
+              🔒 {enrollment.paymentStatus === "REJECTED" ? "Rejected" : "Pending approval"}
+            </span>
+          )}
+        </p>
         <p className="mt-1 text-sm text-gray-500">
           {labels.enrolled}: {new Date(enrollment.createdAt).toLocaleDateString("en-GB")}
           {enrollment.course.duration ? ` · ${enrollment.course.duration}` : ""}

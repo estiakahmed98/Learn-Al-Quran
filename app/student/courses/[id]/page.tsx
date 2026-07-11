@@ -32,6 +32,10 @@ export default async function StudentCourseDetailPage({ params }: { params: { id
 
   if (!enrollment) notFound();
 
+  const isApproved =
+    enrollment.paymentStatus === "VERIFIED" &&
+    ["APPROVED", "ACTIVE", "COMPLETED"].includes(enrollment.enrollmentStatus);
+
   return (
     <div>
       <Link href="/student/courses" className="text-sm font-semibold text-primary hover:underline">
@@ -79,7 +83,8 @@ export default async function StudentCourseDetailPage({ params }: { params: { id
               grade: r.grade,
               remarks: r.remarks,
               examDate: r.examDate.toISOString()
-            }))
+            })),
+            isApproved
           }}
         />
       </div>

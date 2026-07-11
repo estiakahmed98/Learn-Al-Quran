@@ -49,6 +49,7 @@ export interface CourseWorkspaceData {
   classSchedules: ClassScheduleRow[];
   notes: NoteRow[];
   results: ResultRow[];
+  isApproved: boolean;
 }
 
 const enrollmentStatusStyles: Record<string, string> = {
@@ -70,20 +71,47 @@ const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frid
 
 type Tab = "details" | "routine" | "notes" | "results" | "payment";
 
+function LockedNotice({ paymentStatus }: { paymentStatus: string }) {
+  const rejected = paymentStatus === "REJECTED";
+  return (
+    <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-6 text-center">
+      <p className="text-3xl">{rejected ? "🚫" : "🔒"}</p>
+      <p className="mt-2 font-semibold text-amber-800">
+        {rejected ? "Your enrollment was not approved" : "Waiting for admin approval"}
+      </p>
+      <p className="mt-1 text-sm text-amber-700">
+        {rejected
+          ? "Please contact us regarding your payment to get access."
+          : "Once the admin verifies your payment, class routine, notes and results will unlock here."}
+      </p>
+    </div>
+  );
+}
+
 export default function CourseWorkspace({ data }: { data: CourseWorkspaceData }) {
   const [tab, setTab] = useState<Tab>("details");
-  const { course, enrollment, classSchedules, notes, results } = data;
+  const { course, enrollment, classSchedules, notes, results, isApproved } = data;
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "details", label: "Details" },
-    { key: "routine", label: "Class Routine", count: classSchedules.length },
-    { key: "notes", label: "Notes", count: notes.length },
-    { key: "results", label: "Results", count: results.length },
+    { key: "routine", label: "Class Routine", count: isApproved ? classSchedules.length : undefined },
+    { key: "notes", label: "Notes", count: isApproved ? notes.length : undefined },
+    { key: "results", label: "Results", count: isApproved ? results.length : undefined },
     { key: "payment", label: "Payment" }
   ];
 
   return (
     <div>
+      {!isApproved && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <span>{enrollment.paymentStatus === "REJECTED" ? "🚫" : "⏳"}</span>
+          <span>
+            {enrollment.paymentStatus === "REJECTED"
+              ? "This enrollment was rejected. Course content is locked."
+              : "This enrollment is pending admin approval. Course content unlocks once your payment is verified."}
+          </span>
+        </div>
+      )}
       <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-xl font-bold text-primary-dark">{course.title}</h1>
@@ -145,7 +173,11 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
           </div>
         )}
 
-        {tab === "routine" && (
+        {tab === "routine" && !isApproved && (
+          <LockedNotice paymentStatus={enrollment.paymentStatus} />
+        )}
+
+        {tab === "routine" && isApproved && (
           <div>
             {classSchedules.length === 0 ? (
               <p className="text-sm text-gray-500">Class routine has not been published yet.</p>
@@ -180,7 +212,11 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
           </div>
         )}
 
-        {tab === "notes" && (
+        {tab === "notes" && !isApproved && (
+          <LockedNotice paymentStatus={enrollment.paymentStatus} />
+        )}
+
+        {tab === "notes" && isApproved && (
           <div>
             {notes.length === 0 ? (
               <p className="text-sm text-gray-500">No notes have been shared for this course yet.</p>
@@ -210,7 +246,11 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
           </div>
         )}
 
-        {tab === "results" && (
+        {tab === "results" && !isApproved && (
+          <LockedNotice paymentStatus={enrollment.paymentStatus} />
+        )}
+
+        {tab === "results" && isApproved && (
           <div>
             {results.length === 0 ? (
               <p className="text-sm text-gray-500">No results published yet.</p>

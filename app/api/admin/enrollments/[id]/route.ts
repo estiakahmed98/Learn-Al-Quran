@@ -21,3 +21,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
   return NextResponse.json(enrollment);
 }
+
+export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any)?.role !== "ADMIN") {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  await prisma.enrollment.delete({ where: { id: params.id } });
+  return NextResponse.json({ success: true });
+}
