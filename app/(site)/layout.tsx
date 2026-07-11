@@ -1,0 +1,28 @@
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
+import { getSiteSettings } from "@/lib/site-config";
+
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings();
+
+  return (
+    <>
+      <Header phone={settings.phone || ""} />
+      <main className="flex-1">{children}</main>
+      <Footer
+        phone={settings.phone || ""}
+        whatsapp={settings.whatsapp || ""}
+        email={settings.email || ""}
+        address={settings.address || ""}
+        facebookUrl={settings.facebookUrl}
+        youtubeUrl={settings.youtubeUrl}
+        instagramUrl={settings.instagramUrl}
+        linkedinUrl={settings.linkedinUrl}
+        googleMapUrl={settings.googleMapUrl}
+        copyrightText={settings.copyrightText}
+      />
+      <WhatsAppFloat whatsapp={settings.whatsapp || ""} />
+    </>
+  );
+}

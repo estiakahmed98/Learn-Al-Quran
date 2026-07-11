@@ -3,11 +3,8 @@ import { Poppins, Hind_Siliguri } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
-import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
 
@@ -119,23 +116,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
         <JsonLd data={organizationJsonLd} />
         <NextIntlClientProvider locale={locale} messages={messages}>
-        <AuthProvider>
-        <Header phone={settings.phone || ""} />
-        <main className="flex-1">{children}</main>
-        <Footer
-          phone={settings.phone || ""}
-          whatsapp={settings.whatsapp || ""}
-          email={settings.email || ""}
-          address={settings.address || ""}
-          facebookUrl={settings.facebookUrl}
-          youtubeUrl={settings.youtubeUrl}
-          instagramUrl={settings.instagramUrl}
-          linkedinUrl={settings.linkedinUrl}
-          googleMapUrl={settings.googleMapUrl}
-          copyrightText={settings.copyrightText}
-        />
-        <WhatsAppFloat whatsapp={settings.whatsapp || ""} />
-        </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

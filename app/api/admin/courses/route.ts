@@ -22,6 +22,16 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const course = await prisma.course.create({ data: body });
-  return NextResponse.json(course, { status: 201 });
+  try {
+    const course = await prisma.course.create({ data: body });
+    return NextResponse.json(course, { status: 201 });
+  } catch (error: any) {
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        { message: "A course with this slug already exists. Please use a different slug." },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ message: "Failed to create course." }, { status: 500 });
+  }
 }

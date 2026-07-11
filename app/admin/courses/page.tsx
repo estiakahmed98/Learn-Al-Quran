@@ -4,7 +4,12 @@ import CoursesTable from "@/components/admin/CoursesTable";
 export const dynamic = "force-dynamic";
 
 export default async function AdminCoursesPage() {
-  const courses = await prisma.course.findMany({ orderBy: { sortOrder: "asc" } }).catch(() => []);
+  const courses = await prisma.course
+    .findMany({
+      include: { _count: { select: { enrollments: true } } },
+      orderBy: { sortOrder: "asc" }
+    })
+    .catch(() => []);
 
   return (
     <div>

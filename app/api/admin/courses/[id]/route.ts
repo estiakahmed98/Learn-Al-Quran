@@ -14,8 +14,18 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const course = await prisma.course.update({ where: { id: params.id }, data: body });
-  return NextResponse.json(course);
+  try {
+    const course = await prisma.course.update({ where: { id: params.id }, data: body });
+    return NextResponse.json(course);
+  } catch (error: any) {
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        { message: "A course with this slug already exists. Please use a different slug." },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ message: "Failed to update course." }, { status: 500 });
+  }
 }
 
 export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
