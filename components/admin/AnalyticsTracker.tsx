@@ -136,6 +136,7 @@ export default function AnalyticsTracker({
   const visitorIdRef = useRef<string | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const lastHeartbeatAtRef = useRef<number>(0);
+  const lastPageViewRef = useRef<string | null>(null);
   const isActiveRef = useRef<boolean>(true);
 
   // init ids + session rules
@@ -177,6 +178,10 @@ export default function AnalyticsTracker({
   useEffect(() => {
     // ✅ block excluded paths
     if (isExcludedPath(pathname)) return;
+
+    const pageKey = `${pathname || "/"}?${searchParams?.toString() || ""}`;
+    if (lastPageViewRef.current === pageKey) return;
+    lastPageViewRef.current = pageKey;
 
     const vid = visitorIdRef.current || getOrCreateVisitorId();
     const sid = sessionIdRef.current || getOrCreateSessionId(false);

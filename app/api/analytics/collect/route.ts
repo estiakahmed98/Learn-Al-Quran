@@ -64,6 +64,9 @@ async function geoLookup(ip: string) {
   const cached = await prisma.geoIpCache.findUnique({ where: { ip } });
   if (cached) return cached;
 
+  // Local development should never wait on a third-party Geo-IP service.
+  if (process.env.NODE_ENV !== "production") return null;
+
   const fields = [
     "status",
     "message",
@@ -80,13 +83,25 @@ async function geoLookup(ip: string) {
     fields
   )}`;
 
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(2000),
+  });
   const json = (await res.json()) as GeoLookupResponse;
 
   if (json?.status !== "success") return null;
 
-  const created = await prisma.geoIpCache.create({
-    data: {
+  const created = await prisma.geoIpCache.upsert({
+    where: { ip },
+    update: {
+      country: typeof json.country === "string" ? json.country : null,
+      city: typeof json.city === "string" ? json.city : null,
+      region: typeof json.regionName === "string" ? json.regionName : null,
+      lat: typeof json.lat === "number" ? json.lat : null,
+      lon: typeof json.lon === "number" ? json.lon : null,
+      isp: typeof json.isp === "string" ? json.isp : null,
+    },
+    create: {
       ip,
       country: typeof json.country === "string" ? json.country : null,
       city: typeof json.city === "string" ? json.city : null,

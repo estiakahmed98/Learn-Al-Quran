@@ -1,28 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Poppins, Hind_Siliguri } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
+import "@fontsource/hind-siliguri/400.css";
+import "@fontsource/hind-siliguri/500.css";
+import "@fontsource/hind-siliguri/600.css";
 import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
 import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-heading",
-  display: "swap"
-});
-
-const hindSiliguri = Hind_Siliguri({
-  subsets: ["latin", "bengali"],
-  weight: ["400", "500", "600"],
-  variable: "--font-bangla",
-  display: "swap"
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -113,7 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   };
 
   return (
-    <html lang={locale} className={`${poppins.variable} ${hindSiliguri.variable}`}>
+    <html lang={locale}>
       <body className="flex min-h-screen flex-col font-body">
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
         <Suspense fallback={null}>
