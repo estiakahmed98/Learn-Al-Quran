@@ -1,11 +1,5 @@
-import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
+import AdminAnalytics from "@/components/admin/AdminAnalytics";
 
-export default function BlogsPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F4F8F7] to-[#EEEFE0] p-4 sm:p-6">
-      <div>
-        <AnalyticsTracker />
-      </div>
-    </div>
-  );
+export default function Admin() {
+  return <AdminAnalytics />;
 }

@@ -15,3 +15,12 @@ export function waLink(number: string, message = "") {
   const text = encodeURIComponent(message);
   return `https://wa.me/${clean}${message ? `?text=${text}` : ""}`;
 }
+
+export function generateSlug(value: string) {
+  return value
+    .normalize("NFKD")
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+}

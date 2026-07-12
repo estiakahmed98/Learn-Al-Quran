@@ -59,6 +59,7 @@ export async function PUT(
     const {
       title,
       summary,
+      content,
       date,
       author,
       image,
@@ -66,6 +67,7 @@ export async function PUT(
     }: {
       title?: string;
       summary?: string;
+      content?: string;
       date?: string;
       author?: string;
       image?: string;
@@ -77,6 +79,7 @@ export async function PUT(
       title?: string;
       slug?: string;
       summary: string;
+      content: string;
       date: Date;
       author: string;
       image: string;
@@ -86,6 +89,7 @@ export async function PUT(
         typeof summary === "string" && summary.trim().length > 0
           ? summary
           : existingBlog.summary,
+      content: content ?? existingBlog.content,
       date: date ? new Date(date) : existingBlog.date,
       author: author ?? existingBlog.author,
       image: image ?? existingBlog.image,

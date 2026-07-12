@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Poppins, Hind_Siliguri } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
+import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
 
@@ -114,6 +116,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang={locale} className={`${poppins.variable} ${hindSiliguri.variable}`}>
       <body className="flex min-h-screen flex-col font-body">
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         <JsonLd data={organizationJsonLd} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthProvider>{children}</AuthProvider>

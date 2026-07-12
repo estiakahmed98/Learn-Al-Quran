@@ -7,6 +7,8 @@ import SignOutButton from "./SignOutButton";
 
 const navLinks = [
   { href: "/admin", label: "📊 Dashboard", title: "Dashboard" },
+  { href: "/admin/analytics", label: "📈 Analytics", title: "Analytics" },
+  { href: "/admin/blog", label: "✍️ Blog", title: "Blog Management" },
   { href: "/admin/courses", label: "📚 Courses", title: "Courses" },
   { href: "/admin/users", label: "👥 Users Management", title: "Users Management" },
   { href: "/admin/payments", label: "💳 Payments", title: "Payments & Approvals" },
