@@ -6,7 +6,11 @@ import SignOutButton from "@/components/admin/SignOutButton";
 import StudentSidebar, { StudentSidebarNav } from "./sidebar";
 import StudentHeader from "./header";
 
-export default function StudentShell({ children }: { children: React.ReactNode }) {
+export default function StudentShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -27,12 +31,20 @@ export default function StudentShell({ children }: { children: React.ReactNode }
 
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
           <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col overflow-y-auto bg-white p-6 shadow-xl">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-heading text-lg font-bold text-primary-dark">Student Panel</h2>
-                <p className="mt-1 text-xs text-gray-400">Learn Al Quran Online BD</p>
+                <h2 className="font-heading text-lg font-bold text-primary-dark">
+                  Student Panel
+                </h2>
+                <p className="mt-1 text-xs text-gray-400">
+                  Learn Al Quran Online BD
+                </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -52,7 +64,7 @@ export default function StudentShell({ children }: { children: React.ReactNode }
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <StudentHeader onMenuClick={() => setOpen(true)} />
-        <main className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">{children}</main>
+        <main className="min-w-0 flex-1 overflow-y-auto p-4">{children}</main>
       </div>
     </div>
   );

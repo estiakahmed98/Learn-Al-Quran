@@ -21,7 +21,7 @@ interface Blog {
   updatedAt: string | Date;
 }
 
-const RichTextEditor = dynamic(() => import("./JoditEditor"), {
+const TinyMCEEditor = dynamic(() => import("./TinyMCEEditor"), {
   ssr: false,
   loading: () => (
     <div className="h-[400px] border border-gray-300 rounded-lg p-4">
@@ -94,7 +94,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
       if (response.ok) {
         toast.success(
-          blog ? "Blog updated successfully" : "Blog created successfully"
+          blog ? "Blog updated successfully" : "Blog created successfully",
         );
 
         if (onSuccess) {
@@ -125,7 +125,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -241,7 +241,9 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
   return (
     <div className="bg-white rounded-lg shadow">
-      <h2 className="text-lg font-semibold p-4">{blog ? "Edit Blog" : "Create New Blog"}</h2>
+      <h2 className="text-lg font-semibold p-4">
+        {blog ? "Edit Blog" : "Create New Blog"}
+      </h2>
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
         <div>
           <label
@@ -266,9 +268,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-gray-600">Slug:</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              blog/{slug}
-            </p>
+            <p className="text-xs text-gray-500 mt-1">blog/{slug}</p>
           </div>
         </div>
 
@@ -330,7 +330,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
             Content *
           </label>
           {isClient && (
-            <RichTextEditor
+            <TinyMCEEditor
               initialValue={formData.content}
               onContentChange={handleContentChange}
               height="400px"
@@ -344,7 +344,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
           {/* Preview */}
           {formData.image && (
-              <div className="mb-3 flex items-center gap-4">
+            <div className="mb-3 flex items-center gap-4">
               <img
                 src={formData.image}
                 alt="Blog featured"
