@@ -25,8 +25,7 @@ export default async function StudentCourseDetailPage({ params }: { params: { id
           classSchedules: { where: { isActive: true }, orderBy: { dayOfWeek: "asc" } },
           notes: { where: { isPublished: true }, orderBy: { createdAt: "desc" } }
         }
-      },
-      results: { orderBy: { examDate: "desc" } }
+      }
     }
   });
 
@@ -75,14 +74,6 @@ export default async function StudentCourseDetailPage({ params }: { params: { id
               content: n.content,
               fileUrl: n.fileUrl,
               createdAt: n.createdAt.toISOString()
-            })),
-            results: enrollment.results.map((r) => ({
-              id: r.id,
-              examName: r.examName,
-              marks: r.marks,
-              grade: r.grade,
-              remarks: r.remarks,
-              examDate: r.examDate.toISOString()
             })),
             isApproved
           }}

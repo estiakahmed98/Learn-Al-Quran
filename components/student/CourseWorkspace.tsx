@@ -3,15 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 
-interface ResultRow {
-  id: string;
-  examName: string;
-  marks: number | null;
-  grade: string | null;
-  remarks: string | null;
-  examDate: string;
-}
-
 interface ClassScheduleRow {
   id: string;
   dayOfWeek: number;
@@ -48,7 +39,6 @@ export interface CourseWorkspaceData {
   };
   classSchedules: ClassScheduleRow[];
   notes: NoteRow[];
-  results: ResultRow[];
   isApproved: boolean;
 }
 
@@ -57,19 +47,27 @@ const enrollmentStatusStyles: Record<string, string> = {
   APPROVED: "bg-blue-100 text-blue-800",
   ACTIVE: "bg-green-100 text-green-800",
   COMPLETED: "bg-primary/10 text-primary-dark",
-  CANCELLED: "bg-red-100 text-red-700"
+  CANCELLED: "bg-red-100 text-red-700",
 };
 
 const paymentStatusStyles: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-800",
   PAID: "bg-blue-100 text-blue-800",
   VERIFIED: "bg-green-100 text-green-800",
-  REJECTED: "bg-red-100 text-red-700"
+  REJECTED: "bg-red-100 text-red-700",
 };
 
-const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
-type Tab = "details" | "routine" | "notes" | "results" | "payment";
+type Tab = "details" | "routine" | "notes" | "payment";
 
 function LockedNotice({ paymentStatus }: { paymentStatus: string }) {
   const rejected = paymentStatus === "REJECTED";
@@ -77,7 +75,9 @@ function LockedNotice({ paymentStatus }: { paymentStatus: string }) {
     <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-6 text-center">
       <p className="text-3xl">{rejected ? "🚫" : "🔒"}</p>
       <p className="mt-2 font-semibold text-amber-800">
-        {rejected ? "Your enrollment was not approved" : "Waiting for admin approval"}
+        {rejected
+          ? "Your enrollment was not approved"
+          : "Waiting for admin approval"}
       </p>
       <p className="mt-1 text-sm text-amber-700">
         {rejected
@@ -88,16 +88,27 @@ function LockedNotice({ paymentStatus }: { paymentStatus: string }) {
   );
 }
 
-export default function CourseWorkspace({ data }: { data: CourseWorkspaceData }) {
+export default function CourseWorkspace({
+  data,
+}: {
+  data: CourseWorkspaceData;
+}) {
   const [tab, setTab] = useState<Tab>("details");
-  const { course, enrollment, classSchedules, notes, results, isApproved } = data;
+  const { course, enrollment, classSchedules, notes, isApproved } = data;
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "details", label: "Details" },
-    { key: "routine", label: "Class Routine", count: isApproved ? classSchedules.length : undefined },
-    { key: "notes", label: "Notes", count: isApproved ? notes.length : undefined },
-    { key: "results", label: "Results", count: isApproved ? results.length : undefined },
-    { key: "payment", label: "Payment" }
+    {
+      key: "routine",
+      label: "Class Routine",
+      count: isApproved ? classSchedules.length : undefined,
+    },
+    {
+      key: "notes",
+      label: "Notes",
+      count: isApproved ? notes.length : undefined,
+    },
+    { key: "payment", label: "Payment" },
   ];
 
   return (
@@ -114,23 +125,28 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
       )}
       <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-heading text-xl font-bold text-primary-dark">{course.title}</h1>
+          <h1 className="font-heading text-xl font-bold text-primary-dark">
+            {course.title}
+          </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Enrolled: {new Date(enrollment.createdAt).toLocaleDateString("en-GB")}
+            Enrolled:{" "}
+            {new Date(enrollment.createdAt).toLocaleDateString("en-GB")}
             {course.duration ? ` · ${course.duration}` : ""}
           </p>
         </div>
         <div className="flex shrink-0 gap-2">
           <span
             className={`rounded-full px-3 py-1 text-xs font-semibold ${
-              enrollmentStatusStyles[enrollment.enrollmentStatus] || "bg-gray-100 text-gray-700"
+              enrollmentStatusStyles[enrollment.enrollmentStatus] ||
+              "bg-gray-100 text-gray-700"
             }`}
           >
             {enrollment.enrollmentStatus}
           </span>
           <span
             className={`rounded-full px-3 py-1 text-xs font-semibold ${
-              paymentStatusStyles[enrollment.paymentStatus] || "bg-gray-100 text-gray-700"
+              paymentStatusStyles[enrollment.paymentStatus] ||
+              "bg-gray-100 text-gray-700"
             }`}
           >
             💳 {enrollment.paymentStatus}
@@ -180,11 +196,16 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
         {tab === "routine" && isApproved && (
           <div>
             {classSchedules.length === 0 ? (
-              <p className="text-sm text-gray-500">Class routine has not been published yet.</p>
+              <p className="text-sm text-gray-500">
+                Class routine has not been published yet.
+              </p>
             ) : (
               <div className="space-y-3">
                 {classSchedules.map((cs) => (
-                  <div key={cs.id} className="rounded-xl border border-gray-200 p-4">
+                  <div
+                    key={cs.id}
+                    className="rounded-xl border border-gray-200 p-4"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="font-semibold text-gray-800">
                         {DAY_NAMES[cs.dayOfWeek] ?? "Day"} · {cs.startTime}
@@ -202,9 +223,13 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
                       )}
                     </div>
                     {cs.teacherName && (
-                      <p className="mt-1 text-sm text-gray-500">Teacher: {cs.teacherName}</p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Teacher: {cs.teacherName}
+                      </p>
                     )}
-                    {cs.note && <p className="mt-1 text-xs text-gray-500">{cs.note}</p>}
+                    {cs.note && (
+                      <p className="mt-1 text-xs text-gray-500">{cs.note}</p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -219,13 +244,20 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
         {tab === "notes" && isApproved && (
           <div>
             {notes.length === 0 ? (
-              <p className="text-sm text-gray-500">No notes have been shared for this course yet.</p>
+              <p className="text-sm text-gray-500">
+                No notes have been shared for this course yet.
+              </p>
             ) : (
               <div className="space-y-3">
                 {notes.map((n) => (
-                  <div key={n.id} className="rounded-xl border border-gray-200 p-4">
+                  <div
+                    key={n.id}
+                    className="rounded-xl border border-gray-200 p-4"
+                  >
                     <p className="font-semibold text-gray-800">{n.title}</p>
-                    {n.content && <p className="mt-1 text-sm text-gray-600">{n.content}</p>}
+                    {n.content && (
+                      <p className="mt-1 text-sm text-gray-600">{n.content}</p>
+                    )}
                     {n.fileUrl && (
                       <a
                         href={n.fileUrl}
@@ -246,61 +278,27 @@ export default function CourseWorkspace({ data }: { data: CourseWorkspaceData })
           </div>
         )}
 
-        {tab === "results" && !isApproved && (
-          <LockedNotice paymentStatus={enrollment.paymentStatus} />
-        )}
-
-        {tab === "results" && isApproved && (
-          <div>
-            {results.length === 0 ? (
-              <p className="text-sm text-gray-500">No results published yet.</p>
-            ) : (
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-gray-50 text-gray-500">
-                    <tr>
-                      <th className="px-3 py-2">Exam</th>
-                      <th className="px-3 py-2">Marks</th>
-                      <th className="px-3 py-2">Grade</th>
-                      <th className="px-3 py-2">Remarks</th>
-                      <th className="px-3 py-2">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map((r) => (
-                      <tr key={r.id} className="border-t border-gray-100">
-                        <td className="px-3 py-2 font-medium text-gray-700">{r.examName}</td>
-                        <td className="px-3 py-2">{r.marks ?? "-"}</td>
-                        <td className="px-3 py-2">{r.grade ?? "-"}</td>
-                        <td className="px-3 py-2 text-gray-500">{r.remarks ?? "-"}</td>
-                        <td className="px-3 py-2 text-gray-500">
-                          {new Date(r.examDate).toLocaleDateString("en-GB")}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-
         {tab === "payment" && (
           <div className="grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
             <p>
-              <span className="font-semibold text-gray-500">Method:</span> {enrollment.paymentMethod}
+              <span className="font-semibold text-gray-500">Method:</span>{" "}
+              {enrollment.paymentMethod}
             </p>
             <p>
-              <span className="font-semibold text-gray-500">Amount:</span> ৳{enrollment.paymentAmount}
+              <span className="font-semibold text-gray-500">Amount:</span> ৳
+              {enrollment.paymentAmount}
             </p>
             {enrollment.transactionId && (
               <p>
-                <span className="font-semibold text-gray-500">Transaction ID:</span>{" "}
+                <span className="font-semibold text-gray-500">
+                  Transaction ID:
+                </span>{" "}
                 {enrollment.transactionId}
               </p>
             )}
             <p>
-              <span className="font-semibold text-gray-500">Status:</span> {enrollment.paymentStatus}
+              <span className="font-semibold text-gray-500">Status:</span>{" "}
+              {enrollment.paymentStatus}
             </p>
           </div>
         )}

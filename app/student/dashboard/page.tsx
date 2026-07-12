@@ -78,7 +78,7 @@ export default async function StudentDashboardPage() {
             </Link>
           </div>
         ) : (
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {enrollments.map((e) => (
               <StudentCourseCard
                 key={e.id}
