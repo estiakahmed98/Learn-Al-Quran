@@ -48,14 +48,17 @@ export default function Header({ phone }: { phone: string }) {
     <header className="sticky top-0 z-40 border-b border-gold/20 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-xl text-white">
-            🕌
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Learn_Al_Quran_Logo.png"
+            alt="Learn Al Quran Online BD logo"
+            className="h-11 w-11 shrink-0 rounded-full object-cover"
+          />
           <span className="leading-tight">
             <span className="block font-heading text-base font-bold uppercase tracking-wide text-primary-dark lg:text-lg">
               Learn Al Quran
             </span>
-            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
+            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-secondary">
               Online BD
             </span>
           </span>
@@ -239,7 +242,7 @@ export default function Header({ phone }: { phone: string }) {
             </a>
             <Link
               href="/free-trial-class"
-              className="flex-1 rounded-full bg-gold py-2 text-center text-sm font-semibold text-white"
+              className="flex-1 rounded-full bg-gold py-2 text-center text-sm font-semibold text-primary-dark"
             >
               {t("freeTrial")}
             </Link>

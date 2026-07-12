@@ -24,7 +24,7 @@ export default function Hero({ phone }: { phone: string }) {
             <br />
             From Anywhere,
             <br />
-            <span className="text-gold">Anytime</span>
+            <span className="text-secondary">Anytime</span>
           </h1>
 
           <p className="mx-auto mt-4 max-w-md text-gray-600 lg:mx-0 lg:text-lg">

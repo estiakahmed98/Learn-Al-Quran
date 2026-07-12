@@ -75,7 +75,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0F6B4C",
+  themeColor: "#28504F",
   width: "device-width",
   initialScale: 1
 };
@@ -90,7 +90,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     "@type": "EducationalOrganization",
     name: "Learn Al Quran Online BD",
     url: siteUrl,
-    logo: `${siteUrl}/images/logo.png`,
+    logo: `${siteUrl}/Learn_Al_Quran_Logo.png`,
     description:
       "Online Madrasa offering Quran, Tajweed, Hifz and Islamic education courses for students worldwide.",
     telephone: settings.phone,

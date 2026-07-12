@@ -147,7 +147,7 @@ export default function ContentManager({ initialContent }: { initialContent: Con
       <div className="mt-4 flex justify-end">
         <button
           onClick={openAddForm}
-          className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold-light"
+          className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-primary-dark hover:bg-gold-light"
         >
           + Add {activeLabel}
         </button>

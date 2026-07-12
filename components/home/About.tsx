@@ -20,7 +20,7 @@ export default function About() {
           </div>
 
           <div className="p-6 sm:p-8 lg:p-10">
-            <p className="text-sm font-bold uppercase tracking-wide text-gold">About Us</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-secondary">About Us</p>
             <h2 className="mt-2 font-heading text-2xl font-bold leading-snug text-primary-dark lg:text-3xl">
               Building Stronger Iman,
               <br className="hidden sm:block" /> One Lesson at a Time

@@ -34,7 +34,7 @@ export default function Teachers({
             {teacher.title}
           </h3>
           <p className="text-xs text-gray-600">{teacher.subtitle}</p>
-          <p className="mt-1 text-sm tracking-wide text-gold">★★★★★</p>
+          <p className="mt-1 text-sm tracking-wide text-secondary">★★★★★</p>
         </div>
       ))}
     </div>
@@ -44,7 +44,7 @@ export default function Teachers({
     return (
       <div>
         <h2 className="flex items-center gap-2 font-heading text-lg font-bold uppercase tracking-wide text-primary-dark sm:text-xl">
-          Our Teachers <span className="text-gold">⟶</span>
+          Our Teachers <span className="text-secondary">⟶</span>
         </h2>
         {grid}
       </div>
@@ -54,7 +54,7 @@ export default function Teachers({
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-semibold uppercase tracking-wide text-gold">Our Teachers</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Our Teachers</p>
         <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
           Learn From Certified Huffaz &amp; Qaris
         </h2>

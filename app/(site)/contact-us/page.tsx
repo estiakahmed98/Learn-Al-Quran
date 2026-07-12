@@ -17,7 +17,7 @@ export default async function ContactUsPage() {
   return (
     <div>
       <div className="mx-auto max-w-4xl px-4 py-16 text-center lg:px-8">
-        <p className="font-semibold uppercase tracking-wide text-gold">Contact Us</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Contact Us</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
           We'd Love To Hear From You
         </h1>

@@ -40,9 +40,12 @@ export default function Footer({
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-[1.2fr_1.2fr_0.8fr_1fr] lg:px-8">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl">
-              🕌
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/Learn_Al_Quran_Logo.png"
+              alt="Learn Al Quran Online BD logo"
+              className="h-11 w-11 shrink-0 rounded-full object-cover"
+            />
             <span className="leading-tight">
               <span className="block font-heading text-base font-bold uppercase tracking-wide text-white">
                 Learn Al Quran

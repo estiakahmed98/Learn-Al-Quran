@@ -17,7 +17,7 @@ export default function Reviews({ reviews }: { reviews: Content[] }) {
   return (
     <div>
       <h2 className="flex items-center gap-2 font-heading text-lg font-bold uppercase tracking-wide text-primary-dark sm:text-xl">
-        Student Reviews <span className="text-gold">⟶</span>
+        Student Reviews <span className="text-secondary">⟶</span>
       </h2>
 
       <div className="relative mt-6 rounded-2xl border border-gold/20 bg-white p-6 shadow-sm sm:p-8">
@@ -36,7 +36,7 @@ export default function Reviews({ reviews }: { reviews: Content[] }) {
             />
           </div>
           <div>
-            <p className="text-sm tracking-wide text-gold">
+            <p className="text-sm tracking-wide text-secondary">
               {"★".repeat(rating)}
               {"☆".repeat(5 - rating)}
             </p>

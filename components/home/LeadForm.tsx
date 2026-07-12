@@ -196,7 +196,7 @@ export default function LeadForm({
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full rounded-lg bg-gold py-3 font-semibold text-white shadow transition hover:bg-gold-light disabled:opacity-60"
+                className="w-full rounded-lg bg-gold py-3 font-semibold text-primary-dark shadow transition hover:bg-gold-light disabled:opacity-60"
               >
                 {status === "loading" ? t("submitting") : `${t("submitNow")} ✈`}
               </button>
@@ -211,7 +211,7 @@ export default function LeadForm({
     <section id="admission" className="bg-cream py-16">
       <div className="mx-auto max-w-3xl px-4 lg:px-8">
         <div className="text-center">
-          <p className="font-semibold uppercase tracking-wide text-gold">{t("admissionForm")}</p>
+          <p className="font-semibold uppercase tracking-wide text-secondary">{t("admissionForm")}</p>
           <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
             {t("admissionNow")}
           </h2>

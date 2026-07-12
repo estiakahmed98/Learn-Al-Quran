@@ -20,7 +20,7 @@ export default async function BlogPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-semibold uppercase tracking-wide text-gold">Blog</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Blog</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
           Quran Learning Tips &amp; Islamic Articles
         </h1>

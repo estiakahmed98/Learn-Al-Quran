@@ -63,7 +63,7 @@ export default async function CourseDetailPage({ params }: Props) {
     <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8">
       <JsonLd data={courseJsonLd} />
 
-      <p className="font-semibold uppercase tracking-wide text-gold">Course Details</p>
+      <p className="font-semibold uppercase tracking-wide text-secondary">Course Details</p>
       <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">{course.title}</h1>
 
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
@@ -89,7 +89,7 @@ export default async function CourseDetailPage({ params }: Props) {
       <div className="mt-10 flex flex-wrap gap-4">
         <Link
           href={`/free-trial-class?course=${course.slug}`}
-          className="rounded-full bg-gold px-6 py-3 font-semibold text-white shadow hover:bg-gold-light"
+          className="rounded-full bg-gold px-6 py-3 font-semibold text-primary-dark shadow hover:bg-gold-light"
         >
           Enroll Now — ভর্তি হন
         </Link>

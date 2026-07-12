@@ -19,7 +19,7 @@ export default async function AboutUsPage() {
   return (
     <div>
       <div className="mx-auto max-w-4xl px-4 py-16 lg:px-8">
-        <p className="text-center font-semibold uppercase tracking-wide text-gold">About Us</p>
+        <p className="text-center font-semibold uppercase tracking-wide text-secondary">About Us</p>
         <h1 className="mt-2 text-center font-heading text-3xl font-bold text-primary-dark">
           Our Mission Is To Make Quran Learning Accessible To All
         </h1>

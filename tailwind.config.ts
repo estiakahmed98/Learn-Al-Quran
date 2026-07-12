@@ -9,15 +9,19 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#0F6B4C",
-          light: "#14895F",
-          dark: "#0A4F38"
+          DEFAULT: "#28504F",
+          light: "#5F9A6B",
+          dark: "#1C3A39"
+        },
+        secondary: {
+          DEFAULT: "#5F9A6B",
+          light: "#7DB287"
         },
         gold: {
-          DEFAULT: "#C9A227",
-          light: "#E0BE4B"
+          DEFAULT: "#E9C99B",
+          light: "#F2DEBD"
         },
-        cream: "#FBF8F1"
+        cream: "#FAFAFA"
       },
       fontFamily: {
         heading: ["var(--font-heading)", "sans-serif"],

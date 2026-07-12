@@ -57,7 +57,7 @@ export default async function BlogDetailPage({ params }: Props) {
     publisher: {
       "@type": "Organization",
       name: "Learn Al Quran Online BD",
-      logo: { "@type": "ImageObject", url: `${siteUrl}/images/logo.png` }
+      logo: { "@type": "ImageObject", url: `${siteUrl}/Learn_Al_Quran_Logo.png` }
     }
   };
 

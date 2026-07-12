@@ -20,7 +20,7 @@ export default async function CoursesPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-semibold uppercase tracking-wide text-gold">Our Courses</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Our Courses</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
           Quran, Tajweed &amp; Islamic Learning Courses
         </h1>
@@ -51,7 +51,7 @@ export default async function CoursesPage() {
               </Link>
               <Link
                 href={`/free-trial-class?course=${course.slug}`}
-                className="flex-1 rounded-full bg-gold py-2 text-center text-sm font-semibold text-white hover:bg-gold-light"
+                className="flex-1 rounded-full bg-gold py-2 text-center text-sm font-semibold text-primary-dark hover:bg-gold-light"
               >
                 Enroll Now
               </Link>

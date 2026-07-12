@@ -18,7 +18,7 @@ export default async function BooksPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-semibold uppercase tracking-wide text-gold">Books</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Books</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
           Recommended Islamic &amp; Quran Learning Books
         </h1>
@@ -46,7 +46,7 @@ export default async function BooksPage() {
                 />
               )}
               <h3 className="mt-3 font-heading font-bold text-primary-dark">{book.title}</h3>
-              {book.subtitle && <p className="text-sm text-gold">{book.subtitle}</p>}
+              {book.subtitle && <p className="text-sm text-secondary">{book.subtitle}</p>}
               {book.description && (
                 <p className="mt-2 text-sm text-gray-600 line-clamp-3">{book.description}</p>
               )}

@@ -28,7 +28,7 @@ export default function GoogleMapSection({
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
       <div className="text-center">
-        <p className="font-semibold uppercase tracking-wide text-gold">Find Us</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Find Us</p>
         <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
           Our Location
         </h2>

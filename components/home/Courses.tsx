@@ -14,7 +14,7 @@ export default function Courses({ courses }: { courses: Course[] }) {
   return (
     <section id="courses" className="mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
       <h2 className="flex items-center gap-2 font-heading text-lg font-bold uppercase tracking-wide text-primary-dark sm:text-xl">
-        Our Master Courses <span className="text-gold">⟶</span>
+        Our Master Courses <span className="text-secondary">⟶</span>
       </h2>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -41,7 +41,7 @@ export default function Courses({ courses }: { courses: Course[] }) {
               </Link>
               <Link
                 href={`/free-trial-class?course=${course.slug}`}
-                className="rounded-lg bg-gold py-2 text-xs font-semibold text-white transition hover:bg-gold-light"
+                className="rounded-lg bg-gold py-2 text-xs font-semibold text-primary-dark transition hover:bg-gold-light"
               >
                 Enroll Now
               </Link>

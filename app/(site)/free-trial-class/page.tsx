@@ -25,7 +25,7 @@ export default async function FreeTrialClassPage({ searchParams }: Props) {
   return (
     <div>
       <div className="mx-auto max-w-3xl px-4 pt-16 text-center lg:px-8">
-        <p className="font-semibold uppercase tracking-wide text-gold">Free Trial Class</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">Free Trial Class</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
           Book Your Free Trial Class Today
         </h1>
