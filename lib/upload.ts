@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ALLOWED_FOLDERS = new Set(["blogImages", "blogAds"]);
+const ALLOWED_FOLDERS = new Set(["blogImages", "blogAds", "content", "courses"]);
 const EXTENSIONS: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",

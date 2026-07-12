@@ -9,8 +9,10 @@ export interface CourseRow {
   id: string;
   title: string;
   slug: string;
+  description: string;
   duration: string | null;
   fee: number;
+  thumbnail: string | null;
   isActive: boolean;
   isFeatured: boolean;
   sortOrder: number;
@@ -26,38 +28,6 @@ export default function CoursesTable({
   const [courses, setCourses] = useState(initialCourses);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-
-  async function toggleActive(course: CourseRow) {
-    setSavingId(course.id);
-    const res = await fetch(`/api/admin/courses/${course.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !course.isActive }),
-    });
-    if (res.ok) {
-      const updated = await res.json();
-      setCourses((prev) =>
-        prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)),
-      );
-    }
-    setSavingId(null);
-  }
-
-  async function updateFee(course: CourseRow, fee: number) {
-    setSavingId(course.id);
-    const res = await fetch(`/api/admin/courses/${course.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fee }),
-    });
-    if (res.ok) {
-      const updated = await res.json();
-      setCourses((prev) =>
-        prev.map((c) => (c.id === course.id ? { ...c, ...updated } : c)),
-      );
-    }
-    setSavingId(null);
-  }
 
   async function remove(course: CourseRow) {
     if (
@@ -98,93 +68,97 @@ export default function CoursesTable({
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-cream text-gray-600">
-            <tr>
-              <th className="px-4 py-3">Title</th>
-              <th className="px-4 py-3">Duration</th>
-              <th className="px-4 py-3">Fee (৳)</th>
-              <th className="px-4 py-3">Students</th>
-              <th className="px-4 py-3">Active</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course) => (
-              <tr key={course.id} className="border-t border-gray-100">
-                <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/courses/${course.id}`}
-                    className="font-medium text-gray-800 hover:text-primary hover:underline"
-                  >
-                    {course.title}
-                  </Link>
-                  {course.isFeatured && (
-                    <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
-                      Featured
-                    </span>
-                  )}
-                  <p className="text-xs text-gray-400">/{course.slug}</p>
-                </td>
-                <td className="px-4 py-3 text-gray-500">{course.duration}</td>
-                <td className="px-4 py-3">
-                  <input
-                    type="number"
-                    defaultValue={course.fee}
-                    onBlur={(e) => updateFee(course, Number(e.target.value))}
-                    className="w-20 rounded border border-gray-300 px-2 py-1"
+      {courses.length > 0 ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {courses.map((course) => (
+            <div
+              key={course.id}
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+            >
+              <div className="relative h-36 w-full shrink-0 bg-cream">
+                {course.thumbnail ? (
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="h-full w-full object-cover"
                   />
-                </td>
-                <td className="px-4 py-3">
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-gold">
+                    <svg
+                      className="h-10 w-10"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2m0-1h.01"
+                      />
+                    </svg>
+                  </div>
+                )}
+                {course.isFeatured && (
+                  <span className="absolute left-2 top-2 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                    Featured
+                  </span>
+                )}
+                <span
+                  className={`absolute right-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    course.isActive
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {course.isActive ? "Active" : "Hidden"}
+                </span>
+              </div>
+
+              <div className="flex flex-1 flex-col p-4">
+                <h3 className="font-medium text-gray-800">{course.title}</h3>
+                <p className="mt-0.5 text-xs text-gray-400">/{course.slug}</p>
+                <p className="mt-2 line-clamp-2 text-xs text-gray-500">
+                  {course.description}
+                </p>
+
+                <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                  <span>{course.duration || "—"}</span>
+                  <span className="font-semibold text-gray-700">
+                    ৳{course.fee}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  {course._count.enrollments} student
+                  {course._count.enrollments === 1 ? "" : "s"}
+                </p>
+
+                <div className="mt-4 flex items-center gap-2 pt-2">
                   <Link
                     href={`/admin/courses/${course.id}`}
-                    className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+                    className="flex-1 rounded-lg bg-primary px-3 py-2 text-center text-xs font-semibold text-white hover:opacity-90"
                   >
-                    {course._count.enrollments} student
-                    {course._count.enrollments === 1 ? "" : "s"}
+                    View details
                   </Link>
-                </td>
-                <td className="px-4 py-3">
                   <button
-                    onClick={() => toggleActive(course)}
+                    onClick={() => remove(course)}
                     disabled={savingId === course.id}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      course.isActive
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
+                    className="flex-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-50 disabled:opacity-50"
                   >
-                    {course.isActive ? "Active" : "Hidden"}
+                    Delete
                   </button>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/admin/courses/${course.id}`}
-                      className="text-xs font-semibold text-primary hover:underline"
-                    >
-                      Manage
-                    </Link>
-                    <button
-                      onClick={() => remove(course)}
-                      disabled={savingId === course.id}
-                      className="text-xs font-semibold text-red-500 hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {courses.length === 0 && (
-          <p className="p-6 text-center text-sm text-gray-400">
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center">
+          <p className="text-sm text-gray-400">
             No courses yet. Click &quot;Add New Course&quot; to create one.
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {showAddModal && (
         <div

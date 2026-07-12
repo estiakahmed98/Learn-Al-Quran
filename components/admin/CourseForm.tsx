@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Upload } from "lucide-react";
 
 export interface CourseFormValues {
   title: string;
@@ -58,10 +59,45 @@ export default function CourseForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
 
   function set<K extends keyof CourseFormValues>(key: K, value: CourseFormValues[K]) {
     setValues((prev) => ({ ...prev, [key]: value }));
     setSaved(false);
+  }
+
+  async function uploadFile(
+    e: ChangeEvent<HTMLInputElement>,
+    field: "thumbnail" | "bannerImage",
+    setUploading: (v: boolean) => void,
+  ) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const fd = new FormData();
+      fd.append("file", file);
+
+      const res = await fetch("/api/upload/courses", {
+        method: "POST",
+        body: fd,
+      });
+
+      if (!res.ok) throw new Error("Image upload failed");
+
+      const data = await res.json();
+      if (!data.url) throw new Error("Invalid upload response: url missing");
+
+      set(field, data.url);
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setError(err instanceof Error ? err.message : "Error uploading image");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -173,22 +209,80 @@ export default function CourseForm({
         </div>
 
         <div>
-          <label className={labelClass}>Thumbnail URL</label>
+          <label className={labelClass}>Thumbnail</label>
+          {values.thumbnail && (
+            <div className="mb-2 flex items-center gap-3">
+              <img
+                src={values.thumbnail}
+                alt="Thumbnail preview"
+                className="h-16 w-16 rounded-md border object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => set("thumbnail", "")}
+                className="text-xs text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+          <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => uploadFile(e, "thumbnail", setUploadingThumbnail)}
+              disabled={uploadingThumbnail}
+            />
+            <span className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+              <Upload className="h-4 w-4" />
+              {uploadingThumbnail ? "Uploading..." : "Upload thumbnail"}
+            </span>
+          </label>
           <input
             value={values.thumbnail}
             onChange={(e) => set("thumbnail", e.target.value)}
             className={inputClass}
-            placeholder="https://..."
+            placeholder="Or paste image URL"
           />
         </div>
 
         <div>
-          <label className={labelClass}>Banner Image URL</label>
+          <label className={labelClass}>Banner Image</label>
+          {values.bannerImage && (
+            <div className="mb-2 flex items-center gap-3">
+              <img
+                src={values.bannerImage}
+                alt="Banner preview"
+                className="h-16 w-16 rounded-md border object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => set("bannerImage", "")}
+                className="text-xs text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+          <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => uploadFile(e, "bannerImage", setUploadingBanner)}
+              disabled={uploadingBanner}
+            />
+            <span className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+              <Upload className="h-4 w-4" />
+              {uploadingBanner ? "Uploading..." : "Upload banner"}
+            </span>
+          </label>
           <input
             value={values.bannerImage}
             onChange={(e) => set("bannerImage", e.target.value)}
             className={inputClass}
-            placeholder="https://..."
+            placeholder="Or paste image URL"
           />
         </div>
 
@@ -247,7 +341,7 @@ export default function CourseForm({
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || uploadingThumbnail || uploadingBanner}
           className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
           {saving ? "Saving..." : courseId ? "Save Changes" : "Create Course"}
