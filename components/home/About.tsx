@@ -12,10 +12,22 @@ export default function About() {
   return (
     <section id="about" className="relative overflow-hidden bg-primary/5">
       {/* decorative circle behind the image, like the calligraphy medallion */}
-      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
+      <div className="pointer-events-none absolute -left-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 lg:grid-cols-[1.3fr_1fr] lg:px-8 lg:py-20">
-        {/* Left: copy */}
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 lg:grid-cols-[1fr_1.3fr] lg:px-8 lg:py-20">
+        {/* Left: illustration */}
+        <div className="relative order-first mx-auto w-full max-w-sm">
+          <div className="overflow-hidden rounded-3xl border border-primary/10 shadow-lg">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/about-madrasa.jpg"
+              alt={t("imageAlt")}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Right: copy */}
         <div>
           <h2 className="font-heading text-2xl font-bold text-primary lg:text-3xl">
             <span className="text-gold" aria-hidden>❝</span> {t("title")} <span className="text-gold" aria-hidden>❞</span>
@@ -33,18 +45,6 @@ export default function About() {
           >
             {t("learnMore")}
           </Link>
-        </div>
-
-        {/* Right: illustration */}
-        <div className="relative mx-auto w-full max-w-sm">
-          <div className="overflow-hidden rounded-3xl border border-primary/10 shadow-lg">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/about-madrasa.jpg"
-              alt={t("imageAlt")}
-              className="h-full w-full object-cover"
-            />
-          </div>
         </div>
       </div>
     </section>

@@ -4,17 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
+import { useCourses } from "@/hooks/useCourses";
+import { pickText } from "@/lib/course-content";
 
-const courseLinks = [
-  { title: "Smart Maktab Learning", slug: "smart-maktab-learning", icon: "🕌" },
-  { title: "Tajweed Master Course", slug: "tajweed-master-course", icon: "🎙" },
-  { title: "Complete Nazera Quran", slug: "complete-nazera-quran", icon: "📗" },
-  { title: "Complete Hifzul Quran", slug: "complete-hifzul-quran", icon: "📘" },
-  { title: "Adult Quran Learning", slug: "adult-quran-learning", icon: "🧕" },
-  { title: "English Speaking", slug: "english-speaking", icon: "🗣" },
-];
+const fallbackIcons: Record<string, string> = {
+  "smart-maktab-learning": "🕌",
+  "tajweed-master-course": "🎙",
+  "complete-nazera-quran": "📗",
+  "complete-hifzul-quran": "📘",
+  "adult-quran-learning": "🧕",
+  "english-speaking": "🗣"
+};
 
 function UserAvatar({
   name,
@@ -53,6 +55,9 @@ export default function Header({ phone }: { phone: string }) {
   const user = session?.user;
   const t = useTranslations("header");
   const pathname = usePathname();
+  const locale = useLocale();
+  const { courses } = useCourses();
+  const courseLinks = courses.slice(0, 6);
 
   const isActive = (href: string) => pathname === href;
 
@@ -128,11 +133,29 @@ export default function Header({ phone }: { phone: string }) {
                       href={`/courses/${c.slug}`}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-cream hover:text-primary-dark"
                     >
-                      <span className="text-base">{c.icon}</span>
-                      {c.title}
+                      {c.thumbnail ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={c.thumbnail}
+                          alt=""
+                          className="h-8 w-8 shrink-0 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-base">
+                          {fallbackIcons[c.slug] || "📖"}
+                        </span>
+                      )}
+                      <span className="truncate">{pickText(locale, c.title, c.titleBn)}</span>
                     </Link>
                   ))}
                 </div>
+                <Link
+                  href="/courses"
+                  onClick={() => setCoursesOpen(false)}
+                  className="block border-t border-gold/10 bg-cream px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-primary transition-colors hover:text-primary-dark"
+                >
+                  {t("seeAllCourses")}
+                </Link>
               </div>
             </div>
           </div>
@@ -287,9 +310,26 @@ export default function Header({ phone }: { phone: string }) {
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2 py-2 text-sm text-white/70 hover:text-gold"
                 >
-                  <span>{c.icon}</span> {c.title}
+                  {c.thumbnail ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={c.thumbnail}
+                      alt=""
+                      className="h-6 w-6 shrink-0 rounded-md object-cover"
+                    />
+                  ) : (
+                    <span>{fallbackIcons[c.slug] || "📖"}</span>
+                  )}
+                  <span className="truncate">{pickText(locale, c.title, c.titleBn)}</span>
                 </Link>
               ))}
+              <Link
+                href="/courses"
+                onClick={() => setOpen(false)}
+                className="block py-2 text-sm font-semibold text-gold"
+              >
+                {t("seeAllCourses")}
+              </Link>
             </div>
           </div>
 
