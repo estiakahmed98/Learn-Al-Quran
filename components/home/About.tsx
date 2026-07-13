@@ -12,7 +12,7 @@ export default function About() {
   return (
     <section id="about" className="relative overflow-hidden bg-primary/5">
       {/* decorative circle behind the image, like the calligraphy medallion */}
-      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary/10 lg:block" />
+      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 lg:grid-cols-[1.3fr_1fr] lg:px-8 lg:py-20">
         {/* Left: copy */}

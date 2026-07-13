@@ -54,7 +54,7 @@ export default async function HomePage() {
     <>
       <Hero phone={settings.phone || ""} />
       <About />
-      <Courses courses={courses} />
+      <Courses />
 
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-12 lg:grid-cols-2 lg:px-8 lg:py-16">
         <Teachers teachers={teachers} embedded />

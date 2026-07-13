@@ -76,13 +76,15 @@ export default function Hero({ phone }: { phone: string }) {
 
           {/* Rating card */}
           <div className="absolute -top-4 right-2 rounded-xl border border-white/10 bg-primary/90 p-2.5 shadow-xl backdrop-blur sm:-right-4 sm:-top-5 sm:rounded-2xl sm:p-4">
-            <p className="text-lg font-bold text-white sm:text-2xl">5.0</p>
-            <p
-              className="text-xs tracking-wider text-gold sm:text-sm"
-              aria-label="5 out of 5 stars"
-            >
-              ★★★★★
-            </p>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <p className="text-lg font-bold text-white sm:text-2xl">5.0</p>
+              <p
+                className="text-xs tracking-wider text-gold sm:text-sm"
+                aria-label="5 out of 5 stars"
+              >
+                ★★★★★
+              </p>
+            </div>
             <p className="mt-1 max-w-[7rem] text-[10px] text-white/70 sm:max-w-[9rem] sm:text-xs">
               {t("trustedBy")}
             </p>

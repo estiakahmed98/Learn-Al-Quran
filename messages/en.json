@@ -25,7 +25,12 @@
     "title": "Our Courses",
     "intro": "Welcome to our courses section — your trusted destination for learning and understanding the divine teachings of Islam. We offer a wide range of carefully designed Islamic courses for children, adults, and females, ensuring everyone can deepen their connection with the Quran and Sunnah.",
     "details": "Details",
-    "enrollNow": "Enroll Now"
+    "enrollNow": "Enroll Now",
+    "viewAll": "View All Courses",
+    "breadcrumbHome": "Home",
+    "pageTitle": "Quran, Tajweed & Islamic Learning Courses",
+    "pageSubtitle": "Choose the course that fits your learning goals — from beginner Maktab classes to complete Hifzul Quran memorization, taught by certified Huffaz and Qaris.",
+    "empty": "No courses available right now. Please check back soon."
   },
   "courseDetail": {
     "home": "Home",

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import type { Course } from "@prisma/client";
 import { pickText } from "@/lib/course-content";
+import { useCourses } from "@/hooks/useCourses";
 
 const courseIcons: Record<string, string> = {
   "smart-maktab-learning": "📖",
@@ -14,13 +14,16 @@ const courseIcons: Record<string, string> = {
   "english-speaking": "💬"
 };
 
-export default function Courses({ courses }: { courses: Course[] }) {
+export default function Courses() {
   const t = useTranslations("courses");
   const locale = useLocale();
+  const { courses, isLoading } = useCourses();
+
+  const visibleCourses = courses.slice(0, 6);
+  const hasMore = courses.length > 6;
 
   return (
-    <section id="courses" className="relative overflow-hidden bg-cream">
-      <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-[0.03]" />
+    <section id="courses" className="relative overflow-hidden bg-primary/5">
 
       <div className="relative mx-auto max-w-7xl px-4 py-14 lg:px-8 lg:py-20">
         {/* Centered heading like the reference */}
@@ -34,8 +37,17 @@ export default function Courses({ courses }: { courses: Course[] }) {
           </p>
         </div>
 
+        {isLoading ? (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Loading courses">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="h-96 animate-pulse rounded-2xl bg-white" />
+            ))}
+          </div>
+        ) : visibleCourses.length === 0 ? (
+          <p className="mt-12 text-center text-gray-500">{t("empty")}</p>
+        ) : (
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
+          {visibleCourses.map((course) => (
             <div
               key={course.id}
               className="flex flex-col overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
@@ -83,6 +95,18 @@ export default function Courses({ courses }: { courses: Course[] }) {
             </div>
           ))}
         </div>
+        )}
+
+        {hasMore && (
+          <div className="mt-12 text-center">
+            <Link
+              href="/courses"
+              className="inline-block rounded-lg bg-primary px-10 py-3 font-semibold text-white shadow transition hover:bg-primary-dark"
+            >
+              {t("viewAll")}
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
