@@ -5,6 +5,12 @@ import CourseForm from "@/components/admin/CourseForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
 import ClassScheduleManager from "@/components/admin/ClassScheduleManager";
 import NotesManager from "@/components/admin/NotesManager";
+import {
+  getCurriculumSections,
+  getFeatures,
+  getLearnPoints,
+  getWhyCards
+} from "@/lib/course-content";
 
 export const dynamic = "force-dynamic";
 
@@ -82,9 +88,30 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
           courseId={course.id}
           initial={{
             title: course.title,
+            titleBn: course.titleBn ?? "",
             slug: course.slug,
             description: course.description,
+            descriptionBn: course.descriptionBn ?? "",
+            category: course.category ?? "",
+            categoryBn: course.categoryBn ?? "",
+            courseType: course.courseType ?? "",
+            courseTypeBn: course.courseTypeBn ?? "",
+            classType: course.classType ?? "",
+            classTypeBn: course.classTypeBn ?? "",
+            level: course.level ?? "",
+            levelBn: course.levelBn ?? "",
+            instructorName: course.instructorName ?? "",
+            totalLessons: course.totalLessons?.toString() ?? "",
+            totalHours: course.totalHours?.toString() ?? "",
+            startDate: course.startDate ? course.startDate.toISOString().slice(0, 10) : "",
+            enrollDeadline: course.enrollDeadline
+              ? course.enrollDeadline.toISOString().slice(0, 10)
+              : "",
             fee: course.fee,
+            originalFee: course.originalFee?.toString() ?? "",
+            couponCode: course.couponCode ?? "",
+            couponPercent: course.couponPercent?.toString() ?? "",
+            certificate: course.certificate,
             duration: course.duration ?? "",
             thumbnail: course.thumbnail ?? "",
             bannerImage: course.bannerImage ?? "",
@@ -92,7 +119,11 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
             isActive: course.isActive,
             isFeatured: course.isFeatured,
             metaTitle: course.metaTitle ?? "",
-            metaDescription: course.metaDescription ?? ""
+            metaDescription: course.metaDescription ?? "",
+            learnPoints: getLearnPoints(course),
+            features: getFeatures(course),
+            whyCards: getWhyCards(course),
+            curriculumSections: getCurriculumSections(course)
           }}
         />
       </div>

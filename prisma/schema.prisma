@@ -73,9 +73,41 @@ model Course {
   thumbnail   String?
   bannerImage String?
 
-  fee        Int     @default(1500)
+  // Bangla variants
+  titleBn       String?
+  descriptionBn String? @db.Text
+
+  // Badges / labels (EN + BN)
+  category     String?
+  categoryBn   String?
+  courseType   String? // e.g. "Short Course"
+  courseTypeBn String?
+  classType    String? // e.g. "Live"
+  classTypeBn  String?
+  level        String? // e.g. "Beginner"
+  levelBn      String?
+
+  instructorName String?
+
+  totalLessons Int?
+  totalHours   Int?
+
+  startDate      DateTime?
+  enrollDeadline DateTime?
+
+  fee           Int     @default(1500)
+  originalFee   Int? // strikethrough price; discount % is computed
+  couponCode    String?
+  couponPercent Int?
+  certificate   Boolean @default(true)
+
   duration   String?
-  curriculum Json?
+  curriculum Json? // { sections: [{ titleEn, titleBn, lessons: [{ titleEn, titleBn, duration, durationBn, isLive }] }] }
+
+  learnPoints Json? // [{ en, bn }]
+  features    Json? // [{ en, bn }] — "What you get"
+  whyCards    Json? // [{ titleEn, titleBn, bodyEn, bodyBn }]
+
   isActive   Boolean @default(true)
   isFeatured Boolean @default(false)
   sortOrder  Int     @default(0)
