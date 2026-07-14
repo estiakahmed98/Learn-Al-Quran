@@ -16,12 +16,12 @@ interface LeadFormProps {
 }
 
 const paymentMethods = [
-  { value: "BKASH", label: "বিকাশ" },
-  { value: "NAGAD", label: "নগদ" },
-  { value: "ROCKET", label: "রকেট" },
-  { value: "WESTERN_UNION", label: "Western Union" },
-  { value: "BANK_TRANSFER", label: "Bank Transfer" }
-];
+  "BKASH",
+  "NAGAD",
+  "ROCKET",
+  "WESTERN_UNION",
+  "BANK_TRANSFER"
+] as const;
 
 export default function LeadForm({
   courses,
@@ -29,12 +29,17 @@ export default function LeadForm({
   bkashNumber,
   nagadNumber,
   bankAccount,
-  embedded = false
+  embedded = false,
 }: LeadFormProps) {
   const t = useTranslations("leadForm");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [account, setAccount] = useState<{ email: string; password: string } | null>(null);
+  const [account, setAccount] = useState<{
+    email: string;
+    password: string;
+  } | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,20 +56,20 @@ export default function LeadForm({
       email: data.get("email") || undefined,
       paymentMethod: data.get("paymentMethod"),
       transactionId: data.get("transactionId") || undefined,
-      contactNumber: data.get("contactNumber") || phone
+      contactNumber: data.get("contactNumber") || phone,
     };
 
     try {
       const res = await fetch("/api/enroll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const body = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(body.message || "Something went wrong. Please try again.");
+        throw new Error(t("genericError"));
       }
 
       setAccount(body.account || null);
@@ -73,7 +78,7 @@ export default function LeadForm({
       form.reset();
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Something went wrong.");
+      setErrorMsg(err instanceof Error ? err.message : t("genericError"));
     }
   }
 
@@ -81,38 +86,95 @@ export default function LeadForm({
     return (
       <div
         id="admission"
-        className="relative overflow-hidden rounded-2xl bg-primary-dark p-6 shadow-lg sm:p-8"
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark p-6 shadow-xl sm:p-8"
       >
-        <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />
+        {/* Islamic Pattern Background */}
+        <div className="absolute inset-0 opacity-[0.06]">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+              radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.2) 0%, transparent 40%),
+              radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.2) 0%, transparent 40%),
+              repeating-linear-gradient(45deg, 
+                transparent 0px, 
+                transparent 20px, 
+                rgba(212, 175, 55, 0.1) 20px, 
+                rgba(212, 175, 55, 0.1) 21px
+              ),
+              repeating-linear-gradient(-45deg, 
+                transparent 0px, 
+                transparent 20px, 
+                rgba(212, 175, 55, 0.1) 20px, 
+                rgba(212, 175, 55, 0.1) 21px
+              )
+            `,
+            }}
+          />
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full border-[12px] border-gold/10" />
+        <div className="absolute -bottom-12 -left-12 h-24 w-24 rounded-full border-[8px] border-gold/10" />
+        <div className="absolute top-1/2 right-0 h-px w-20 bg-gradient-to-l from-gold/20 to-transparent" />
+
         <div className="relative">
-          <p className="text-xs font-bold uppercase tracking-widest text-gold-light">
-            {t("admissionNow")}
-          </p>
-          <h2 className="mt-1 font-heading text-2xl font-bold text-white">
+          {/* Header with decorative elements */}
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <span className="h-1 w-1 rounded-full bg-gold/60" />
+              <span className="h-1 w-3 rounded-full bg-gold" />
+              <span className="h-1 w-1 rounded-full bg-gold/60" />
+            </div>
+            <p className="text-xs font-bold uppercase tracking-widest text-gold-light">
+              {t("admissionNow")}
+            </p>
+          </div>
+
+          <h2 className="mt-1 font-heading text-2xl font-bold text-white sm:text-3xl">
             {t("bookSeat")}
           </h2>
 
+          <div className="mt-1 h-px w-16 bg-gradient-to-r from-gold/60 to-transparent" />
+
           {status === "success" ? (
-            <div className="mt-6 rounded-xl bg-white/10 p-6 text-center backdrop-blur">
-              <p className="text-2xl">✅</p>
-              <p className="mt-2 font-semibold text-white">{t("successTitle")}</p>
-              <p className="mt-1 text-sm text-cream/80">
-                {t("successBody")}
+            <div className="mt-6 rounded-xl bg-white/10 p-6 text-center backdrop-blur-sm border border-white/10">
+              <div className="flex justify-center mb-3">
+                <span className="text-4xl">✅</span>
+              </div>
+              <p className="font-semibold text-white text-lg">
+                {t("successTitle")}
               </p>
+              <p className="mt-1 text-sm text-cream/80">{t("successBody")}</p>
               {account && (
-                <div className="mt-4 rounded-lg bg-white/10 p-4 text-left text-sm text-cream">
-                  <p className="font-semibold text-gold-light">
+                <div className="mt-4 rounded-lg bg-white/10 p-4 text-left text-sm text-cream border border-white/5">
+                  <p className="font-semibold text-gold-light flex items-center gap-2">
+                    <span className="text-lg">🎓</span>
                     {t("accountCreated")}
                   </p>
-                  <p className="mt-2">
-                    {t("emailLabel")}: <span className="font-semibold text-white">{account.email}</span>
-                  </p>
-                  <p>
-                    {t("passwordLabel")}: <span className="font-semibold text-white">{account.password}</span>
-                  </p>
-                  <p className="mt-2 text-xs text-cream/70">
+                  <div className="mt-3 space-y-1.5">
+                    <p className="flex justify-between">
+                      <span className="text-cream/70">{t("emailLabel")}:</span>
+                      <span className="font-semibold text-white">
+                        {account.email}
+                      </span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-cream/70">
+                        {t("passwordLabel")}:
+                      </span>
+                      <span className="font-semibold text-white">
+                        {account.password}
+                      </span>
+                    </p>
+                  </div>
+                  <p className="mt-3 text-xs text-cream/70 flex items-center gap-1">
+                    <span>ℹ️</span>
                     {t("savePassword")}{" "}
-                    <Link href="/auth/login" className="font-semibold text-gold-light underline">
+                    <Link
+                      href="/auth/login"
+                      className="font-semibold text-gold-light underline hover:text-gold transition-colors"
+                    >
                       {t("loginNow")}
                     </Link>
                   </p>
@@ -127,13 +189,13 @@ export default function LeadForm({
                   type="text"
                   required
                   placeholder={t("yourName")}
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 />
                 <input
                   name="email"
                   type="email"
                   placeholder={t("yourEmail")}
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
@@ -142,13 +204,17 @@ export default function LeadForm({
                   name="courseSlug"
                   required
                   defaultValue={defaultCourseSlug || ""}
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="text-gray-800">
                     {t("selectCourse")}
                   </option>
                   {courses.map((c) => (
-                    <option key={c.slug} value={c.slug}>
+                    <option
+                      key={c.slug}
+                      value={c.slug}
+                      className="text-gray-800"
+                    >
                       {c.title}
                     </option>
                   ))}
@@ -158,7 +224,7 @@ export default function LeadForm({
                   type="tel"
                   required
                   placeholder={t("yourPhone")}
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
@@ -166,11 +232,15 @@ export default function LeadForm({
                 <select
                   name="paymentMethod"
                   required
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 >
-                  {paymentMethods.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
+                  {paymentMethods.map((method) => (
+                    <option
+                      key={method}
+                      value={method}
+                      className="text-gray-800"
+                    >
+                      {t(`paymentMethods.${method}`)}
                     </option>
                   ))}
                 </select>
@@ -178,27 +248,66 @@ export default function LeadForm({
                   name="transactionId"
                   type="text"
                   placeholder={t("transactionIdOptional")}
-                  className="w-full rounded-lg border border-white/20 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-gold focus:outline-none"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
-              <p className="text-xs text-cream/80">
-                📱 {t("bkashNumber")}: <span className="font-semibold text-white">{bkashNumber}</span> ·{" "}
-                {t("nagadNumber")}:{" "}
-                <span className="font-semibold text-white">{nagadNumber}</span> · 🏦{" "}
-                <span className="font-semibold text-white">{bankAccount}</span>
-              </p>
+              {/* Payment Info */}
+              <div className="rounded-lg bg-white/5 p-3 backdrop-blur-sm border border-white/10">
+                <p className="text-xs text-cream/80 space-y-1">
+                  <span className="flex items-center gap-2">
+                    <span>📱</span>
+                    <span>{t("bkashNumber")}:</span>
+                    <span className="font-semibold text-white">
+                      {bkashNumber}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span>📱</span>
+                    <span>{t("nagadNumber")}:</span>
+                    <span className="font-semibold text-white">
+                      {nagadNumber}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span>🏦</span>
+                    <span>{t("bankAccount")}:</span>
+                    <span className="font-semibold text-white">
+                      {bankAccount}
+                    </span>
+                  </span>
+                </p>
+              </div>
 
               {status === "error" && (
-                <p className="rounded-lg bg-red-100 px-4 py-2 text-sm text-red-700">{errorMsg}</p>
+                <p className="rounded-lg bg-red-500/20 backdrop-blur-sm px-4 py-2 text-sm text-red-200 border border-red-500/30">
+                  {errorMsg}
+                </p>
               )}
 
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full rounded-lg bg-gold py-3 font-semibold text-primary-dark shadow transition hover:bg-gold-light disabled:opacity-60"
+                className="group w-full rounded-lg bg-gradient-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
-                {status === "loading" ? t("submitting") : `${t("submitNow")} ✈`}
+                <span className="flex items-center justify-center gap-2">
+                  {status === "loading" ? t("submitting") : t("submitNow")}
+                  {status !== "loading" && (
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
+                </span>
               </button>
             </form>
           )}
@@ -208,49 +317,137 @@ export default function LeadForm({
   }
 
   return (
-    <section id="admission" className="bg-cream py-16">
-      <div className="mx-auto max-w-3xl px-4 lg:px-8">
+    <section
+      id="admission"
+      className="relative overflow-hidden bg-gradient-to-b from-cream to-white py-12 sm:py-16"
+    >
+      {/* Islamic Pattern Background */}
+      <div className="absolute inset-0 opacity-[0.04]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+            radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
+            repeating-linear-gradient(45deg, 
+              transparent 0px, 
+              transparent 30px, 
+              rgba(212, 175, 55, 0.06) 30px, 
+              rgba(212, 175, 55, 0.06) 31px
+            ),
+            repeating-linear-gradient(-45deg, 
+              transparent 0px, 
+              transparent 30px, 
+              rgba(212, 175, 55, 0.06) 30px, 
+              rgba(212, 175, 55, 0.06) 31px
+            )
+          `,
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <p className="font-semibold uppercase tracking-wide text-secondary">{t("admissionForm")}</p>
-          <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
+          {/* Decorative top */}
+          <div className="flex justify-center gap-2 mb-3">
+            <span className="text-gold/30 text-xl">✦</span>
+            <span className="text-gold/50 text-xl">✦</span>
+            <span className="text-gold/30 text-xl">✦</span>
+          </div>
+          <p className="font-semibold uppercase tracking-wider text-secondary text-xs sm:text-sm">
+            {t("admissionForm")}
+          </p>
+          <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark sm:text-3xl lg:text-4xl">
             {t("admissionNow")}
           </h2>
+          <div className="mx-auto mt-3 flex items-center justify-center gap-3">
+            <span className="h-px w-8 bg-gold/40" />
+            <span className="h-1.5 w-3 rounded-full bg-gold" />
+            <span className="h-px w-8 bg-gold/40" />
+          </div>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-gold/20 bg-white p-6 shadow-sm lg:p-8">
-          <div className="rounded-xl bg-primary/5 p-4 text-sm text-gray-700">
-            <p className="font-semibold text-primary-dark">{t("feeNotice")}</p>
-            <p className="mt-1">{t("feeInstruction")}</p>
-            <ul className="mt-3 space-y-1">
-              <li>📱 {t("bkashNumber")}: <span className="font-semibold">{bkashNumber}</span></li>
-              <li>📱 {t("nagadNumber")}: <span className="font-semibold">{nagadNumber}</span></li>
-              <li>🏦 {t("bankAccount")}: <span className="font-semibold">{bankAccount}</span></li>
-            </ul>
+        <div className="mt-8 rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg sm:p-8 lg:p-10">
+          {/* Decorative corner */}
+          <div className="absolute -top-1 -right-1 h-10 w-10 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-50" />
+          <div className="absolute -bottom-1 -left-1 h-10 w-10 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-50" />
+
+          {/* Payment Info */}
+          <div className="rounded-xl bg-gradient-to-br from-primary/5 to-gold/5 p-4 text-sm text-gray-700 border border-gold/10">
+            <p className="font-semibold text-primary-dark flex items-center gap-2">
+              <span className="text-gold">📌</span>
+              {t("feeNotice")}
+            </p>
+            <p className="mt-1 text-gray-600">{t("feeInstruction")}</p>
+            <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
+              <div className="flex items-center gap-2 bg-white/50 rounded-lg px-3 py-2">
+                <span>📱</span>
+                <span className="text-xs text-gray-600">
+                  {t("bkashNumber")}:
+                </span>
+                <span className="font-semibold text-primary-dark text-sm">
+                  {bkashNumber}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/50 rounded-lg px-3 py-2">
+                <span>📱</span>
+                <span className="text-xs text-gray-600">
+                  {t("nagadNumber")}:
+                </span>
+                <span className="font-semibold text-primary-dark text-sm">
+                  {nagadNumber}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/50 rounded-lg px-3 py-2 sm:col-span-2">
+                <span>🏦</span>
+                <span className="text-xs text-gray-600">
+                  {t("bankAccount")}:
+                </span>
+                <span className="font-semibold text-primary-dark text-sm">
+                  {bankAccount}
+                </span>
+              </div>
+            </div>
           </div>
 
           {status === "success" ? (
-            <div className="mt-6 rounded-xl bg-primary/10 p-6 text-center">
-              <p className="text-2xl">✅</p>
-              <p className="mt-2 font-semibold text-primary-dark">
-                আপনার আবেদন সফলভাবে জমা হয়েছে!
+            <div className="mt-6 rounded-xl bg-primary/10 p-6 text-center border border-gold/20">
+              <div className="flex justify-center mb-3">
+                <span className="text-5xl">✅</span>
+              </div>
+              <p className="mt-2 font-semibold text-primary-dark text-lg">
+                {t("successTitle")}
               </p>
-              <p className="mt-1 text-sm text-gray-600">
-                {t("successBody")}
-              </p>
+              <p className="mt-1 text-sm text-gray-600">{t("successBody")}</p>
               {account && (
-                <div className="mt-4 rounded-lg border border-gold/30 bg-white p-4 text-left text-sm text-gray-700">
-                  <p className="font-semibold text-primary-dark">
+                <div className="mt-4 rounded-lg border border-gold/20 bg-white p-4 text-left text-sm text-gray-700 shadow-sm">
+                  <p className="font-semibold text-primary-dark flex items-center gap-2">
+                    <span className="text-lg">🎓</span>
                     {t("accountCreated")}
                   </p>
-                  <p className="mt-2">
-                    {t("emailLabel")}: <span className="font-semibold">{account.email}</span>
-                  </p>
-                  <p>
-                    {t("passwordLabel")}: <span className="font-semibold">{account.password}</span>
-                  </p>
-                  <p className="mt-2 text-xs text-gray-500">
+                  <div className="mt-3 space-y-1.5">
+                    <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                      <span className="text-gray-500">{t("emailLabel")}:</span>
+                      <span className="font-semibold text-gray-800">
+                        {account.email}
+                      </span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="text-gray-500">
+                        {t("passwordLabel")}:
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        {account.password}
+                      </span>
+                    </p>
+                  </div>
+                  <p className="mt-3 text-xs text-gray-500 flex items-center gap-1">
+                    <span>ℹ️</span>
                     {t("savePassword")}{" "}
-                    <Link href="/auth/login" className="font-semibold text-primary underline">
+                    <Link
+                      href="/auth/login"
+                      className="font-semibold text-primary underline hover:text-primary-dark transition-colors"
+                    >
                       {t("loginNow")}
                     </Link>
                   </p>
@@ -260,12 +457,16 @@ export default function LeadForm({
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700">{t("selectCourse")}</label>
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <span className="text-gold">📚</span>
+                  {t("selectCourse")}
+                  <span className="text-red-500">*</span>
+                </label>
                 <select
                   name="courseSlug"
                   required
                   defaultValue={defaultCourseSlug || ""}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                 >
                   <option value="" disabled>
                     -- {t("chooseCourse")} --
@@ -278,84 +479,127 @@ export default function LeadForm({
                 </select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-700">{t("studentName")}</label>
-                <input
-                  name="studentName"
-                  type="text"
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                  placeholder={t("studentName")}
-                />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span className="text-gold">👤</span>
+                    {t("studentName")}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="studentName"
+                    type="text"
+                    required
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder={t("studentName")}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span className="text-gold">📱</span>
+                    {t("whatsappNumber")}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="whatsappNumber"
+                    type="tel"
+                    required
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="+8801XXXXXXXXX"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span className="text-gold">✉️</span>
+                    {t("emailOptional")}
+                  </label>
+                  <input
+                    name="email"
+                    type="email"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span className="text-gold">💳</span>
+                    {t("paymentPlan")}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="paymentMethod"
+                    required
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  >
+                    {paymentMethods.map((method) => (
+                      <option key={method} value={method}>
+                        {t(`paymentMethods.${method}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">{t("whatsappNumber")}</label>
-                <input
-                  name="whatsappNumber"
-                  type="tel"
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                  placeholder="+8801XXXXXXXXX"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">{t("emailOptional")}</label>
-                <input
-                  name="email"
-                  type="email"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">{t("paymentPlan")}</label>
-                <select
-                  name="paymentMethod"
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
-                >
-                  {paymentMethods.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">{t("transactionId")}</label>
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <span className="text-gold">🔢</span>
+                  {t("transactionId")}
+                </label>
                 <input
                   name="transactionId"
                   type="text"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder={t("transactionIdPlaceholder")}
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">{t("contactNumber")}</label>
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <span className="text-gold">📞</span>
+                  {t("contactNumber")}
+                  <span className="text-red-500">*</span>
+                </label>
                 <input
                   name="contactNumber"
                   type="tel"
                   required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder="+8801XXXXXXXXX"
                 />
               </div>
 
               {status === "error" && (
-                <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{errorMsg}</p>
+                <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 border border-red-200">
+                  {errorMsg}
+                </p>
               )}
 
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full rounded-full bg-primary py-3 font-semibold text-white transition hover:bg-primary-light disabled:opacity-60"
+                className="group w-full rounded-full bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
-                {status === "loading" ? t("submitting") : t("submitNow")}
+                <span className="flex items-center justify-center gap-2">
+                  {status === "loading" ? t("submitting") : t("submitNow")}
+                  {status !== "loading" && (
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  )}
+                </span>
               </button>
             </form>
           )}

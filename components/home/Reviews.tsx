@@ -1,4 +1,5 @@
 import type { Content } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
 
 function ReviewCard({ review, index }: { review: Content; index: number }) {
   const rating = (review.data as { rating?: number })?.rating || 5;
@@ -94,9 +95,10 @@ function ReviewCard({ review, index }: { review: Content; index: number }) {
   );
 }
 
-export default function Reviews({ reviews }: { reviews: Content[] }) {
+export default async function Reviews({ reviews }: { reviews: Content[] }) {
   if (!reviews.length) return null;
 
+  const t = await getTranslations("sitePages.reviews");
   const loop = reviews.length > 2 ? [...reviews, ...reviews] : reviews;
 
   return (
@@ -167,11 +169,11 @@ export default function Reviews({ reviews }: { reviews: Content[] }) {
           </div>
 
           <p className="font-semibold uppercase tracking-wider text-secondary text-xs sm:text-sm">
-            Testimonials
+            {t("eyebrow")}
           </p>
 
           <h2 className="mt-2 font-heading text-2xl font-bold text-primary-dark sm:text-3xl lg:text-4xl">
-            What Our Students Say
+            {t("title")}
           </h2>
 
           <div className="mx-auto mt-3 flex items-center justify-center gap-3">
@@ -181,7 +183,7 @@ export default function Reviews({ reviews }: { reviews: Content[] }) {
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-gray-600 sm:mt-5 sm:text-base">
-            Real stories from our students about their learning journey
+            {t("subtitle")}
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import LeadForm from "@/components/home/LeadForm";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-config";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Free Trial Class",
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default async function FreeTrialClassPage({ searchParams }: Props) {
+  const t = await getTranslations("sitePages.freeTrial");
   const [courses, settings] = await Promise.all([
     prisma.course.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }).catch(() => []),
     getSiteSettings()
@@ -25,13 +27,12 @@ export default async function FreeTrialClassPage({ searchParams }: Props) {
   return (
     <div>
       <div className="mx-auto max-w-3xl px-4 pt-16 text-center lg:px-8">
-        <p className="font-semibold uppercase tracking-wide text-secondary">Free Trial Class</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">{t("eyebrow")}</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
-          Book Your Free Trial Class Today
+          {t("title")}
         </h1>
         <p className="mt-4 text-gray-600">
-          Experience our teaching method risk-free. Fill out the form below and our team will
-          schedule your free trial class within 24 hours.
+          {t("subtitle")}
         </p>
       </div>
 

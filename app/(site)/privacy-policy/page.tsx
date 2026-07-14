@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getSiteSettings } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -11,12 +12,17 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function PrivacyPolicyPage() {
-  const settings = await getSiteSettings();
+  const [settings, t, locale] = await Promise.all([
+    getSiteSettings(),
+    getTranslations("sitePages.privacy"),
+    getLocale()
+  ]);
+  const date = new Intl.DateTimeFormat(locale === "bn" ? "bn-BD" : "en-GB").format(new Date());
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
-      <h1 className="font-heading text-3xl font-bold text-primary-dark">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-gray-400">Last updated: {new Date().toLocaleDateString("en-GB")}</p>
+      <h1 className="font-heading text-3xl font-bold text-primary-dark">{t("title")}</h1>
+      <p className="mt-2 text-sm text-gray-400">{t("updated", { date })}</p>
 
       {settings.privacyPolicy ? (
         <div className="prose prose-lg mt-8 max-w-none whitespace-pre-line text-gray-700">
@@ -24,26 +30,13 @@ export default async function PrivacyPolicyPage() {
         </div>
       ) : (
         <div className="prose prose-lg mt-8 max-w-none text-gray-700">
-          <p>
-            Learn Al Quran Online BD ("we", "our", "us") respects your privacy. This policy
-            explains what information we collect through our website and enrollment forms, and
-            how we use it.
-          </p>
-          <h2>Information We Collect</h2>
-          <p>
-            When you submit our Free Trial or Admission form, we collect your name, WhatsApp
-            number, contact number, optional email address, and payment/transaction details you
-            provide, solely to process your enrollment and communicate with you.
-          </p>
-          <h2>How We Use Your Information</h2>
-          <p>
-            Your information is used to schedule classes, verify payments, respond to enquiries,
-            and improve our services. We do not sell or rent your personal data to third parties.
-          </p>
-          <h2>Contact Us</h2>
-          <p>
-            If you have questions about this policy, contact us at {settings.email}.
-          </p>
+          <p>{t("intro")}</p>
+          <h2>{t("collectTitle")}</h2>
+          <p>{t("collectBody")}</p>
+          <h2>{t("useTitle")}</h2>
+          <p>{t("useBody")}</p>
+          <h2>{t("contactTitle")}</h2>
+          <p>{t("contactBody", { email: settings.email })}</p>
         </div>
       )}
     </div>

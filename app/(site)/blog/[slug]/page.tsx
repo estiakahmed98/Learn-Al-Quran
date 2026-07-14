@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import JsonLd from "@/components/shared/JsonLd";
 import { siteUrl } from "@/lib/site-config";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -25,8 +26,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const t = await getTranslations("sitePages.blog");
   const post = await getPost(params.slug);
-  if (!post) return { title: "Article Not Found" };
+  if (!post) return { title: t("notFound") };
 
   return {
     title: post.title,
@@ -42,6 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogDetailPage({ params }: Props) {
+  const locale = await getLocale();
   const post = await getPost(params.slug);
   if (!post) notFound();
 
@@ -65,7 +68,7 @@ export default async function BlogDetailPage({ params }: Props) {
     <article className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
       <JsonLd data={articleJsonLd} />
 
-      <p className="text-sm text-gray-400">{formatDate(post.createdAt)}</p>
+      <p className="text-sm text-gray-400">{formatDate(post.createdAt, locale)}</p>
       <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">{post.title}</h1>
       {post.subtitle && <p className="mt-3 text-lg text-gray-600">{post.subtitle}</p>}
 

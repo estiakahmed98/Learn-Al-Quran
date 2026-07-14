@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Islamic Books",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function BooksPage() {
+  const t = await getTranslations("sitePages.books");
   const books = await prisma.content
     .findMany({ where: { type: "BOOK", isPublished: true }, orderBy: { sortOrder: "asc" } })
     .catch(() => []);
@@ -18,20 +20,18 @@ export default async function BooksPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-semibold uppercase tracking-wide text-secondary">Books</p>
+        <p className="font-semibold uppercase tracking-wide text-secondary">{t("eyebrow")}</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
-          Recommended Islamic &amp; Quran Learning Books
+          {t("title")}
         </h1>
         <p className="mt-4 text-gray-600">
-          Our teachers recommend these books and study materials to complement your Quran and
-          Tajweed learning journey.
+          {t("subtitle")}
         </p>
       </div>
 
       {books.length === 0 ? (
         <p className="mt-12 text-center text-gray-500">
-          Our book collection is being updated. Please check back soon, or contact us for
-          recommended reading material.
+          {t("empty")}
         </p>
       ) : (
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

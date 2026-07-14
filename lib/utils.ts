@@ -2,8 +2,8 @@ export function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString("en-GB", {
+export function formatDate(date: Date | string, locale = "en") {
+  return new Date(date).toLocaleDateString(locale === "bn" ? "bn-BD" : "en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric"

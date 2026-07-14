@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import JsonLd from "@/components/shared/JsonLd";
 import CourseDetailView, {
   type SerializedCourse,
@@ -16,6 +17,7 @@ export default function CourseDetailLoader({
   slug: string;
   reviews: SerializedReview[];
 }) {
+  const t = useTranslations("courseDetail");
   const [course, setCourse] = useState<SerializedCourse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,7 +47,7 @@ export default function CourseDetailLoader({
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8" aria-label="Loading course">
+      <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8" aria-label={t("loading")}>
         <div className="h-96 animate-pulse rounded-2xl bg-primary/10" />
       </div>
     );
@@ -54,8 +56,8 @@ export default function CourseDetailLoader({
   if (!course) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-24 text-center lg:px-8">
-        <h1 className="font-heading text-3xl font-bold text-primary-dark">Course not found</h1>
-        <p className="mt-3 text-gray-500">This course is unavailable or no longer active.</p>
+        <h1 className="font-heading text-3xl font-bold text-primary-dark">{t("notFound")}</h1>
+        <p className="mt-3 text-gray-500">{t("unavailable")}</p>
       </div>
     );
   }

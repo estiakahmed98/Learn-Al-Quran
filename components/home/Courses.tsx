@@ -110,7 +110,7 @@ export default function Courses() {
         {isLoading ? (
           <div
             className="mt-10 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            aria-label="Loading courses"
+            aria-label={t("loading")}
           >
             {Array.from({ length: 6 }).map((_, index) => (
               <div

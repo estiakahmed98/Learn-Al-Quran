@@ -30,7 +30,8 @@
     "breadcrumbHome": "Home",
     "pageTitle": "Quran, Tajweed & Islamic Learning Courses",
     "pageSubtitle": "Choose the course that fits your learning goals — from beginner Maktab classes to complete Hifzul Quran memorization, taught by certified Huffaz and Qaris.",
-    "empty": "No courses available right now. Please check back soon."
+    "empty": "No courses available right now. Please check back soon.",
+    "loading": "Loading courses"
   },
   "courseDetail": {
     "home": "Home",
@@ -62,7 +63,10 @@
     "live": "Live",
     "reviewsTitle": "Student Feedback",
     "bottomTitle": "Ready to Begin Your Journey?",
-    "bottomSubtitle": "Join thousands of students learning the Quran and Sunnah with us. Enroll today and take the first step."
+    "bottomSubtitle": "Join thousands of students learning the Quran and Sunnah with us. Enroll today and take the first step.",
+    "loading": "Loading course",
+    "notFound": "Course not found",
+    "unavailable": "This course is unavailable or no longer active."
   },
   "header": {
     "home": "Home",
@@ -120,7 +124,9 @@
     "createAccount": "Create an account",
     "haveAccount": "Already have an account?",
     "logIn": "Log in",
-    "namePlaceholder": "Student name"
+    "namePlaceholder": "Student name",
+    "signupError": "Unable to create your account. Check your information and try again.",
+    "genericError": "Something went wrong. Please try again."
   },
   "leadForm": {
     "admissionNow": "Admission Now",
@@ -152,7 +158,15 @@
     "paymentPlan": "Select Your Payment Plan",
     "transactionId": "Transaction ID",
     "transactionIdPlaceholder": "Payment Transaction ID",
-    "contactNumber": "Contact Number"
+    "contactNumber": "Contact Number",
+    "genericError": "Something went wrong. Please try again.",
+    "paymentMethods": {
+      "BKASH": "bKash",
+      "NAGAD": "Nagad",
+      "ROCKET": "Rocket",
+      "WESTERN_UNION": "Western Union",
+      "BANK_TRANSFER": "Bank Transfer"
+    }
   },
   "dashboard": {
     "title": "Student Dashboard",
@@ -183,5 +197,105 @@
     "date": "Date",
     "viewCourse": "View Course Page",
     "manage": "Manage"
+  },
+  "sitePages": {
+    "about": {
+      "eyebrow": "About Us",
+      "title": "Our Mission Is To Make Quran Learning Accessible To All",
+      "p1": "Learn Al Quran Online BD was founded with a simple goal: to bring authentic, structured Quran education to every home, regardless of location. Whether you are a child taking your first steps in Arabic, or an adult learning to read the Quran for the first time, our certified teachers provide personalized, one-to-one classes built around your schedule.",
+      "p2": "We combine traditional Islamic teaching methods with modern online learning tools—live video classes, structured curriculums, and continuous progress tracking—so every student, wherever they are in the world, gets the same quality of education as in a traditional madrasa.",
+      "p3": "Our teaching staff includes certified Huffaz and Qaris, each carefully vetted for both knowledge and teaching ability before joining our platform."
+    },
+    "teachers": {
+      "eyebrow": "Our Teachers",
+      "title": "Learn From Certified Huffaz & Qaris",
+      "embeddedTitle": "Meet Our Teachers",
+      "embeddedSubtitle": "Learn from certified Huffaz and Qaris dedicated to guiding every student with care."
+    },
+    "reviews": {
+      "eyebrow": "Testimonials",
+      "title": "What Our Students Say",
+      "subtitle": "Real stories from our students about their learning journey"
+    },
+    "reviewForm": {
+      "thankYou": "Thank You!",
+      "success": "Your review has been submitted and will appear on the site after admin approval.",
+      "another": "Submit another review",
+      "title": "Share Your Experience",
+      "subtitle": "Let others know what you think about our courses and teachers.",
+      "name": "Your Name",
+      "namePlaceholder": "e.g. Abdur Rahim",
+      "role": "Role / Location",
+      "rolePlaceholder": "e.g. Parent, Dhaka",
+      "rating": "Rating",
+      "starLabel": "{count, plural, one {# star} other {# stars}}",
+      "review": "Your Review",
+      "reviewPlaceholder": "Tell us about your experience...",
+      "submitting": "Submitting...",
+      "submit": "Submit Review",
+      "feedback": "We value your feedback",
+      "error": "Failed to submit your review."
+    },
+    "faq": { "title": "Frequently Asked Questions" },
+    "map": {
+      "title": "Our Location",
+      "badge": "Find us on Google Maps",
+      "eyebrow": "Find Us",
+      "subtitle": "Visit us at our center for in-person learning",
+      "address": "Dhaka, Bangladesh"
+    },
+    "blog": {
+      "eyebrow": "Blog",
+      "title": "Quran Learning Tips & Islamic Articles",
+      "empty": "We're preparing helpful articles for you. Please check back soon.",
+      "notFound": "Article Not Found"
+    },
+    "books": {
+      "eyebrow": "Books",
+      "title": "Recommended Islamic & Quran Learning Books",
+      "subtitle": "Our teachers recommend these books and study materials to complement your Quran and Tajweed learning journey.",
+      "empty": "Our book collection is being updated. Please check back soon, or contact us for recommended reading material."
+    },
+    "contact": {
+      "eyebrow": "Contact Us",
+      "title": "We'd Love To Hear From You",
+      "subtitle": "Have questions about our courses, schedule, or fees? Reach out anytime—our team typically responds within a few hours.",
+      "call": "Call Us",
+      "available": "Available 24/7",
+      "whatsapp": "WhatsApp",
+      "quickResponse": "Quick response",
+      "email": "Email",
+      "emailResponse": "Within 24 hours"
+    },
+    "freeTrial": {
+      "eyebrow": "Free Trial Class",
+      "title": "Book Your Free Trial Class Today",
+      "subtitle": "Experience our teaching method risk-free. Fill out the form below and our team will schedule your free trial class within 24 hours."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "updated": "Last updated: {date}",
+      "intro": "Learn Al Quran Online BD (we, our, us) respects your privacy. This policy explains what information we collect through our website and enrollment forms, and how we use it.",
+      "collectTitle": "Information We Collect",
+      "collectBody": "When you submit our Free Trial or Admission form, we collect your name, WhatsApp number, contact number, optional email address, and payment or transaction details solely to process your enrollment and communicate with you.",
+      "useTitle": "How We Use Your Information",
+      "useBody": "Your information is used to schedule classes, verify payments, respond to enquiries, and improve our services. We do not sell or rent your personal data to third parties.",
+      "contactTitle": "Contact Us",
+      "contactBody": "If you have questions about this policy, contact us at {email}."
+    },
+    "terms": {
+      "title": "Terms & Conditions",
+      "updated": "Last updated: {date}",
+      "enrollmentTitle": "Enrollment",
+      "enrollmentBody": "Enrollment is confirmed only after the course fee has been paid through an accepted payment method and the Admission Form has been submitted with a valid Transaction ID.",
+      "refundTitle": "Refund Policy",
+      "refundBody": "Fees are non-refundable once a teacher has been assigned and classes have started, except when Learn Al Quran Online BD is unable to provide a suitable teacher.",
+      "scheduleTitle": "Class Schedule",
+      "scheduleBody": "Class timing is arranged based on mutual availability between the student and teacher. Rescheduling requests should be made at least 12 hours in advance.",
+      "conductTitle": "Conduct",
+      "conductBody": "Students and parents are expected to maintain respectful conduct during classes. Learn Al Quran Online BD reserves the right to suspend access for any breach of conduct.",
+      "contactTitle": "Contact",
+      "contactBody": "For any questions about these terms, please contact us at {email}."
+    }
   }
 }

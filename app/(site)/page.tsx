@@ -77,7 +77,7 @@ export default async function HomePage() {
 
       {/* Lead form and map */}
       <section className="bg-cream py-12 lg:py-16">
-        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-2 lg:px-8">
+        <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-4 lg:grid-cols-2 lg:px-8">
           <LeadForm
             courses={courses}
             bkashNumber={settings.bkashNumber || ""}
@@ -86,7 +86,13 @@ export default async function HomePage() {
             embedded
           />
 
-          <GoogleMapSection mapUrl={settings.googleMapUrl || ""} embedded />
+          <GoogleMapSection
+            mapUrl={settings.googleMapUrl || ""}
+            address={settings.address || ""}
+            phone={settings.phone || ""}
+            email={settings.email || ""}
+            embedded
+          />
         </div>
       </section>
 

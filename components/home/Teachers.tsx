@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 export interface TeacherCard {
   id: string;
   name: string;
@@ -87,7 +89,7 @@ function TeacherCardItem({
   );
 }
 
-export default function Teachers({
+export default async function Teachers({
   teachers,
   embedded = false,
 }: {
@@ -96,12 +98,13 @@ export default function Teachers({
 }) {
   if (!teachers.length) return null;
 
+  const t = await getTranslations("sitePages.teachers");
   const title = embedded
-    ? "Meet Our Teachers"
-    : "Learn From Certified Huffaz & Qaris";
+    ? t("embeddedTitle")
+    : t("title");
   const subtitle = embedded
-    ? "Learn from certified Huffaz and Qaris dedicated to guiding every student with care."
-    : "Our Teachers";
+    ? t("embeddedSubtitle")
+    : t("eyebrow");
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white">

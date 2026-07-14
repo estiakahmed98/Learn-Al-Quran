@@ -29,8 +29,7 @@ export default function SignupPage() {
       });
 
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || "Something went wrong. Please try again.");
+        throw new Error(t("signupError"));
       }
 
       const login = await signIn("credentials", { email, password, redirect: false });
@@ -42,7 +41,7 @@ export default function SignupPage() {
       router.push("/student/dashboard");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : t("genericError"));
     } finally {
       setLoading(false);
     }
