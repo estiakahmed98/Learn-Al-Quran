@@ -130,7 +130,7 @@ export default function CoursesIndexView() {
                           {t("details")}
                         </Link>
                         <Link
-                          href={`/free-trial-class?course=${course.slug}`}
+                          href={`/enroll?course=${course.slug}`}
                           className="flex-1 rounded-lg bg-primary py-2.5 text-center text-sm font-semibold text-white transition hover:bg-primary-dark"
                         >
                           {t("enrollNow")}

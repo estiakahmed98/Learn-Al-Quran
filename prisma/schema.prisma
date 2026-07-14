@@ -13,6 +13,18 @@ enum UserRole {
   STUDENT
 }
 
+enum StudentStatus {
+  FREE_TRIAL
+  REGULAR
+}
+
+enum TrialApplicationStatus {
+  PENDING
+  GROUP_ASSIGNED
+  COMPLETED
+  CANCELLED
+}
+
 enum AdminSection {
   DASHBOARD
   ANALYTICS
@@ -57,26 +69,28 @@ enum ContentType {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  phone        String?
-  whatsapp     String?
-  address      String?  @db.Text
-  description  String?  @db.Text
-  designation  String?
-  imageURL     String?
-  passwordHash String
-  role         UserRole @default(STUDENT)
-  isActive     Boolean  @default(true)
-  permissions  AdminSection[] @default([])
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  phone         String?
+  whatsapp      String?
+  address       String?        @db.Text
+  description   String?        @db.Text
+  designation   String?
+  imageURL      String?
+  passwordHash  String
+  role          UserRole       @default(STUDENT)
+  studentStatus StudentStatus  @default(REGULAR)
+  isActive      Boolean        @default(true)
+  permissions   AdminSection[] @default([])
 
-  enrollments Enrollment[]
+  enrollments       Enrollment[]
+  trialApplications TrialApplication[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-    analyticsEvents AnalyticsEvent[]
+  analyticsEvents AnalyticsEvent[]
 }
 
 model Course {
@@ -129,14 +143,56 @@ model Course {
   metaTitle       String?
   metaDescription String? @db.Text
 
-  enrollments    Enrollment[]
-  classSchedules ClassSchedule[]
-  notes          Note[]
+  enrollments       Enrollment[]
+  classSchedules    ClassSchedule[]
+  notes             Note[]
+  trialGroups       TrialGroup[]
+  trialApplications TrialApplication[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([isActive, sortOrder])
+}
+
+model TrialGroup {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  courseId    String?
+  schedule    String?
+  meetingLink String?
+  isActive    Boolean @default(true)
+
+  course       Course?            @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  applications TrialApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([isActive])
+}
+
+model TrialApplication {
+  id                String                 @id @default(cuid())
+  userId            String
+  courseId          String
+  groupId           String?
+  status            TrialApplicationStatus @default(PENDING)
+  preferredSchedule String?
+  note              String?                @db.Text
+  adminNote         String?                @db.Text
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  group  TrialGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([status])
+  @@index([groupId])
 }
 
 model ClassSchedule {

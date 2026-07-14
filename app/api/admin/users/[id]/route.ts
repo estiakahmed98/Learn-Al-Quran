@@ -22,6 +22,7 @@ const userSelect = {
   designation: true,
   imageURL: true,
   role: true,
+  studentStatus: true,
   isActive: true,
   permissions: true,
   createdAt: true,

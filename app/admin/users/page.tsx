@@ -13,6 +13,7 @@ export default async function AdminUsersPage() {
         phone: true,
         whatsapp: true,
         role: true,
+        studentStatus: true,
         isActive: true,
         createdAt: true,
         _count: { select: { enrollments: true } }

@@ -13,12 +13,21 @@ export async function POST(request: Request, { params }: { params: { id: string 
   const body = await request.json().catch(() => ({}));
   const reject = Boolean(body?.reject);
 
-  const enrollment = await prisma.enrollment.update({
-    where: { id: params.id },
-    data: reject
-      ? { paymentStatus: "REJECTED", enrollmentStatus: "CANCELLED" }
-      : { paymentStatus: "VERIFIED", enrollmentStatus: "ACTIVE" },
-    include: { course: { select: { title: true } } }
+  const enrollment = await prisma.$transaction(async (tx) => {
+    const updated = await tx.enrollment.update({
+      where: { id: params.id },
+      data: reject
+        ? { paymentStatus: "REJECTED", enrollmentStatus: "CANCELLED" }
+        : { paymentStatus: "VERIFIED", enrollmentStatus: "ACTIVE" },
+      include: { course: { select: { title: true } } }
+    });
+    if (!reject && updated.userId) {
+      await tx.user.updateMany({
+        where: { id: updated.userId, role: "STUDENT", studentStatus: "FREE_TRIAL" },
+        data: { studentStatus: "REGULAR" }
+      });
+    }
+    return updated;
   });
 
   return NextResponse.json(enrollment);

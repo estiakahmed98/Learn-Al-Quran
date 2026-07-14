@@ -8,12 +8,14 @@ import { authOptions } from "@/lib/auth";
 
 const enrollSchema = z.object({
   courseSlug: z.string().min(1, "Please select a course"),
-  studentName: z.string().min(2, "Student name is required"),
-  whatsappNumber: z.string().min(6, "WhatsApp number is required"),
-  email: z.string().email().optional().or(z.literal("")).optional(),
+  studentName: z.string().trim().optional(),
+  phone: z.string().trim().optional(),
+  whatsappNumber: z.string().trim().optional(),
+  contactNumber: z.string().trim().optional(),
+  email: z.string().trim().email().optional(),
+  password: z.string().optional(),
   paymentMethod: z.enum(["BKASH", "NAGAD", "ROCKET", "WESTERN_UNION", "BANK_TRANSFER"]),
-  transactionId: z.string().optional(),
-  contactNumber: z.string().min(6, "Contact number is required")
+  transactionId: z.string().trim().optional()
 });
 
 export async function POST(request: Request) {
@@ -30,54 +32,137 @@ export async function POST(request: Request) {
 
     const data = parsed.data;
 
-    const course = await prisma.course.findUnique({ where: { slug: data.courseSlug } });
+    const course = await prisma.course.findFirst({ where: { slug: data.courseSlug, isActive: true } });
     if (!course) {
       return NextResponse.json({ message: "Selected course was not found." }, { status: 404 });
     }
 
-    // Link the enrollment to a student account: the logged-in user, an
-    // existing account matching the email, or a freshly auto-created one.
     const session = await getServerSession(authOptions);
-    let userId: string | undefined = session?.user?.id;
-    let account: { email: string; password: string } | null = null;
-
-    if (!userId && data.email) {
-      const existing = await prisma.user.findUnique({ where: { email: data.email } });
-
-      if (existing) {
-        userId = existing.id;
-      } else {
-        const tempPassword = randomBytes(4).toString("hex");
-        const user = await prisma.user.create({
-          data: {
-            name: data.studentName,
-            email: data.email,
-            phone: data.contactNumber,
-            whatsapp: data.whatsappNumber,
-            passwordHash: await bcrypt.hash(tempPassword, 10),
-            role: "STUDENT"
-          }
-        });
-        userId = user.id;
-        account = { email: data.email, password: tempPassword };
+    if (session?.user?.id) {
+      const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+      if (!user || user.role !== "STUDENT") {
+        return NextResponse.json({ message: "Only student accounts can enroll." }, { status: 403 });
       }
+
+      const existingEnrollment = await prisma.enrollment.findFirst({
+        where: { userId: user.id, courseId: course.id, enrollmentStatus: { not: "CANCELLED" } }
+      });
+      if (existingEnrollment) {
+        return NextResponse.json({ message: "You already enrolled in this course." }, { status: 409 });
+      }
+
+      const phone = user.phone || user.whatsapp || "";
+      const enrollment = await prisma.enrollment.create({
+        data: {
+          courseId: course.id,
+          userId: user.id,
+          studentName: user.name,
+          whatsappNumber: user.whatsapp || phone,
+          email: user.email,
+          contactNumber: phone,
+          paymentMethod: data.paymentMethod,
+          transactionId: data.transactionId || null,
+          paymentAmount: course.fee
+        }
+      });
+      return NextResponse.json({ success: true, id: enrollment.id, accountCreated: false }, { status: 201 });
     }
 
-    const enrollment = await prisma.enrollment.create({
-      data: {
-        courseId: course.id,
-        userId,
-        studentName: data.studentName,
-        whatsappNumber: data.whatsappNumber,
-        email: data.email || undefined,
-        contactNumber: data.contactNumber,
-        paymentMethod: data.paymentMethod,
-        transactionId: data.transactionId,
-        paymentAmount: course.fee
+    const name = data.studentName?.trim() || "";
+    const email = data.email?.trim().toLowerCase() || "";
+    const phone = data.phone?.trim() || data.contactNumber?.trim() || data.whatsappNumber?.trim() || "";
+    const password = data.password || "";
+
+    // Keep the compact admission form on the homepage working. The dedicated
+    // /enroll page always supplies a user-selected password.
+    if (!password) {
+      let userId: string | undefined;
+      let account: { email: string; password: string } | null = null;
+      if (email) {
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (existingUser) {
+          userId = existingUser.id;
+        } else {
+          const temporaryPassword = randomBytes(4).toString("hex");
+          const user = await prisma.user.create({
+            data: {
+              name: name || "Student",
+              email,
+              phone: phone || null,
+              whatsapp: data.whatsappNumber || phone || null,
+              passwordHash: await bcrypt.hash(temporaryPassword, 10),
+              role: "STUDENT"
+            }
+          });
+          userId = user.id;
+          account = { email, password: temporaryPassword };
+        }
       }
+      const enrollment = await prisma.enrollment.create({
+        data: {
+          courseId: course.id,
+          userId,
+          studentName: name || "Student",
+          whatsappNumber: data.whatsappNumber || phone,
+          email: email || null,
+          contactNumber: data.contactNumber || phone,
+          paymentMethod: data.paymentMethod,
+          transactionId: data.transactionId || null,
+          paymentAmount: course.fee
+        }
+      });
+      return NextResponse.json(
+        { success: true, id: enrollment.id, account, accountCreated: Boolean(account) },
+        { status: 201 }
+      );
+    }
+
+    if (name.length < 2 || !email || phone.length < 6 || password.length < 6) {
+      return NextResponse.json(
+        { message: "Name, email, phone and a password of at least 6 characters are required." },
+        { status: 400 }
+      );
+    }
+
+    const existingUser = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "An account already exists with this email. Please log in to enroll." },
+        { status: 409 }
+      );
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          name,
+          email,
+          phone,
+          whatsapp: phone,
+          passwordHash: await bcrypt.hash(password, 10),
+          role: "STUDENT"
+        }
+      });
+      const enrollment = await tx.enrollment.create({
+        data: {
+          courseId: course.id,
+          userId: user.id,
+          studentName: name,
+          whatsappNumber: phone,
+          email,
+          contactNumber: phone,
+          paymentMethod: data.paymentMethod,
+          transactionId: data.transactionId || null,
+          paymentAmount: course.fee
+        }
+      });
+      return { enrollmentId: enrollment.id, userId: user.id };
     });
 
-    return NextResponse.json({ success: true, id: enrollment.id, account }, { status: 201 });
+    return NextResponse.json(
+      { success: true, id: result.enrollmentId, accountCreated: true },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Enrollment error:", error);
     return NextResponse.json(

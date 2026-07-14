@@ -44,6 +44,7 @@ export const SECTION_PATHS: { section: AdminSection; path: string }[] = [
   { section: "ANALYTICS", path: "/admin/analytics" },
   { section: "BLOG", path: "/admin/blog" },
   { section: "COURSES", path: "/admin/courses" },
+  { section: "USERS", path: "/admin/trials" },
   { section: "USERS", path: "/admin/users" },
   { section: "PAYMENTS", path: "/admin/payments" },
   { section: "CONTENT", path: "/admin/content" }

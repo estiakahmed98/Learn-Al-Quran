@@ -50,21 +50,31 @@ export async function POST(request: Request) {
     );
   }
 
-  const enrollment = await prisma.enrollment.create({
-    data: {
-      userId,
-      courseId,
-      studentName: user.name,
-      whatsappNumber: user.whatsapp || user.phone || "",
-      email: user.email,
-      contactNumber: user.phone || "",
-      paymentMethod: paymentMethod || "BKASH",
-      paymentAmount: course.fee,
-      paymentStatus: paymentStatus || "VERIFIED",
-      enrollmentStatus: enrollmentStatus || "ACTIVE",
-      adminNote: adminNote || "Assigned by admin"
-    },
-    include: { course: { select: { title: true } }, results: true }
+  const finalPaymentStatus = paymentStatus || "VERIFIED";
+  const enrollment = await prisma.$transaction(async (tx) => {
+    const created = await tx.enrollment.create({
+      data: {
+        userId,
+        courseId,
+        studentName: user.name,
+        whatsappNumber: user.whatsapp || user.phone || "",
+        email: user.email,
+        contactNumber: user.phone || "",
+        paymentMethod: paymentMethod || "BKASH",
+        paymentAmount: course.fee,
+        paymentStatus: finalPaymentStatus,
+        enrollmentStatus: enrollmentStatus || "ACTIVE",
+        adminNote: adminNote || "Assigned by admin"
+      },
+      include: { course: { select: { title: true } }, results: true }
+    });
+    if (finalPaymentStatus === "VERIFIED") {
+      await tx.user.updateMany({
+        where: { id: userId, role: "STUDENT", studentStatus: "FREE_TRIAL" },
+        data: { studentStatus: "REGULAR" }
+      });
+    }
+    return created;
   });
 
   return NextResponse.json(enrollment, { status: 201 });

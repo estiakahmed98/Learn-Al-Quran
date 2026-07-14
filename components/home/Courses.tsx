@@ -175,7 +175,7 @@ export default function Courses() {
                       {t("details")}
                     </Link>
                     <Link
-                      href={`/free-trial-class?course=${course.slug}`}
+                      href={`/enroll?course=${course.slug}`}
                       className="flex-1 rounded-lg bg-gradient-to-r from-primary to-primary-dark px-3 py-2 text-xs font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 sm:py-2.5 sm:text-sm"
                     >
                       {t("enrollNow")}

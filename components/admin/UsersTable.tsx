@@ -13,6 +13,7 @@ export interface UserRow {
   phone: string | null;
   whatsapp: string | null;
   role: "ADMIN" | "TEACHER" | "STUDENT";
+  studentStatus: "FREE_TRIAL" | "REGULAR";
   isActive: boolean;
   createdAt: string;
   _count: { enrollments: number };
@@ -172,6 +173,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
                   >
                     {user.role}
                   </span>
+                  {user.role === "STUDENT" && user.studentStatus === "FREE_TRIAL" && (
+                    <span className="ml-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+                      FREE TRIAL
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <Link

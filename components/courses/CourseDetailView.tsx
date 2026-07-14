@@ -131,7 +131,7 @@ export default function CourseDetailView({
       : null
   ].filter(Boolean) as { value: string; label: string }[];
 
-  const enrollHref = `/free-trial-class?course=${course.slug}`;
+  const enrollHref = `/enroll?course=${course.slug}`;
 
   return (
     <div>

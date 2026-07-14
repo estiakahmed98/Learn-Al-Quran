@@ -12,6 +12,12 @@ const navLinks: { href: string; label: string; title: string; section: AdminSect
   { href: "/admin/blog", label: "✍️ Blog", title: "Blog Management", section: "BLOG" },
   { href: "/admin/courses", label: "📚 Courses", title: "Courses", section: "COURSES" },
   {
+    href: "/admin/trials",
+    label: "Free Trial Students",
+    title: "Free Trial Management",
+    section: "USERS"
+  },
+  {
     href: "/admin/users",
     label: "👥 Users Management",
     title: "Users Management",

@@ -21,16 +21,18 @@ export default async function StudentDashboardPage() {
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user) redirect("/auth/login");
 
-  const enrollments = await prisma.enrollment.findMany({
-    where: {
-      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])]
-    },
-    include: {
-      course: true,
-      _count: { select: { results: true } }
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  const [enrollments, trialApplication] = await Promise.all([
+    prisma.enrollment.findMany({
+      where: { OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])] },
+      include: { course: true, _count: { select: { results: true } } },
+      orderBy: { createdAt: "desc" }
+    }),
+    prisma.trialApplication.findFirst({
+      where: { userId: user.id, status: { not: "CANCELLED" } },
+      include: { course: { select: { title: true } } },
+      orderBy: { createdAt: "desc" }
+    })
+  ]);
 
   const activeCount = enrollments.filter((e) => e.enrollmentStatus === "ACTIVE").length;
   const pendingCount = enrollments.filter((e) => e.enrollmentStatus === "PENDING").length;
@@ -45,6 +47,30 @@ export default async function StudentDashboardPage() {
         {user.email}
         {user.phone ? ` · ${user.phone}` : ""}
       </p>
+
+      {trialApplication && (
+        <div className="mt-6 overflow-hidden rounded-2xl bg-primary-dark text-white shadow-lg">
+          <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-dark">
+                  {user.studentStatus === "FREE_TRIAL" ? t("trialStudent") : t("trialApplication")}
+                </span>
+                <span className="text-xs font-semibold text-secondary">
+                  {t(`trialStatuses.${trialApplication.status}`)}
+                </span>
+              </div>
+              <h2 className="mt-3 font-heading text-xl font-bold">{trialApplication.course.title}</h2>
+              <p className="mt-2 text-sm text-white/70">
+                {t("preferredTrialTime")}: {trialApplication.preferredSchedule?.replace("T", " ") || t("schedulePending")}
+              </p>
+            </div>
+            <Link href="/free-trial-class" className="rounded-full border border-white/20 px-6 py-3 text-center text-sm font-bold hover:bg-white/10">
+              {t("viewTrialStatus")}
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">

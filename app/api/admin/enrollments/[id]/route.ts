@@ -9,13 +9,22 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 
   const body = await request.json();
-  const enrollment = await prisma.enrollment.update({
-    where: { id: params.id },
-    data: {
-      paymentStatus: body.paymentStatus,
-      enrollmentStatus: body.enrollmentStatus,
-      adminNote: body.adminNote
+  const enrollment = await prisma.$transaction(async (tx) => {
+    const updated = await tx.enrollment.update({
+      where: { id: params.id },
+      data: {
+        paymentStatus: body.paymentStatus,
+        enrollmentStatus: body.enrollmentStatus,
+        adminNote: body.adminNote
+      }
+    });
+    if (body.paymentStatus === "VERIFIED" && updated.userId) {
+      await tx.user.updateMany({
+        where: { id: updated.userId, role: "STUDENT", studentStatus: "FREE_TRIAL" },
+        data: { studentStatus: "REGULAR" }
+      });
     }
+    return updated;
   });
 
   return NextResponse.json(enrollment);

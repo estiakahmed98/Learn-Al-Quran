@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import LeadForm from "@/components/home/LeadForm";
+import { getServerSession } from "next-auth";
+import { getLocale } from "next-intl/server";
+import FreeTrialApplication from "@/components/trial/FreeTrialApplication";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getSiteSettings } from "@/lib/site-config";
-import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Free Trial Class",
@@ -11,38 +12,43 @@ export const metadata: Metadata = {
   alternates: { canonical: "/free-trial-class" }
 };
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 interface Props {
   searchParams: { course?: string };
 }
 
 export default async function FreeTrialClassPage({ searchParams }: Props) {
-  const t = await getTranslations("sitePages.freeTrial");
-  const [courses, settings] = await Promise.all([
-    prisma.course.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }).catch(() => []),
-    getSiteSettings()
+  const [session, locale, courses] = await Promise.all([
+    getServerSession(authOptions),
+    getLocale(),
+    prisma.course.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, title: true, titleBn: true, slug: true }
+    }).catch(() => [])
   ]);
+  const user = session?.user?.id
+    ? await prisma.user.findUnique({ where: { id: session.user.id }, select: { id: true, name: true, email: true } })
+    : null;
+  const application = user
+    ? await prisma.trialApplication.findFirst({
+        where: { userId: user.id, user: { role: "STUDENT" }, status: { not: "CANCELLED" } },
+        include: {
+          course: { select: { title: true, titleBn: true } }
+        },
+        orderBy: { createdAt: "desc" }
+      })
+    : null;
+  const defaultCourseId = courses.find((course) => course.slug === searchParams.course)?.id;
 
   return (
-    <div>
-      <div className="mx-auto max-w-3xl px-4 pt-16 text-center lg:px-8">
-        <p className="font-semibold uppercase tracking-wide text-secondary">{t("eyebrow")}</p>
-        <h1 className="mt-2 font-heading text-3xl font-bold text-primary-dark">
-          {t("title")}
-        </h1>
-        <p className="mt-4 text-gray-600">
-          {t("subtitle")}
-        </p>
-      </div>
-
-      <LeadForm
-        courses={courses}
-        defaultCourseSlug={searchParams.course}
-        bkashNumber={settings.bkashNumber || ""}
-        nagadNumber={settings.nagadNumber || ""}
-        bankAccount={settings.bankAccount || ""}
-      />
-    </div>
+    <FreeTrialApplication
+      courses={courses}
+      defaultCourseId={defaultCourseId}
+      user={user ? { name: user.name, email: user.email } : null}
+      application={application}
+      isBangla={locale === "bn"}
+    />
   );
 }

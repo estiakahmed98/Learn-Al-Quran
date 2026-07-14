@@ -103,7 +103,7 @@ export default function PriceCard({
         {applied && <p className="mt-2 text-xs font-semibold text-secondary">{t("couponApplied")}</p>}
 
         <Link
-          href={`/free-trial-class?course=${slug}${applied ? `&coupon=${couponCode}` : ""}`}
+          href={`/enroll?course=${slug}${applied ? `&coupon=${couponCode}` : ""}`}
           className="mt-5 block rounded-xl bg-gold py-3.5 text-center font-bold text-primary-dark shadow-lg transition hover:bg-gold-light"
         >
           {t("enrollInCourse")}
