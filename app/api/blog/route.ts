@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateSlug } from '@/lib/utils';
+import { requireSectionAccess } from '@/lib/require-section';
 
 // GET all blogs - Public access
 export async function GET(request: NextRequest) {
@@ -51,12 +50,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// CREATE new blog - Admin only
+// CREATE new blog - Admin or teacher with Blog access
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user || session.user.role !== 'ADMIN') {
+    const session = await requireSectionAccess("BLOG");
+
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

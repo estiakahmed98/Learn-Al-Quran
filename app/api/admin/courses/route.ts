@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-async function requireAdmin() {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "ADMIN") return null;
-  return session;
-}
+import { requireSectionAccess } from "@/lib/require-section";
 
 export async function GET() {
-  const session = await requireAdmin();
+  const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   try {
@@ -25,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await requireAdmin();
+  const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();

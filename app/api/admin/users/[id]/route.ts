@@ -20,17 +20,23 @@ const userSelect = {
   imageURL: true,
   role: true,
   isActive: true,
+  permissions: true,
   createdAt: true,
   updatedAt: true,
   _count: { select: { enrollments: true } }
 } as const;
+
+function normalizeRole(role: unknown): "ADMIN" | "TEACHER" | "STUDENT" {
+  if (role === "ADMIN" || role === "TEACHER") return role;
+  return "STUDENT";
+}
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password } = body;
+  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password, permissions } = body;
 
   const data: Record<string, unknown> = {};
   if (name !== undefined) data.name = name;
@@ -39,8 +45,9 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   if (whatsapp !== undefined) data.whatsapp = whatsapp || null;
   if (address !== undefined) data.address = address || null;
   if (imageURL !== undefined) data.imageURL = imageURL || null;
-  if (role !== undefined) data.role = role === "ADMIN" ? "ADMIN" : "STUDENT";
+  if (role !== undefined) data.role = normalizeRole(role);
   if (isActive !== undefined) data.isActive = Boolean(isActive);
+  if (permissions !== undefined) data.permissions = Array.isArray(permissions) ? permissions : [];
   if (password) {
     if (String(password).length < 6) {
       return NextResponse.json(

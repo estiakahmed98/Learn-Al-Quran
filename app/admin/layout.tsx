@@ -17,9 +17,14 @@ export default async function AdminLayout({
     return <AuthProvider>{children}</AuthProvider>;
   }
 
+  const role = session.user.role;
+  const permissions = role === "TEACHER" ? session.user.permissions : [];
+
   return (
     <AuthProvider>
-      <AdminShell>{children}</AdminShell>
+      <AdminShell role={role} permissions={permissions}>
+        {children}
+      </AdminShell>
     </AuthProvider>
   );
 }

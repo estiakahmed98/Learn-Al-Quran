@@ -20,10 +20,16 @@ const userSelect = {
   imageURL: true,
   role: true,
   isActive: true,
+  permissions: true,
   createdAt: true,
   updatedAt: true,
   _count: { select: { enrollments: true } }
 } as const;
+
+function normalizeRole(role: unknown): "ADMIN" | "TEACHER" | "STUDENT" {
+  if (role === "ADMIN" || role === "TEACHER") return role;
+  return "STUDENT";
+}
 
 export async function GET() {
   const session = await requireAdmin();
@@ -41,7 +47,7 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password } = body;
+  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password, permissions } = body;
 
   if (!name || !email || !password || String(password).length < 6) {
     return NextResponse.json(
@@ -59,8 +65,9 @@ export async function POST(request: Request) {
         whatsapp: whatsapp || null,
         address: address || null,
         imageURL: imageURL || null,
-        role: role === "ADMIN" ? "ADMIN" : "STUDENT",
+        role: normalizeRole(role),
         isActive: isActive ?? true,
+        permissions: Array.isArray(permissions) ? permissions : [],
         passwordHash: await bcrypt.hash(password, 10)
       },
       select: userSelect

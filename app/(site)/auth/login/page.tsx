@@ -34,8 +34,8 @@ function LoginForm() {
     }
 
     const session = await getSession();
-    const destination =
-      callbackUrl || (session?.user?.role === "ADMIN" ? "/admin" : "/student/dashboard");
+    const isStaff = session?.user?.role === "ADMIN" || session?.user?.role === "TEACHER";
+    const destination = callbackUrl || (isStaff ? "/admin" : "/student/dashboard");
 
     router.push(destination);
     router.refresh();

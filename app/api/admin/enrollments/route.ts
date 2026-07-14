@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireSectionAccess } from "@/lib/require-section";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "ADMIN") {
+  const session = await requireSectionAccess("PAYMENTS");
+  if (!session) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -21,8 +20,8 @@ export async function GET() {
 // already approved (payment VERIFIED, enrollment ACTIVE) so it shows on the
 // student's dashboard immediately.
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "ADMIN") {
+  const session = await requireSectionAccess("PAYMENTS");
+  if (!session) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

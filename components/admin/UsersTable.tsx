@@ -12,11 +12,17 @@ export interface UserRow {
   email: string;
   phone: string | null;
   whatsapp: string | null;
-  role: "ADMIN" | "STUDENT";
+  role: "ADMIN" | "TEACHER" | "STUDENT";
   isActive: boolean;
   createdAt: string;
   _count: { enrollments: number };
 }
+
+const ROLE_BADGE_CLASS: Record<UserRow["role"], string> = {
+  ADMIN: "bg-purple-100 text-purple-700",
+  TEACHER: "bg-amber-100 text-amber-700",
+  STUDENT: "bg-blue-50 text-blue-700"
+};
 
 export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }) {
   const router = useRouter();
@@ -109,11 +115,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      user.role === "ADMIN"
-                        ? "bg-purple-100 text-purple-700"
-                        : "bg-blue-50 text-blue-700"
-                    }`}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${ROLE_BADGE_CLASS[user.role]}`}
                   >
                     {user.role}
                   </span>

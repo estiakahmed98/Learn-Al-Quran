@@ -1,5 +1,6 @@
 import { PrismaClient, ContentType } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { DEFAULT_TEACHER_SECTIONS } from "../lib/permissions";
 
 const prisma = new PrismaClient();
 
@@ -19,6 +20,34 @@ async function main() {
       isActive: true
     }
   });
+
+  // ---- Teacher users (admin panel accounts) ----
+  const teacherUsers = [
+    { name: "Hafez Mawlana Abdullah Al Mamun", email: "abdullah.mamun@learnalquranonlinebd.com" },
+    { name: "Qari Muhammad Yusuf", email: "muhammad.yusuf@learnalquranonlinebd.com" },
+    { name: "Ustaza Amina Khatun", email: "amina.khatun@learnalquranonlinebd.com" },
+    { name: "Hafez Ibrahim Khalil", email: "ibrahim.khalil@learnalquranonlinebd.com" },
+    { name: "Qari Sadiqur Rahman", email: "sadiqur.rahman@learnalquranonlinebd.com" },
+    { name: "Ustaza Rukaiya Sultana", email: "rukaiya.sultana@learnalquranonlinebd.com" },
+    { name: "Hafez Zubair Ahmed", email: "zubair.ahmed@learnalquranonlinebd.com" },
+    { name: "Qari Nurul Islam", email: "nurul.islam@learnalquranonlinebd.com" }
+  ];
+
+  const teacherPassword = await bcrypt.hash("Teacher@12345", 10);
+  for (const teacher of teacherUsers) {
+    await prisma.user.upsert({
+      where: { email: teacher.email },
+      update: {},
+      create: {
+        name: teacher.name,
+        email: teacher.email,
+        passwordHash: teacherPassword,
+        role: "TEACHER",
+        isActive: true,
+        permissions: DEFAULT_TEACHER_SECTIONS
+      }
+    });
+  }
 
   // ---- Site settings ----
   await prisma.siteSetting.upsert({

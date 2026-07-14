@@ -1,22 +1,15 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireSectionAccess } from "@/lib/require-section";
 
 function revalidateCoursePages() {
   revalidatePath("/");
   revalidatePath("/courses", "layout"); // listing + all /courses/[slug] pages
 }
 
-async function requireAdmin() {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "ADMIN") return null;
-  return session;
-}
-
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
-  const session = await requireAdmin();
+  const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   try {
@@ -37,7 +30,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const session = await requireAdmin();
+  const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
@@ -57,7 +50,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
-  const session = await requireAdmin();
+  const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   await prisma.course.delete({ where: { id: params.id } });

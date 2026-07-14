@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Upload } from "lucide-react";
+import type { AdminSection } from "@prisma/client";
+import { ALL_ADMIN_SECTIONS, DEFAULT_TEACHER_SECTIONS } from "@/lib/permissions";
 
 export interface UserFormValues {
   name: string;
@@ -10,10 +13,21 @@ export interface UserFormValues {
   whatsapp: string;
   address: string;
   imageURL: string;
-  role: "ADMIN" | "STUDENT";
+  role: "ADMIN" | "TEACHER" | "STUDENT";
   isActive: boolean;
   password: string;
+  permissions: AdminSection[];
 }
+
+const SECTION_LABELS: Record<AdminSection, string> = {
+  DASHBOARD: "Dashboard",
+  ANALYTICS: "Analytics",
+  BLOG: "Blog",
+  COURSES: "Courses",
+  USERS: "Users Management",
+  PAYMENTS: "Payments",
+  CONTENT: "Content"
+};
 
 const emptyValues: UserFormValues = {
   name: "",
@@ -24,7 +38,8 @@ const emptyValues: UserFormValues = {
   imageURL: "",
   role: "STUDENT",
   isActive: true,
-  password: ""
+  password: "",
+  permissions: []
 };
 
 export default function UserForm({
@@ -41,10 +56,39 @@ export default function UserForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   function set<K extends keyof UserFormValues>(key: K, value: UserFormValues[K]) {
     setValues((prev) => ({ ...prev, [key]: value }));
     setSaved(false);
+  }
+
+  async function uploadImage(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const fd = new FormData();
+      fd.append("file", file);
+
+      const res = await fetch("/api/upload/users", {
+        method: "POST",
+        body: fd
+      });
+
+      if (!res.ok) throw new Error("Image upload failed");
+
+      const data = await res.json();
+      if (!data.url) throw new Error("Invalid upload response: url missing");
+
+      set("imageURL", data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error uploading image");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -66,7 +110,8 @@ export default function UserForm({
       address: values.address.trim(),
       imageURL: values.imageURL.trim(),
       role: values.role,
-      isActive: values.isActive
+      isActive: values.isActive,
+      permissions: values.role === "TEACHER" ? values.permissions : []
     };
     if (values.password) payload.password = values.password;
 
@@ -152,12 +197,41 @@ export default function UserForm({
         </div>
 
         <div>
-          <label className={labelClass}>Profile Image URL</label>
+          <label className={labelClass}>Profile Image</label>
+          {values.imageURL && (
+            <div className="mb-2 flex items-center gap-3">
+              <img
+                src={values.imageURL}
+                alt="Profile preview"
+                className="h-16 w-16 rounded-full border object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => set("imageURL", "")}
+                className="text-xs text-red-600 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+          <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={uploadImage}
+              disabled={uploadingImage}
+            />
+            <span className="inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+              <Upload className="h-4 w-4" />
+              {uploadingImage ? "Uploading..." : "Upload image"}
+            </span>
+          </label>
           <input
             value={values.imageURL}
             onChange={(e) => set("imageURL", e.target.value)}
             className={inputClass}
-            placeholder="https://..."
+            placeholder="Or paste image URL"
           />
         </div>
 
@@ -165,10 +239,17 @@ export default function UserForm({
           <label className={labelClass}>Role</label>
           <select
             value={values.role}
-            onChange={(e) => set("role", e.target.value as "ADMIN" | "STUDENT")}
+            onChange={(e) => {
+              const role = e.target.value as "ADMIN" | "TEACHER" | "STUDENT";
+              set("role", role);
+              if (role === "TEACHER" && values.permissions.length === 0) {
+                set("permissions", DEFAULT_TEACHER_SECTIONS);
+              }
+            }}
             className={inputClass}
           >
             <option value="STUDENT">Student</option>
+            <option value="TEACHER">Teacher</option>
             <option value="ADMIN">Admin</option>
           </select>
         </div>
@@ -200,12 +281,41 @@ export default function UserForm({
         </div>
       </div>
 
+      {values.role === "TEACHER" && (
+        <div>
+          <label className={labelClass}>Admin Panel Access</label>
+          <p className="mb-2 text-xs text-gray-400">
+            Choose which admin sections this teacher can access.
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {ALL_ADMIN_SECTIONS.map((section) => (
+              <label key={section} className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
+                  checked={values.permissions.includes(section)}
+                  onChange={(e) => {
+                    set(
+                      "permissions",
+                      e.target.checked
+                        ? [...values.permissions, section]
+                        : values.permissions.filter((s) => s !== section)
+                    );
+                  }}
+                />
+                {SECTION_LABELS[section]}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || uploadingImage}
           className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
           {saving ? "Saving..." : userId ? "Save Changes" : "Create User"}

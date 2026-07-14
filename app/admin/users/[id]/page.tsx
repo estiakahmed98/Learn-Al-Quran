@@ -60,7 +60,11 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         <h1 className="font-heading text-2xl font-bold text-primary-dark">{user.name}</h1>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            user.role === "ADMIN" ? "bg-purple-100 text-purple-700" : "bg-blue-50 text-blue-700"
+            user.role === "ADMIN"
+              ? "bg-purple-100 text-purple-700"
+              : user.role === "TEACHER"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-blue-50 text-blue-700"
           }`}
         >
           {user.role}
@@ -98,7 +102,8 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
             address: user.address ?? "",
             imageURL: user.imageURL ?? "",
             role: user.role,
-            isActive: user.isActive
+            isActive: user.isActive,
+            permissions: user.permissions
           }}
         />
       </div>

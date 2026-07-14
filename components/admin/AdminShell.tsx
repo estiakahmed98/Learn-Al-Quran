@@ -3,25 +3,28 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import type { AdminSection, UserRole } from "@prisma/client";
 import SignOutButton from "./SignOutButton";
 
-const navLinks = [
-  { href: "/admin", label: "📊 Dashboard", title: "Dashboard" },
-  { href: "/admin/analytics", label: "📈 Analytics", title: "Analytics" },
-  { href: "/admin/blog", label: "✍️ Blog", title: "Blog Management" },
-  { href: "/admin/courses", label: "📚 Courses", title: "Courses" },
+const navLinks: { href: string; label: string; title: string; section: AdminSection | null }[] = [
+  { href: "/admin", label: "📊 Dashboard", title: "Dashboard", section: "DASHBOARD" },
+  { href: "/admin/analytics", label: "📈 Analytics", title: "Analytics", section: "ANALYTICS" },
+  { href: "/admin/blog", label: "✍️ Blog", title: "Blog Management", section: "BLOG" },
+  { href: "/admin/courses", label: "📚 Courses", title: "Courses", section: "COURSES" },
   {
     href: "/admin/users",
     label: "👥 Users Management",
     title: "Users Management",
+    section: "USERS"
   },
   {
     href: "/admin/payments",
     label: "💳 Payments",
     title: "Payments & Approvals",
+    section: "PAYMENTS"
   },
-  { href: "/admin/content", label: "🗂 Content", title: "Content" },
-  { href: "/", label: "🌐 View Site", title: "Admin Panel" },
+  { href: "/admin/content", label: "🗂 Content", title: "Content", section: "CONTENT" },
+  { href: "/", label: "🌐 View Site", title: "Admin Panel", section: null }
 ];
 
 function getPageTitle(pathname: string | null) {
@@ -37,12 +40,18 @@ function getPageTitle(pathname: string | null) {
   return match?.title ?? "Admin Panel";
 }
 
-function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarNav({
+  onNavigate,
+  visibleLinks
+}: {
+  onNavigate?: () => void;
+  visibleLinks: typeof navLinks;
+}) {
   const pathname = usePathname();
 
   return (
     <nav className="mt-8 flex flex-col gap-1 text-sm">
-      {navLinks.map((link) => {
+      {visibleLinks.map((link) => {
         const isActive =
           link.href === "/admin"
             ? pathname === "/admin"
@@ -68,8 +77,12 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
 export default function AdminShell({
   children,
+  role,
+  permissions,
 }: {
   children: React.ReactNode;
+  role?: UserRole;
+  permissions?: AdminSection[];
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -85,6 +98,11 @@ export default function AdminShell({
     };
   }, [open]);
 
+  const visibleLinks =
+    role === "TEACHER"
+      ? navLinks.filter((link) => link.section === null || permissions?.includes(link.section))
+      : navLinks;
+
   return (
     <div className="flex h-screen flex-col bg-gray-50 lg:flex-row">
       {/* Desktop sidebar */}
@@ -93,7 +111,7 @@ export default function AdminShell({
           Admin Panel
         </h2>
         <p className="mt-1 text-xs text-gray-400">Learn Al Quran Online BD</p>
-        <SidebarNav />
+        <SidebarNav visibleLinks={visibleLinks} />
         <div className="mt-auto pt-6">
           <SignOutButton />
         </div>
@@ -125,7 +143,7 @@ export default function AdminShell({
                 ✕
               </button>
             </div>
-            <SidebarNav onNavigate={() => setOpen(false)} />
+            <SidebarNav onNavigate={() => setOpen(false)} visibleLinks={visibleLinks} />
             <div className="mt-auto pt-6">
               <SignOutButton />
             </div>

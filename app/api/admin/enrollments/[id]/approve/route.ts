@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireSectionAccess } from "@/lib/require-section";
 
 // One-click approval: verify the payment and activate the enrollment so the
 // course unlocks on the student's dashboard. Pass { reject: true } to reject.
 export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "ADMIN") {
+  const session = await requireSectionAccess("PAYMENTS");
+  if (!session) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
