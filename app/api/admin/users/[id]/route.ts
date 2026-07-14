@@ -17,6 +17,8 @@ const userSelect = {
   phone: true,
   whatsapp: true,
   address: true,
+  description: true,
+  designation: true,
   imageURL: true,
   role: true,
   isActive: true,
@@ -36,7 +38,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password, permissions } = body;
+  const { name, email, phone, whatsapp, address, description, designation, imageURL, role, isActive, password, permissions } = body;
 
   const data: Record<string, unknown> = {};
   if (name !== undefined) data.name = name;
@@ -44,6 +46,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   if (phone !== undefined) data.phone = phone || null;
   if (whatsapp !== undefined) data.whatsapp = whatsapp || null;
   if (address !== undefined) data.address = address || null;
+  if (description !== undefined) data.description = description || null;
+  if (designation !== undefined) data.designation = designation || null;
   if (imageURL !== undefined) data.imageURL = imageURL || null;
   if (role !== undefined) data.role = normalizeRole(role);
   if (isActive !== undefined) data.isActive = Boolean(isActive);

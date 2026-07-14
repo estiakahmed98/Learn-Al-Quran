@@ -81,14 +81,16 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         {user.email} · Joined {formatDate(user.createdAt)}
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((card) => (
-          <div key={card.label} className="rounded-2xl border border-gray-200 bg-white p-4">
-            <p className="text-xs font-semibold text-gray-500">{card.label}</p>
-            <p className={`mt-1 text-2xl font-bold ${card.color}`}>{card.value}</p>
-          </div>
-        ))}
-      </div>
+      {user.role === "STUDENT" && (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((card) => (
+            <div key={card.label} className="rounded-2xl border border-gray-200 bg-white p-4">
+              <p className="text-xs font-semibold text-gray-500">{card.label}</p>
+              <p className={`mt-1 text-2xl font-bold ${card.color}`}>{card.value}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Profile & Account</h2>
@@ -100,6 +102,8 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
             phone: user.phone ?? "",
             whatsapp: user.whatsapp ?? "",
             address: user.address ?? "",
+            description: user.description ?? "",
+            designation: user.designation ?? "",
             imageURL: user.imageURL ?? "",
             role: user.role,
             isActive: user.isActive,
@@ -108,32 +112,36 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-1 font-heading text-lg font-bold text-primary-dark">Assign a Course</h2>
-        <p className="mb-4 text-sm text-gray-500">
-          Manually enroll this user in a course. It is added as approved (payment verified, active)
-          and appears on their dashboard immediately.
-        </p>
-        <AssignCourseForm
-          userId={user.id}
-          courses={courses}
-          enrolledCourseIds={enrolledCourseIds}
-        />
-      </div>
+      {user.role === "STUDENT" && (
+        <>
+          <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+            <h2 className="mb-1 font-heading text-lg font-bold text-primary-dark">Assign a Course</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Manually enroll this user in a course. It is added as approved (payment verified, active)
+              and appears on their dashboard immediately.
+            </p>
+            <AssignCourseForm
+              userId={user.id}
+              courses={courses}
+              enrolledCourseIds={enrolledCourseIds}
+            />
+          </div>
 
-      <div className="mt-8">
-        <h2 className="font-heading text-lg font-bold text-primary-dark">
-          Enrollments & Payments ({stats.total})
-        </h2>
-        <p className="mt-1 text-sm text-gray-500">
-          All courses this user has enrolled in. Update payment/enrollment status, add results, or
-          remove an enrollment directly below.
-        </p>
+          <div className="mt-8">
+            <h2 className="font-heading text-lg font-bold text-primary-dark">
+              Enrollments & Payments ({stats.total})
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              All courses this user has enrolled in. Update payment/enrollment status, add results, or
+              remove an enrollment directly below.
+            </p>
 
-        <div className="mt-4">
-          <EnrollmentsTable initialEnrollments={JSON.parse(JSON.stringify(enrollments))} />
-        </div>
-      </div>
+            <div className="mt-4">
+              <EnrollmentsTable initialEnrollments={JSON.parse(JSON.stringify(enrollments))} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

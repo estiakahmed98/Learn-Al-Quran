@@ -1,10 +1,16 @@
-import type { Content } from "@prisma/client";
+export interface TeacherCard {
+  id: string;
+  name: string;
+  designation: string | null;
+  description: string | null;
+  imageURL: string | null;
+}
 
 export default function Teachers({
   teachers,
   embedded = false
 }: {
-  teachers: Content[];
+  teachers: TeacherCard[];
   embedded?: boolean;
 }) {
   if (!teachers.length) return null;
@@ -25,16 +31,18 @@ export default function Teachers({
           <div className="mx-auto h-16 w-16 overflow-hidden rounded-full bg-cream ring-2 ring-gold/40 sm:h-20 sm:w-20">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={teacher.image || "/images/teacher-placeholder.jpg"}
-              alt={teacher.title}
+              src={teacher.imageURL || "/images/teacher-placeholder.jpg"}
+              alt={teacher.name}
               className="h-full w-full object-cover"
             />
           </div>
           <h3 className="mt-3 font-heading text-sm font-bold text-primary-dark">
-            {teacher.title}
+            {teacher.name}
           </h3>
-          <p className="text-xs text-gray-600">{teacher.subtitle}</p>
-          <p className="mt-1 text-sm tracking-wide text-secondary">★★★★★</p>
+          {teacher.designation && <p className="text-xs text-gray-600">{teacher.designation}</p>}
+          {teacher.description && (
+            <p className="mt-1 line-clamp-2 text-xs text-gray-500">{teacher.description}</p>
+          )}
         </div>
       ))}
     </div>

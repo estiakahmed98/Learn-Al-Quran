@@ -12,8 +12,12 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function AboutUsPage() {
-  const teachers = await prisma.content
-    .findMany({ where: { type: "TEACHER", isPublished: true }, orderBy: { sortOrder: "asc" } })
+  const teachers = await prisma.user
+    .findMany({
+      where: { role: "TEACHER", isActive: true },
+      select: { id: true, name: true, designation: true, description: true, imageURL: true },
+      orderBy: { name: "asc" }
+    })
     .catch(() => []);
 
   return (

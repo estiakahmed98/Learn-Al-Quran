@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
   description:
     "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes. Book a free trial class today.",
-  alternates: { canonical: "/" }
+  alternates: { canonical: "/" },
 };
 
 export const revalidate = 3600;
@@ -24,21 +24,28 @@ async function getHomeData() {
     const [courses, teachers, reviews, faqs, settings] = await Promise.all([
       prisma.course.findMany({
         where: { isActive: true },
-        orderBy: { sortOrder: "asc" }
+        orderBy: { sortOrder: "asc" },
       }),
-      prisma.content.findMany({
-        where: { type: "TEACHER", isPublished: true },
-        orderBy: { sortOrder: "asc" }
+      prisma.user.findMany({
+        where: { role: "TEACHER", isActive: true },
+        select: {
+          id: true,
+          name: true,
+          designation: true,
+          description: true,
+          imageURL: true,
+        },
+        orderBy: { name: "asc" },
       }),
       prisma.content.findMany({
         where: { type: "REVIEW", isPublished: true },
-        orderBy: { sortOrder: "asc" }
+        orderBy: { sortOrder: "asc" },
       }),
       prisma.content.findMany({
         where: { type: "FAQ", isPublished: true },
-        orderBy: { sortOrder: "asc" }
+        orderBy: { sortOrder: "asc" },
       }),
-      getSiteSettings()
+      getSiteSettings(),
     ]);
     return { courses, teachers, reviews, faqs, settings };
   } catch {
@@ -56,10 +63,8 @@ export default async function HomePage() {
       <About />
       <Courses />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-12 lg:grid-cols-2 lg:px-8 lg:py-16">
-        <Teachers teachers={teachers} embedded />
-        <Reviews reviews={reviews} />
-      </section>
+      <Teachers teachers={teachers} embedded />
+      <Reviews reviews={reviews} />
 
       <section className="bg-cream py-12 lg:py-16">
         <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-[1fr_1.2fr_0.9fr] lg:px-8">

@@ -12,6 +12,8 @@ export interface UserFormValues {
   phone: string;
   whatsapp: string;
   address: string;
+  description: string;
+  designation: string;
   imageURL: string;
   role: "ADMIN" | "TEACHER" | "STUDENT";
   isActive: boolean;
@@ -35,6 +37,8 @@ const emptyValues: UserFormValues = {
   phone: "",
   whatsapp: "",
   address: "",
+  description: "",
+  designation: "",
   imageURL: "",
   role: "STUDENT",
   isActive: true,
@@ -108,6 +112,8 @@ export default function UserForm({
       phone: values.phone.trim(),
       whatsapp: values.whatsapp.trim(),
       address: values.address.trim(),
+      description: values.description.trim(),
+      designation: values.designation.trim(),
       imageURL: values.imageURL.trim(),
       role: values.role,
       isActive: values.isActive,
@@ -193,6 +199,29 @@ export default function UserForm({
             value={values.address}
             onChange={(e) => set("address", e.target.value)}
             className={inputClass}
+          />
+        </div>
+
+        {values.role === "TEACHER" && (
+          <div>
+            <label className={labelClass}>Designation</label>
+            <input
+              value={values.designation}
+              onChange={(e) => set("designation", e.target.value)}
+              className={inputClass}
+              placeholder="e.g. Hifz & Tajweed Specialist"
+            />
+          </div>
+        )}
+
+        <div className="sm:col-span-2">
+          <label className={labelClass}>Description</label>
+          <textarea
+            rows={3}
+            value={values.description}
+            onChange={(e) => set("description", e.target.value)}
+            className={inputClass}
+            placeholder="Short bio or notes about this user..."
           />
         </div>
 

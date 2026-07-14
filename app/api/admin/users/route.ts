@@ -17,6 +17,8 @@ const userSelect = {
   phone: true,
   whatsapp: true,
   address: true,
+  description: true,
+  designation: true,
   imageURL: true,
   role: true,
   isActive: true,
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { name, email, phone, whatsapp, address, imageURL, role, isActive, password, permissions } = body;
+  const { name, email, phone, whatsapp, address, description, designation, imageURL, role, isActive, password, permissions } = body;
 
   if (!name || !email || !password || String(password).length < 6) {
     return NextResponse.json(
@@ -64,6 +66,8 @@ export async function POST(request: Request) {
         phone: phone || null,
         whatsapp: whatsapp || null,
         address: address || null,
+        description: description || null,
+        designation: designation || null,
         imageURL: imageURL || null,
         role: normalizeRole(role),
         isActive: isActive ?? true,
