@@ -4,9 +4,25 @@ import ContentManager from "@/components/admin/ContentManager";
 export const dynamic = "force-dynamic";
 
 export default async function AdminContentPage() {
-  const content = await prisma.content.findMany({
-    orderBy: [{ type: "asc" }, { sortOrder: "asc" }]
-  }).catch(() => []);
+  const [content, teachers] = await Promise.all([
+    prisma.content.findMany({
+      where: { type: { not: "TEACHER" } },
+      orderBy: [{ type: "asc" }, { sortOrder: "asc" }]
+    }).catch(() => []),
+    prisma.user.findMany({
+      where: { role: "TEACHER" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        designation: true,
+        description: true,
+        imageURL: true,
+        isActive: true
+      },
+      orderBy: { createdAt: "desc" }
+    }).catch(() => [])
+  ]);
 
   return (
     <div>
@@ -16,7 +32,10 @@ export default async function AdminContentPage() {
       </p>
 
       <div className="mt-6">
-        <ContentManager initialContent={JSON.parse(JSON.stringify(content))} />
+        <ContentManager
+          initialContent={JSON.parse(JSON.stringify(content))}
+          initialTeachers={JSON.parse(JSON.stringify(teachers))}
+        />
       </div>
     </div>
   );

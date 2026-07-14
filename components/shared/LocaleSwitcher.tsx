@@ -4,39 +4,30 @@ import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-const locales = [
-  { code: "en", label: "EN" },
-  { code: "bn", label: "বাং" }
-];
+const targetLabel: Record<string, string> = {
+  en: "বাংলা",
+  bn: "EN"
+};
 
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  function switchTo(code: string) {
-    if (code === locale) return;
-    document.cookie = `NEXT_LOCALE=${code};path=/;max-age=31536000;samesite=lax`;
+  function toggle() {
+    const next = locale === "en" ? "bn" : "en";
+    document.cookie = `NEXT_LOCALE=${next};path=/;max-age=31536000;samesite=lax`;
     startTransition(() => router.refresh());
   }
 
   return (
-    <div className="flex overflow-hidden rounded-full border border-gold/40 text-xs font-semibold">
-      {locales.map((l) => (
-        <button
-          key={l.code}
-          onClick={() => switchTo(l.code)}
-          disabled={isPending}
-          aria-pressed={locale === l.code}
-          className={`px-2.5 py-1.5 transition ${
-            locale === l.code
-              ? "bg-primary text-white"
-              : "bg-white text-gray-600 hover:bg-cream hover:text-primary"
-          }`}
-        >
-          {l.label}
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={toggle}
+      disabled={isPending}
+      aria-label={`Switch to ${targetLabel[locale] === "EN" ? "English" : "Bangla"}`}
+      className="rounded-full border border-gold/40 bg-white px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-cream disabled:opacity-60"
+    >
+      {targetLabel[locale] ?? "EN"}
+    </button>
   );
 }

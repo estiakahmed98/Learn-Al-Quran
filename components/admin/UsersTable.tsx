@@ -24,21 +24,53 @@ const ROLE_BADGE_CLASS: Record<UserRow["role"], string> = {
   STUDENT: "bg-blue-50 text-blue-700"
 };
 
+const PAGE_SIZE = 10;
+const ROLE_FILTERS = ["ALL", "ADMIN", "TEACHER", "STUDENT"] as const;
+type RoleFilter = (typeof ROLE_FILTERS)[number];
+const STATUS_FILTERS = ["ALL", "ACTIVE", "BLOCKED"] as const;
+type StatusFilter = (typeof STATUS_FILTERS)[number];
+
 export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }) {
   const router = useRouter();
   const [users, setUsers] = useState(initialUsers);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("ALL");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [page, setPage] = useState(1);
 
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
-    return (
+    const matchesSearch =
       u.name.toLowerCase().includes(q) ||
       u.email.toLowerCase().includes(q) ||
-      (u.phone || "").includes(q)
-    );
+      (u.phone || "").includes(q);
+    const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      (statusFilter === "ACTIVE" ? u.isActive : !u.isActive);
+    return matchesSearch && matchesRole && matchesStatus;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  function updateSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
+
+  function updateRoleFilter(value: RoleFilter) {
+    setRoleFilter(value);
+    setPage(1);
+  }
+
+  function updateStatusFilter(value: StatusFilter) {
+    setStatusFilter(value);
+    setPage(1);
+  }
 
   async function toggleActive(user: UserRow) {
     setSavingId(user.id);
@@ -70,12 +102,33 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, email or phone..."
-          className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
-        />
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            value={search}
+            onChange={(e) => updateSearch(e.target.value)}
+            placeholder="Search by name, email or phone..."
+            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+          />
+          <select
+            value={roleFilter}
+            onChange={(e) => updateRoleFilter(e.target.value as RoleFilter)}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+          >
+            <option value="ALL">All Roles</option>
+            <option value="ADMIN">Admin</option>
+            <option value="TEACHER">Teacher</option>
+            <option value="STUDENT">Student</option>
+          </select>
+          <select
+            value={statusFilter}
+            onChange={(e) => updateStatusFilter(e.target.value as StatusFilter)}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+          >
+            <option value="ALL">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="BLOCKED">Blocked</option>
+          </select>
+        </div>
         <button
           onClick={() => setShowAddModal(true)}
           className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
@@ -98,7 +151,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
             </tr>
           </thead>
           <tbody>
-            {filtered.map((user) => (
+            {paginated.map((user) => (
               <tr key={user.id} className="border-t border-gray-100">
                 <td className="px-4 py-3">
                   <Link
@@ -167,6 +220,34 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
           </p>
         )}
       </div>
+
+      {filtered.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-gray-500">
+            Showing {(currentPage - 1) * PAGE_SIZE + 1}-
+            {Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-cream disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+            <span className="text-xs text-gray-500">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-cream disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       {showAddModal && (
         <div

@@ -5,6 +5,11 @@ export default function GoogleMapSection({
   mapUrl: string;
   embedded?: boolean;
 }) {
+  const googleMapUrl =
+    mapUrl && !mapUrl.includes("!1d1234")
+      ? mapUrl
+      : "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed";
+
   if (embedded) {
     return (
       <div>
@@ -13,9 +18,11 @@ export default function GoogleMapSection({
         </h2>
         <div className="mt-5 overflow-hidden rounded-2xl border border-gold/20 shadow-sm">
           <iframe
-            src={mapUrl}
+            src={googleMapUrl}
             width="100%"
             height="280"
+            className="border-0"
+            allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             title="Learn Al Quran Online BD location"
@@ -35,9 +42,11 @@ export default function GoogleMapSection({
       </div>
       <div className="mt-8 overflow-hidden rounded-2xl border border-gold/20 shadow-sm">
         <iframe
-          src={mapUrl}
+          src={googleMapUrl}
           width="100%"
           height="400"
+          className="border-0"
+          allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           title="Learn Al Quran Online BD location"

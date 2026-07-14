@@ -12,13 +12,39 @@ const TYPES: { value: ContentType; label: string }[] = [
 ];
 
 const emptyForm = { title: "", subtitle: "", description: "", image: "" };
+const emptyTeacherForm = {
+  name: "",
+  email: "",
+  password: "",
+  designation: "",
+  description: "",
+  imageURL: ""
+};
 
-export default function ContentManager({ initialContent }: { initialContent: Content[] }) {
+interface TeacherUser {
+  id: string;
+  name: string;
+  email: string;
+  designation: string | null;
+  description: string | null;
+  imageURL: string | null;
+  isActive: boolean;
+}
+
+export default function ContentManager({
+  initialContent,
+  initialTeachers
+}: {
+  initialContent: Content[];
+  initialTeachers: TeacherUser[];
+}) {
   const [items, setItems] = useState(initialContent);
+  const [teachers, setTeachers] = useState(initialTeachers);
   const [activeTab, setActiveTab] = useState<ContentType>("TEACHER");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [teacherForm, setTeacherForm] = useState(emptyTeacherForm);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -27,6 +53,7 @@ export default function ContentManager({ initialContent }: { initialContent: Con
   function openAddForm() {
     setEditingId(null);
     setForm(emptyForm);
+    setTeacherForm(emptyTeacherForm);
     setShowForm(true);
   }
 
@@ -37,6 +64,19 @@ export default function ContentManager({ initialContent }: { initialContent: Con
       subtitle: item.subtitle || "",
       description: item.description || "",
       image: item.image || "",
+    });
+    setShowForm(true);
+  }
+
+  function openTeacherEditForm(teacher: TeacherUser) {
+    setEditingId(teacher.id);
+    setTeacherForm({
+      name: teacher.name,
+      email: teacher.email,
+      password: "",
+      designation: teacher.designation || "",
+      description: teacher.description || "",
+      imageURL: teacher.imageURL || ""
     });
     setShowForm(true);
   }
@@ -60,7 +100,11 @@ export default function ContentManager({ initialContent }: { initialContent: Con
       const data = await res.json();
       if (!data.url) throw new Error("Invalid upload response: url missing");
 
-      setForm((prev) => ({ ...prev, image: data.url }));
+      if (activeTab === "TEACHER") {
+        setTeacherForm((prev) => ({ ...prev, imageURL: data.url }));
+      } else {
+        setForm((prev) => ({ ...prev, image: data.url }));
+      }
     } catch (err) {
       console.error("Error uploading image:", err);
       alert(err instanceof Error ? err.message : "Error uploading image");
@@ -72,6 +116,39 @@ export default function ContentManager({ initialContent }: { initialContent: Con
   async function saveItem(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+
+    if (activeTab === "TEACHER") {
+      const url = editingId ? `/api/admin/users/${editingId}` : "/api/admin/users";
+      const { password, ...teacherFields } = teacherForm;
+      const body = {
+        ...teacherFields,
+        role: "TEACHER",
+        ...(password ? { password } : {})
+      };
+
+      const res = await fetch(url, {
+        method: editingId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json().catch(() => null);
+
+      if (res.ok) {
+        const saved: TeacherUser = data;
+        setTeachers((prev) =>
+          editingId
+            ? prev.map((teacher) => (teacher.id === editingId ? saved : teacher))
+            : [saved, ...prev]
+        );
+        setTeacherForm(emptyTeacherForm);
+        setEditingId(null);
+        setShowForm(false);
+      } else {
+        alert(data?.message || "Failed to save teacher.");
+      }
+      setSaving(false);
+      return;
+    }
 
     if (editingId) {
       const res = await fetch(`/api/admin/content/${editingId}`, {
@@ -102,6 +179,29 @@ export default function ContentManager({ initialContent }: { initialContent: Con
     }
 
     setSaving(false);
+  }
+
+  async function toggleTeacher(teacher: TeacherUser) {
+    const res = await fetch(`/api/admin/users/${teacher.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isActive: !teacher.isActive })
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setTeachers((prev) => prev.map((item) => (item.id === teacher.id ? updated : item)));
+    }
+  }
+
+  async function removeTeacher(teacher: TeacherUser) {
+    if (!confirm(`Delete teacher account "${teacher.name}" (${teacher.email})? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/users/${teacher.id}`, { method: "DELETE" });
+    if (res.ok) {
+      setTeachers((prev) => prev.filter((item) => item.id !== teacher.id));
+    } else {
+      const data = await res.json().catch(() => null);
+      alert(data?.message || "Failed to delete teacher.");
+    }
   }
 
   async function togglePublish(item: Content) {
@@ -149,22 +249,22 @@ export default function ContentManager({ initialContent }: { initialContent: Con
           onClick={openAddForm}
           className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-primary-dark hover:bg-gold-light"
         >
-          + Add {activeLabel}
+          + Add {activeTab === "TEACHER" ? "Teacher" : activeLabel}
         </button>
       </div>
 
       {activeTab === "TEACHER" ? (
         <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((item) => (
+          {teachers.map((teacher) => (
             <div
-              key={item.id}
+              key={teacher.id}
               className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
               <div className="h-40 w-full shrink-0 bg-cream">
-                {item.image ? (
+                {teacher.imageURL ? (
                   <img
-                    src={item.image}
-                    alt={item.title}
+                    src={teacher.imageURL}
+                    alt={teacher.name}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -186,29 +286,30 @@ export default function ContentManager({ initialContent }: { initialContent: Con
                 )}
               </div>
               <div className="flex flex-1 flex-col p-4">
-                <p className="font-medium text-gray-800">{item.title}</p>
-                {item.subtitle && <p className="text-xs text-gray-400">{item.subtitle}</p>}
-                {item.description && (
-                  <p className="mt-2 line-clamp-3 text-xs text-gray-500">{item.description}</p>
+                <p className="font-medium text-gray-800">{teacher.name}</p>
+                <p className="text-xs text-gray-400">{teacher.email}</p>
+                {teacher.designation && <p className="mt-1 text-xs font-medium text-gold">{teacher.designation}</p>}
+                {teacher.description && (
+                  <p className="mt-2 line-clamp-3 text-xs text-gray-500">{teacher.description}</p>
                 )}
                 <div className="mt-4 flex items-center justify-between gap-2 pt-2">
                   <button
-                    onClick={() => togglePublish(item)}
+                    onClick={() => toggleTeacher(teacher)}
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      item.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                      teacher.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                     }`}
                   >
-                    {item.isPublished ? "Published" : "Hidden"}
+                    {teacher.isActive ? "Active" : "Hidden"}
                   </button>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => openEditForm(item)}
+                      onClick={() => openTeacherEditForm(teacher)}
                       className="text-xs font-semibold text-primary hover:underline"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => remove(item)}
+                      onClick={() => removeTeacher(teacher)}
                       className="text-xs font-semibold text-red-500 hover:underline"
                     >
                       Delete
@@ -218,9 +319,9 @@ export default function ContentManager({ initialContent }: { initialContent: Con
               </div>
             </div>
           ))}
-          {filtered.length === 0 && (
+          {teachers.length === 0 && (
             <p className="col-span-full rounded-xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-400">
-              No teachers yet. Click &quot;+ Add Teachers&quot; to create one.
+              No teacher users yet. Click &quot;+ Add Teacher&quot; to create one.
             </p>
           )}
         </div>
@@ -278,7 +379,7 @@ export default function ContentManager({ initialContent }: { initialContent: Con
           >
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-heading text-lg font-bold text-primary-dark">
-                {editingId ? "Edit" : "Add"} {activeLabel}
+                {editingId ? "Edit" : "Add"} {activeTab === "TEACHER" ? "Teacher" : activeLabel}
               </h2>
               <button
                 onClick={() => {
@@ -293,38 +394,88 @@ export default function ContentManager({ initialContent }: { initialContent: Con
             </div>
 
             <form onSubmit={saveItem} className="space-y-3">
-              <input
-                required
-                placeholder="Title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2"
-              />
-              <input
-                placeholder="Subtitle (optional)"
-                value={form.subtitle}
-                onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2"
-              />
-              <textarea
-                placeholder="Description / Content"
-                value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-                rows={4}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2"
-              />
+              {activeTab === "TEACHER" ? (
+                <>
+                  <input
+                    required
+                    placeholder="Teacher name"
+                    value={teacherForm.name}
+                    onChange={(e) => setTeacherForm({ ...teacherForm, name: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <input
+                    required
+                    type="email"
+                    placeholder="Email address"
+                    value={teacherForm.email}
+                    onChange={(e) => setTeacherForm({ ...teacherForm, email: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <input
+                    required={!editingId}
+                    type="password"
+                    minLength={6}
+                    placeholder={editingId ? "New password (leave blank to keep current)" : "Password (minimum 6 characters)"}
+                    value={teacherForm.password}
+                    onChange={(e) => setTeacherForm({ ...teacherForm, password: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <input
+                    placeholder="Designation (optional)"
+                    value={teacherForm.designation}
+                    onChange={(e) => setTeacherForm({ ...teacherForm, designation: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <textarea
+                    placeholder="Teacher description"
+                    value={teacherForm.description}
+                    onChange={(e) => setTeacherForm({ ...teacherForm, description: e.target.value })}
+                    rows={4}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                </>
+              ) : (
+                <>
+                  <input
+                    required
+                    placeholder="Title"
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <input
+                    placeholder="Subtitle (optional)"
+                    value={form.subtitle}
+                    onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                  <textarea
+                    placeholder="Description / Content"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    rows={4}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2"
+                  />
+                </>
+              )}
 
               <div className="space-y-2">
-                {form.image && (
+                {(activeTab === "TEACHER" ? teacherForm.imageURL : form.image) && (
                   <div className="flex items-center gap-3">
                     <img
-                      src={form.image}
+                      src={activeTab === "TEACHER" ? teacherForm.imageURL : form.image}
                       alt="Preview"
                       className="h-16 w-16 rounded-md border object-cover"
                     />
                     <button
                       type="button"
-                      onClick={() => setForm((prev) => ({ ...prev, image: "" }))}
+                      onClick={() => {
+                        if (activeTab === "TEACHER") {
+                          setTeacherForm((prev) => ({ ...prev, imageURL: "" }));
+                        } else {
+                          setForm((prev) => ({ ...prev, image: "" }));
+                        }
+                      }}
                       className="text-xs text-red-600 hover:underline"
                     >
                       Remove image

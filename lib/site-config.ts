@@ -20,7 +20,7 @@ export const fallbackSettings = {
   instagramUrl: "",
   linkedinUrl: "",
   googleMapUrl:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1234!2d90.4125!3d23.8103",
+    "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed",
   ga4Id,
   privacyPolicy: "",
   terms: "",

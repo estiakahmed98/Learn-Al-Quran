@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
@@ -63,11 +64,19 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 
   try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: params.id },
+      select: { role: true }
+    });
     const user = await prisma.user.update({
       where: { id: params.id },
       data,
       select: userSelect
     });
+    if (existingUser?.role === "TEACHER" || user.role === "TEACHER") {
+      revalidatePath("/");
+      revalidatePath("/about-us");
+    }
     return NextResponse.json(user);
   } catch (error: any) {
     if (error?.code === "P2002") {
@@ -88,6 +97,13 @@ export async function DELETE(_request: Request, { params }: { params: { id: stri
     return NextResponse.json({ message: "You cannot delete your own account." }, { status: 400 });
   }
 
-  await prisma.user.delete({ where: { id: params.id } });
+  const deletedUser = await prisma.user.delete({
+    where: { id: params.id },
+    select: { role: true }
+  });
+  if (deletedUser.role === "TEACHER") {
+    revalidatePath("/");
+    revalidatePath("/about-us");
+  }
   return NextResponse.json({ success: true });
 }

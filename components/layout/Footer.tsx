@@ -27,6 +27,10 @@ export default function Footer({
   copyrightText
 }: FooterProps) {
   const t = useTranslations("footer");
+  const footerGoogleMapUrl =
+    googleMapUrl && !googleMapUrl.includes("!1d1234")
+      ? googleMapUrl
+      : `https://www.google.com/maps?q=${encodeURIComponent(address || "Dhaka, Bangladesh")}&z=12&output=embed`;
   const socials = [
     { label: "f", title: "Facebook", url: facebookUrl },
     { label: "▶", title: "YouTube", url: youtubeUrl },
@@ -113,18 +117,18 @@ export default function Footer({
 
         <div>
           <h4 className="font-heading font-semibold text-white">{t("googleMap")}</h4>
-          {googleMapUrl && (
-            <div className="mt-4 overflow-hidden rounded-xl">
-              <iframe
-                src={googleMapUrl}
-                width="100%"
-                height="150"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Madrasa location on Google Map"
-              />
-            </div>
-          )}
+          <div className="mt-4 overflow-hidden rounded-xl">
+            <iframe
+              src={footerGoogleMapUrl}
+              width="100%"
+              height="150"
+              className="border-0"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Madrasa location on Google Map"
+            />
+          </div>
         </div>
       </div>
 

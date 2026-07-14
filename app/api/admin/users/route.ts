@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
@@ -76,6 +77,10 @@ export async function POST(request: Request) {
       },
       select: userSelect
     });
+    if (user.role === "TEACHER") {
+      revalidatePath("/");
+      revalidatePath("/about-us");
+    }
     return NextResponse.json(user, { status: 201 });
   } catch (error: any) {
     if (error?.code === "P2002") {

@@ -4,6 +4,7 @@ import About from "@/components/home/About";
 import Courses from "@/components/home/Courses";
 import Teachers from "@/components/home/Teachers";
 import Reviews from "@/components/home/Reviews";
+import ReviewForm from "@/components/home/ReviewForm";
 import FAQ from "@/components/home/FAQ";
 import LeadForm from "@/components/home/LeadForm";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
@@ -47,10 +48,18 @@ async function getHomeData() {
       }),
       getSiteSettings(),
     ]);
+
     return { courses, teachers, reviews, faqs, settings };
   } catch {
     const settings = await getSiteSettings();
-    return { courses: [], teachers: [], reviews: [], faqs: [], settings };
+
+    return {
+      courses: [],
+      teachers: [],
+      reviews: [],
+      faqs: [],
+      settings,
+    };
   }
 }
 
@@ -66,9 +75,9 @@ export default async function HomePage() {
       <Teachers teachers={teachers} embedded />
       <Reviews reviews={reviews} />
 
+      {/* Lead form and map */}
       <section className="bg-cream py-12 lg:py-16">
-        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-[1fr_1.2fr_0.9fr] lg:px-8">
-          <FAQ faqs={faqs} />
+        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-2 lg:px-8">
           <LeadForm
             courses={courses}
             bkashNumber={settings.bkashNumber || ""}
@@ -76,7 +85,19 @@ export default async function HomePage() {
             bankAccount={settings.bankAccount || ""}
             embedded
           />
+
           <GoogleMapSection mapUrl={settings.googleMapUrl || ""} embedded />
+        </div>
+      </section>
+
+      {/* FAQ and review form */}
+      <section className="bg-primary/5 py-12 lg:py-16">
+        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-2 lg:px-8">
+          <FAQ faqs={faqs} />
+
+          <div className="mx-auto w-full max-w-2xl">
+            <ReviewForm />
+          </div>
         </div>
       </section>
     </>

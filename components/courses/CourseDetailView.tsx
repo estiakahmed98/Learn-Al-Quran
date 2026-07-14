@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import PriceCard from "@/components/courses/PriceCard";
 import CurriculumAccordion from "@/components/courses/CurriculumAccordion";
+import ReviewForm from "@/components/home/ReviewForm";
 import {
   discountPercent,
   getCurriculumSections,
@@ -398,6 +399,13 @@ export default function CourseDetailView({
           </div>
         </section>
       )}
+
+      {/* ============ Review submission ============ */}
+      <section className="bg-cream">
+        <div className="mx-auto max-w-2xl px-4 py-14 lg:px-8">
+          <ReviewForm />
+        </div>
+      </section>
 
       {/* ============ Bottom enroll ============ */}
       <section className="bg-gradient-to-br from-primary-dark to-primary">

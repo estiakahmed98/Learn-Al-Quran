@@ -23,27 +23,72 @@ async function main() {
 
   // ---- Teacher users (admin panel accounts) ----
   const teacherUsers = [
-    { name: "Hafez Mawlana Abdullah Al Mamun", email: "abdullah.mamun@learnalquranonlinebd.com" },
-    { name: "Qari Muhammad Yusuf", email: "muhammad.yusuf@learnalquranonlinebd.com" },
-    { name: "Ustaza Amina Khatun", email: "amina.khatun@learnalquranonlinebd.com" },
-    { name: "Hafez Ibrahim Khalil", email: "ibrahim.khalil@learnalquranonlinebd.com" },
-    { name: "Qari Sadiqur Rahman", email: "sadiqur.rahman@learnalquranonlinebd.com" },
-    { name: "Ustaza Rukaiya Sultana", email: "rukaiya.sultana@learnalquranonlinebd.com" },
-    { name: "Hafez Zubair Ahmed", email: "zubair.ahmed@learnalquranonlinebd.com" },
-    { name: "Qari Nurul Islam", email: "nurul.islam@learnalquranonlinebd.com" }
+    {
+      name: "Hafez Mawlana Abdullah Al Mamun",
+      email: "abdullah.mamun@learnalquranonlinebd.com",
+      designation: "Hifz & Tajweed Specialist",
+      description: "10+ years of teaching experience with Ijazah in Quran recitation."
+    },
+    {
+      name: "Qari Muhammad Yusuf",
+      email: "muhammad.yusuf@learnalquranonlinebd.com",
+      designation: "Nazera & Tajweed Teacher",
+      description: "Graduate of Qawmi Madrasa, specialized in beginner Quran reading."
+    },
+    {
+      name: "Ustaza Amina Khatun",
+      email: "amina.khatun@learnalquranonlinebd.com",
+      designation: "Female Students & Kids Teacher",
+      description: "Specialized in teaching children and adult female students online."
+    },
+    {
+      name: "Hafez Ibrahim Khalil",
+      email: "ibrahim.khalil@learnalquranonlinebd.com",
+      designation: "Hifz Teacher",
+      description: "Certified Hafez with a focus on memorization and revision (Dohor) systems."
+    },
+    {
+      name: "Qari Sadiqur Rahman",
+      email: "sadiqur.rahman@learnalquranonlinebd.com",
+      designation: "Tajweed Master Teacher",
+      description: "Expert in Makhraj and Sifat, trained under renowned Qaris in Madinah."
+    },
+    {
+      name: "Ustaza Rukaiya Sultana",
+      email: "rukaiya.sultana@learnalquranonlinebd.com",
+      designation: "Adult Learning Teacher",
+      description: "Patient, encouraging teacher specialized in guiding adult beginners."
+    },
+    {
+      name: "Hafez Zubair Ahmed",
+      email: "zubair.ahmed@learnalquranonlinebd.com",
+      designation: "Hifz & Nazera Teacher",
+      description: "Completed Hifz at age 14, now mentoring young Huffaz students online."
+    },
+    {
+      name: "Qari Nurul Islam",
+      email: "nurul.islam@learnalquranonlinebd.com",
+      designation: "English Speaking & Quran Teacher",
+      description: "Bilingual instructor teaching both spoken English and Quran recitation."
+    }
   ];
 
   const teacherPassword = await bcrypt.hash("Teacher@12345", 10);
   for (const teacher of teacherUsers) {
     await prisma.user.upsert({
       where: { email: teacher.email },
-      update: {},
+      update: {
+        designation: teacher.designation,
+        description: teacher.description
+      },
       create: {
         name: teacher.name,
         email: teacher.email,
         passwordHash: teacherPassword,
         role: "TEACHER",
         isActive: true,
+        designation: teacher.designation,
+        description: teacher.description,
         permissions: DEFAULT_TEACHER_SECTIONS
       }
     });
@@ -66,7 +111,7 @@ async function main() {
       facebookUrl: "https://facebook.com/",
       youtubeUrl: "https://youtube.com/",
       googleMapUrl:
-        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1234!2d90.4125!3d23.8103",
+        "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed",
       ga4Id: process.env.NEXT_PUBLIC_GA4_ID || "",
       copyrightText: `© ${new Date().getFullYear()} Learn Al Quran Online BD. All rights reserved.`
     }
