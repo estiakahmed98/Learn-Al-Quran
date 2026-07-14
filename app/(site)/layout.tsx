@@ -19,7 +19,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         youtubeUrl={settings.youtubeUrl}
         instagramUrl={settings.instagramUrl}
         linkedinUrl={settings.linkedinUrl}
-        googleMapUrl={settings.googleMapUrl}
         copyrightText={settings.copyrightText}
       />
       <WhatsAppFloat whatsapp={settings.whatsapp || ""} />

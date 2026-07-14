@@ -19,7 +19,8 @@
     "p2": "We generally start taking <b>children</b> as young as 4 years, and because we have both male and female teachers, we are able to teach both genders privately or in group sessions (if available).",
     "p3": "Our classes are conducted primarily online via <b>Skype</b> or <b>Zoom</b>. Please contact us to check availability.",
     "learnMore": "Learn More",
-    "imageAlt": "Learn Al Quran Online BD teachers and students"
+    "imageAlt": "Learn Al Quran Online BD teachers and students",
+    "subtitle": "Join our learning community"
   },
   "courses": {
     "title": "Our Courses",
@@ -104,7 +105,11 @@
     "googleMap": "Google Map",
     "copyright": "© {year} Learn Al Quran Online BD. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions"
+    "terms": "Terms & Conditions",
+    "ctaEyebrow": "Start Learning Today",
+    "ctaTitle": "Begin Your Quran Journey With Confidence",
+    "ctaText": "Meet a qualified teacher and experience our live online learning approach.",
+    "bookFreeTrial": "Book a Free Trial"
   },
   "auth": {
     "loginTitle": "Login",

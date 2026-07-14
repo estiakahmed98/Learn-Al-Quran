@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface FooterProps {
@@ -10,7 +11,6 @@ interface FooterProps {
   youtubeUrl?: string | null;
   instagramUrl?: string | null;
   linkedinUrl?: string | null;
-  googleMapUrl?: string | null;
   copyrightText?: string | null;
 }
 
@@ -23,58 +23,69 @@ export default function Footer({
   youtubeUrl,
   instagramUrl,
   linkedinUrl,
-  googleMapUrl,
   copyrightText
 }: FooterProps) {
   const t = useTranslations("footer");
-  const footerGoogleMapUrl =
-    googleMapUrl && !googleMapUrl.includes("!1d1234")
-      ? googleMapUrl
-      : `https://www.google.com/maps?q=${encodeURIComponent(address || "Dhaka, Bangladesh")}&z=12&output=embed`;
   const socials = [
-    { label: "f", title: "Facebook", url: facebookUrl },
-    { label: "▶", title: "YouTube", url: youtubeUrl },
-    { label: "◎", title: "Instagram", url: instagramUrl },
+    { label: "Fb", title: "Facebook", url: facebookUrl },
+    { label: "YT", title: "YouTube", url: youtubeUrl },
+    { label: "Ig", title: "Instagram", url: instagramUrl },
     { label: "in", title: "LinkedIn", url: linkedinUrl },
-    { label: "✆", title: "WhatsApp", url: whatsapp ? `https://wa.me/${whatsapp}` : null }
-  ].filter((s) => s.url);
+    { label: "WA", title: "WhatsApp", url: whatsapp ? `https://wa.me/${whatsapp}` : null }
+  ].filter((social) => social.url);
+
+  const quickLinks = [
+    { href: "/", label: t("home") },
+    { href: "/courses", label: t("courses") },
+    { href: "/books", label: t("books") },
+    { href: "/blog", label: t("blog") },
+    { href: "/about-us", label: t("aboutUs") },
+    { href: "/contact-us", label: t("contactUs") }
+  ];
 
   return (
-    <footer className="bg-primary-dark text-cream">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-[1.2fr_1.2fr_0.8fr_1fr] lg:px-8">
-        <div>
-          <div className="flex items-center gap-2.5">
+    <footer className="relative overflow-hidden bg-primary-dark text-cream">
+      <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full border-[28px] border-white/[0.025]" />
+      <div className="pointer-events-none absolute -bottom-28 right-10 h-72 w-72 rounded-full border-[32px] border-gold/[0.035]" />
+
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:py-14">
+        <div className="sm:col-span-2 lg:col-span-4">
+          <Link href="/" className="inline-flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/Learn_Al_Quran_Logo.png"
               alt="Learn Al Quran Online BD logo"
-              className="h-11 w-11 shrink-0 rounded-full object-cover"
+              className="h-14 w-14 shrink-0 rounded-full border border-gold/30 object-cover"
             />
             <span className="leading-tight">
-              <span className="block font-heading text-base font-bold uppercase tracking-wide text-white">
+              <span className="block font-heading text-lg font-bold uppercase tracking-wide text-white">
                 Learn Al Quran
               </span>
-              <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-light">
+              <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-light">
                 Online BD
               </span>
             </span>
-          </div>
-          <p className="mt-4 text-sm text-cream/80">{t("mission")}</p>
+          </Link>
+
+          <p className="mt-5 max-w-sm text-sm leading-6 text-cream/70">{t("mission")}</p>
 
           {socials.length > 0 && (
-            <div className="mt-5">
-              <h4 className="text-sm font-semibold text-white">{t("followUs")}</h4>
-              <div className="mt-3 flex gap-2">
-                {socials.map((s) => (
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-light">
+                {t("followUs")}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {socials.map((social) => (
                   <a
-                    key={s.title}
-                    href={s.url as string}
+                    key={social.title}
+                    href={social.url as string}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={s.title}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-white transition hover:bg-gold hover:text-primary-dark"
+                    title={social.title}
+                    aria-label={social.title}
+                    className="flex h-9 min-w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-2 text-[11px] font-bold text-white transition hover:border-gold hover:bg-gold hover:text-primary-dark"
                   >
-                    {s.label}
+                    {social.label}
                   </a>
                 ))}
               </div>
@@ -82,68 +93,78 @@ export default function Footer({
           )}
         </div>
 
-        <div>
-          <h4 className="font-heading font-semibold text-white">{t("contactInfo")}</h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-cream/80">
-            <li>
-              📞 <a href={`tel:${phone}`} className="hover:text-gold-light">{phone}</a>
+        <div className="lg:col-span-2">
+          <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-white">
+            {t("quickLinks")}
+          </h2>
+          <div className="mt-3 h-0.5 w-10 rounded-full bg-gold/70" />
+          <ul className="mt-5 space-y-3 text-sm text-cream/70">
+            {quickLinks.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="inline-flex items-center gap-2 transition hover:translate-x-1 hover:text-gold-light">
+                  <span className="h-1 w-1 rounded-full bg-gold/70" />
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lg:col-span-3">
+          <h2 className="font-heading text-sm font-semibold uppercase tracking-wide text-white">
+            {t("contactInfo")}
+          </h2>
+          <div className="mt-3 h-0.5 w-10 rounded-full bg-gold/70" />
+          <ul className="mt-5 space-y-4 text-sm text-cream/70">
+            <li className="flex items-start gap-3">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
+              <a href={`tel:${phone}`} className="break-all transition hover:text-gold-light">{phone}</a>
             </li>
-            <li>
-              💬{" "}
-              <a href={`https://wa.me/${whatsapp}`} className="hover:text-gold-light">
+            <li className="flex items-start gap-3">
+              <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
+              <a href={`https://wa.me/${whatsapp}`} className="break-all transition hover:text-gold-light">
                 {t("whatsapp")}: {whatsapp}
               </a>
             </li>
-            <li>
-              ✉️ <a href={`mailto:${email}`} className="hover:text-gold-light">{email}</a>
+            <li className="flex items-start gap-3">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
+              <a href={`mailto:${email}`} className="break-all transition hover:text-gold-light">{email}</a>
             </li>
-            <li>📍 {address}</li>
+            <li className="flex items-start gap-3">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
+              <span className="leading-5">{address}</span>
+            </li>
           </ul>
         </div>
 
-        <div>
-          <h4 className="font-heading font-semibold text-white">{t("quickLinks")}</h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-cream/80">
-            <li><Link href="/" className="hover:text-gold-light">{t("home")}</Link></li>
-            <li><Link href="/courses" className="hover:text-gold-light">{t("courses")}</Link></li>
-            <li><Link href="/#courses" className="hover:text-gold-light">{t("masterClasses")}</Link></li>
-            <li><Link href="/books" className="hover:text-gold-light">{t("books")}</Link></li>
-            <li><Link href="/blog" className="hover:text-gold-light">{t("blog")}</Link></li>
-            <li><Link href="/about-us" className="hover:text-gold-light">{t("aboutUs")}</Link></li>
-            <li><Link href="/contact-us" className="hover:text-gold-light">{t("contactUs")}</Link></li>
-            <li><Link href="/free-trial-class" className="hover:text-gold-light">{t("freeTrialClass")}</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-heading font-semibold text-white">{t("googleMap")}</h4>
-          <div className="mt-4 overflow-hidden rounded-xl">
-            <iframe
-              src={footerGoogleMapUrl}
-              width="100%"
-              height="150"
-              className="border-0"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Madrasa location on Google Map"
-            />
+        <div className="sm:col-span-2 lg:col-span-3">
+          <div className="h-full rounded-2xl border border-gold/15 bg-white/[0.055] p-6 shadow-inner">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold-light">
+              {t("ctaEyebrow")}
+            </p>
+            <h2 className="mt-3 font-heading text-xl font-bold leading-snug text-white">
+              {t("ctaTitle")}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-cream/65">{t("ctaText")}</p>
+            <Link
+              href="/free-trial-class"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-bold text-primary-dark transition hover:bg-gold-light"
+            >
+              {t("bookFreeTrial")}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-cream/70 sm:flex-row lg:px-8">
+      <div className="relative border-t border-white/10 bg-black/10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 text-center text-xs text-cream/60 sm:flex-row sm:text-left lg:px-8">
           <p>{copyrightText || t("copyright", { year: new Date().getFullYear() })}</p>
-          <p className="flex gap-3">
-            <Link href="/privacy-policy" className="hover:text-gold-light">
-              {t("privacyPolicy")}
-            </Link>
-            <span>|</span>
-            <Link href="/terms-and-conditions" className="hover:text-gold-light">
-              {t("terms")}
-            </Link>
-          </p>
+          <div className="flex items-center gap-3">
+            <Link href="/privacy-policy" className="transition hover:text-gold-light">{t("privacyPolicy")}</Link>
+            <span className="text-white/20">|</span>
+            <Link href="/terms-and-conditions" className="transition hover:text-gold-light">{t("terms")}</Link>
+          </div>
         </div>
       </div>
     </footer>
