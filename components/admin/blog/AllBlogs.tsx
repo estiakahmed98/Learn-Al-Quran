@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { generateSlug } from "@/lib/utils";
 
 interface Blog {
@@ -67,6 +68,7 @@ const formatFacebookTime = (date: string | Date): string => {
 };
 
 export default function AllBlogs() {
+  const t = useTranslations("sitePages.blog");
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -136,10 +138,10 @@ export default function AllBlogs() {
         <div className="text-center p-10 bg-white/80 rounded-3xl shadow-xl border border-emerald-200">
           <div className="text-4xl mb-4">📝</div>
           <h3 className="text-2xl font-bold text-emerald-600 mb-2">
-            No blog posts found
+            {t("noPostsTitle")}
           </h3>
           <p className="text-gray-600">
-            Please check back later for new content.
+            {t("noPostsBody")}
           </p>
         </div>
       </div>
@@ -168,7 +170,7 @@ export default function AllBlogs() {
                         </div>
                       )}
                       <span className="absolute top-4 right-4 bg-emerald-600 text-white text-xs px-3 py-1 rounded-full">
-                        Blog
+                        {t("eyebrow")}
                       </span>
                     </div>
 
@@ -201,7 +203,7 @@ export default function AllBlogs() {
               disabled={page === 1}
               className="px-6 py-3 rounded-xl bg-emerald-600 text-white disabled:opacity-50"
             >
-              Previous
+              {t("previous")}
             </button>
 
             <button
@@ -209,7 +211,7 @@ export default function AllBlogs() {
               disabled={page === totalPages}
               className="px-6 py-3 rounded-xl bg-emerald-600 text-white disabled:opacity-50"
             >
-              Next
+              {t("next")}
             </button>
           </nav>
         )}

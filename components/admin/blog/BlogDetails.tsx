@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 import { Calendar, User, ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,7 +24,7 @@ interface Blog {
 }
 
 /* =================== RELATED CARD =================== */
-const RelatedBlogsCard = () => (
+const RelatedBlogsCard = ({ t }: { t: ReturnType<typeof useTranslations> }) => (
   <div className="sticky top-6 rounded-2xl border border-[#be923c]/20 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden">
     {/* Header */}
     <div className="flex items-center gap-3 px-6 py-5 border-b border-[#be923c]/20 bg-[#003535]/95">
@@ -31,15 +32,14 @@ const RelatedBlogsCard = () => (
         <BookOpen className="h-5 w-5 text-[#be923c]" />
       </div>
       <h3 className="text-base font-semibold tracking-wide text-[#be923c]">
-        Related Reading
+        {t("relatedReading")}
       </h3>
     </div>
 
     {/* Content */}
     <div className="px-6 py-6">
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Continue exploring thoughtfully curated perspectives aligned with this
-        article’s theme.
+        {t("relatedReadingBody")}
       </p>
 
       {/* Subtle divider */}
@@ -52,9 +52,11 @@ const RelatedBlogsCard = () => (
 const ProfessionalSummary = ({
   summary,
   content,
+  t,
 }: {
   summary: string;
   content?: string;
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const readingTime = Math.ceil((content || summary).split(/\s+/).length / 200);
 
@@ -62,9 +64,9 @@ const ProfessionalSummary = ({
     <div className="rounded-xl border bg-card shadow-lg">
       <div className="p-6 border-b bg-muted/40 flex items-center gap-3">
         <BookOpen className="h-6 w-6 text-primary" />
-        <h2 className="text-2xl font-semibold">Article Overview</h2>
+        <h2 className="text-2xl font-semibold">{t("articleOverview")}</h2>
         <span className="ml-auto text-sm text-muted-foreground">
-          ~ {readingTime} min read
+          ~ {readingTime} {t("minRead")}
         </span>
       </div>
 
@@ -88,6 +90,7 @@ export default function BlogDetails() {
   const router = useRouter();
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
+  const t = useTranslations("sitePages.blog");
 
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,9 +137,9 @@ export default function BlogDetails() {
   if (!blog) {
     return (
       <div className="container max-w-5xl mx-auto px-4 py-20 text-center">
-        <p className="text-muted-foreground">Article not found.</p>
+        <p className="text-muted-foreground">{t("articleNotFound")}</p>
         <Button onClick={() => router.back()} className="mt-4">
-          Go Back
+          {t("goBack")}
         </Button>
       </div>
     );
@@ -152,7 +155,7 @@ export default function BlogDetails() {
             <img src={blog.ads} className="rounded-lg border w-full" />
           ) : (
             <div className="text-center text-muted-foreground border rounded-lg p-4">
-              Ads Not Found
+              {t("adsNotFound")}
             </div>
           )}
         </aside>
@@ -167,7 +170,7 @@ export default function BlogDetails() {
               className="mb-8"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Journal
+              {t("backToJournal")}
             </Button>
 
             <article className="space-y-8">
@@ -205,6 +208,7 @@ export default function BlogDetails() {
               <ProfessionalSummary
                 summary={blog.summary}
                 content={blog.content}
+                t={t}
               />
 
               <div
@@ -219,7 +223,7 @@ export default function BlogDetails() {
 
         {/* RIGHT */}
         <aside className="col-span-3 sticky top-24 space-y-6 pr-6 h-fit">
-          <RelatedBlogsCard />
+          <RelatedBlogsCard t={t} />
           <RecentBlogs />
         </aside>
       </div>
@@ -229,12 +233,12 @@ export default function BlogDetails() {
         <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
           <Button variant="outline" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            {t("back")}
           </Button>
 
           <h1 className="text-3xl font-bold">{blog.title}</h1>
 
-          <ProfessionalSummary summary={blog.summary} content={blog.content} />
+          <ProfessionalSummary summary={blog.summary} content={blog.content} t={t} />
 
           <div
             className="prose prose-slate max-w-none"

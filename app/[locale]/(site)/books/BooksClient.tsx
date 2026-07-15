@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   AlertCircle,
   BookOpen,
@@ -76,6 +77,7 @@ function stripHtml(value: string | null) {
 }
 
 export default function BooksClient() {
+  const t = useTranslations("sitePages.books");
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
@@ -123,7 +125,7 @@ export default function BooksClient() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong while loading books.",
+          : t("unableToLoad"),
       );
     } finally {
       setIsLoading(false);
@@ -320,11 +322,11 @@ export default function BooksClient() {
 
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-sm backdrop-blur-sm sm:text-xs">
               <BookOpen className="h-3.5 w-3.5 text-gold" />
-              Islamic Book Collection
+              {t("badge")}
             </span>
 
             <h1 className="mt-3 font-heading text-2xl font-bold leading-tight text-primary-dark sm:text-3xl lg:text-4xl">
-              Explore Our Islamic & Quran Learning Books
+              {t("title")}
             </h1>
 
             <div className="mx-auto mt-3 flex items-center justify-center gap-2">
@@ -334,8 +336,7 @@ export default function BooksClient() {
             </div>
 
             <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-gray-600 sm:text-sm">
-              Browse selected Quran learning books, Tajweed guides and Islamic
-              study materials for every stage of learning.
+              {t("subtitle")}
             </p>
           </div>
         </div>
@@ -359,8 +360,8 @@ export default function BooksClient() {
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search by book name, subtitle or description..."
-                aria-label="Search books"
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchPlaceholder")}
                 className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/80 pl-12 pr-12 text-sm text-primary-dark outline-none transition-all placeholder:text-gray-400 focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10 sm:h-13"
               />
 
@@ -379,15 +380,15 @@ export default function BooksClient() {
             {!isLoading && !errorMessage && (
               <div className="flex items-center justify-between gap-3 lg:justify-end">
                 <p className="text-sm text-gray-500">
-                  Showing{" "}
+                  {t("showing")}{" "}
                   <span className="font-semibold text-primary-dark">
                     {paginatedBooks.length}
                   </span>{" "}
-                  of{" "}
+                  {t("of")}{" "}
                   <span className="font-semibold text-primary-dark">
                     {filteredBooks.length}
                   </span>{" "}
-                  books
+                  {t("booksLabel")}
                 </p>
 
                 {searchQuery && (
@@ -396,7 +397,7 @@ export default function BooksClient() {
                     onClick={() => setSearchQuery("")}
                     className="text-sm font-semibold text-gold transition-colors hover:text-primary-dark"
                   >
-                    Clear search
+                    {t("clearSearch")}
                   </button>
                 )}
               </div>
@@ -406,13 +407,14 @@ export default function BooksClient() {
 
         {/* Main states */}
         {isLoading ? (
-          <LoadingState />
+          <LoadingState t={t} />
         ) : errorMessage ? (
-          <ErrorState message={errorMessage} onRetry={() => void loadBooks()} />
+          <ErrorState message={errorMessage} onRetry={() => void loadBooks()} t={t} />
         ) : filteredBooks.length === 0 ? (
           <NoResultsState
             hasSearch={Boolean(searchQuery)}
             onClear={() => setSearchQuery("")}
+            t={t}
           />
         ) : (
           <>
@@ -424,6 +426,7 @@ export default function BooksClient() {
                   book={book}
                   index={index}
                   onOpen={() => setSelectedBook(book)}
+                  t={t}
                 />
               ))}
             </div>
@@ -435,11 +438,11 @@ export default function BooksClient() {
                 className="mt-12 flex flex-col items-center justify-between gap-5 border-t border-gold/10 pt-8 sm:flex-row"
               >
                 <p className="text-sm text-gray-500">
-                  Page{" "}
+                  {t("page")}{" "}
                   <span className="font-semibold text-primary-dark">
                     {currentPage}
                   </span>{" "}
-                  of{" "}
+                  {t("pageOf")}{" "}
                   <span className="font-semibold text-primary-dark">
                     {totalPages}
                   </span>
@@ -453,7 +456,7 @@ export default function BooksClient() {
                     className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft className="h-4 w-4" />
-                    <span className="hidden sm:inline">Previous</span>
+                    <span className="hidden sm:inline">{t("previous")}</span>
                   </button>
 
                   {paginationItems.map((item) => {
@@ -493,7 +496,7 @@ export default function BooksClient() {
                     disabled={currentPage === totalPages}
                     className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    <span className="hidden sm:inline">Next</span>
+                    <span className="hidden sm:inline">{t("next")}</span>
                     <ChevronRight className="h-4 w-4" />
                   </button>
                 </div>
@@ -508,6 +511,7 @@ export default function BooksClient() {
         <BookDetailsModal
           book={selectedBook}
           onClose={() => setSelectedBook(null)}
+          t={t}
         />
       )}
     </main>
@@ -518,10 +522,12 @@ function BookCard({
   book,
   index,
   onOpen,
+  t,
 }: {
   book: Book;
   index: number;
   onOpen: () => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const imageUrl = normalizeImageUrl(book.image);
   const cleanDescription = stripHtml(book.description);
@@ -559,7 +565,7 @@ function BookCard({
           <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center p-4 transition-transform duration-300 group-hover:translate-y-0">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-primary-dark shadow-lg backdrop-blur-sm">
               <Eye className="h-4 w-4 text-gold" />
-              View details
+              {t("viewDetails")}
             </span>
           </div>
         </div>
@@ -586,7 +592,7 @@ function BookCard({
         <div className="mt-auto pt-5">
           <div className="flex items-center justify-between border-t border-gray-100 pt-4">
             <span className="text-xs font-medium text-gray-500">
-              View complete information
+              {t("viewCompleteInfo")}
             </span>
 
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/[0.07] text-primary transition-all duration-300 group-hover:bg-gold group-hover:text-primary-dark">
@@ -602,9 +608,11 @@ function BookCard({
 function BookDetailsModal({
   book,
   onClose,
+  t,
 }: {
   book: Book;
   onClose: () => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const imageUrl = normalizeImageUrl(book.image);
   const cleanDescription = stripHtml(book.description);
@@ -628,7 +636,7 @@ function BookDetailsModal({
         <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gold">
-              Book details
+              {t("bookDetails")}
             </p>
 
             <h2
@@ -642,7 +650,7 @@ function BookDetailsModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label={t("close")}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-500 transition-all hover:border-gold/30 hover:bg-gold/10 hover:text-primary-dark"
           >
             <X className="h-5 w-5" />
@@ -701,7 +709,7 @@ function BookDetailsModal({
 
               <span className="inline-flex items-center gap-2 rounded-full border border-gold/20 bg-gold/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-gold-dark">
                 <BookOpen className="h-3.5 w-3.5" />
-                Islamic book
+                {t("islamicBook")}
               </span>
 
               <h3 className="mt-5 max-w-2xl font-heading text-2xl font-bold leading-tight text-primary-dark sm:text-3xl">
@@ -719,7 +727,7 @@ function BookDetailsModal({
               {cleanDescription ? (
                 <div>
                   <h4 className="font-heading text-base font-bold text-primary-dark">
-                    Description
+                    {t("description")}
                   </h4>
 
                   <p className="mt-3 whitespace-pre-line text-sm leading-7 text-gray-600 sm:text-base sm:leading-8">
@@ -728,7 +736,7 @@ function BookDetailsModal({
                 </div>
               ) : (
                 <p className="text-sm italic text-gray-500">
-                  No description is currently available for this book.
+                  {t("noDescription")}
                 </p>
               )}
 
@@ -740,12 +748,11 @@ function BookDetailsModal({
 
                   <div>
                     <p className="font-semibold text-primary-dark">
-                      Recommended study material
+                      {t("recommendedTitle")}
                     </p>
 
                     <p className="mt-1 text-sm leading-6 text-gray-500">
-                      This resource has been selected to support Quran, Tajweed
-                      and Islamic learning.
+                      {t("recommendedBody")}
                     </p>
                   </div>
                 </div>
@@ -761,7 +768,7 @@ function BookDetailsModal({
             onClick={onClose}
             className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-white shadow-md transition-all hover:bg-primary-dark hover:shadow-lg"
           >
-            Close
+            {t("close")}
           </button>
         </div>
       </div>
@@ -769,7 +776,7 @@ function BookDetailsModal({
   );
 }
 
-function LoadingState() {
+function LoadingState({ t }: { t: ReturnType<typeof useTranslations> }) {
   return (
     <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, index) => (
@@ -791,7 +798,7 @@ function LoadingState() {
 
       <div className="sr-only">
         <LoaderCircle className="animate-spin" />
-        Loading books
+        {t("loadingBooks")}
       </div>
     </div>
   );
@@ -800,9 +807,11 @@ function LoadingState() {
 function ErrorState({
   message,
   onRetry,
+  t,
 }: {
   message: string;
   onRetry: () => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   return (
     <div className="mx-auto mt-12 max-w-xl rounded-2xl border border-red-200 bg-white px-6 py-12 text-center shadow-lg">
@@ -811,7 +820,7 @@ function ErrorState({
       </div>
 
       <h2 className="mt-5 font-heading text-xl font-bold text-primary-dark">
-        Unable to load books
+        {t("unableToLoad")}
       </h2>
 
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
@@ -824,7 +833,7 @@ function ErrorState({
         className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
       >
         <RefreshCcw className="h-4 w-4" />
-        Try again
+        {t("tryAgain")}
       </button>
     </div>
   );
@@ -833,9 +842,11 @@ function ErrorState({
 function NoResultsState({
   hasSearch,
   onClear,
+  t,
 }: {
   hasSearch: boolean;
   onClear: () => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   return (
     <div className="mx-auto mt-12 max-w-xl rounded-2xl border border-dashed border-gold/30 bg-white/90 px-6 py-14 text-center shadow-lg shadow-primary/5">
@@ -848,13 +859,11 @@ function NoResultsState({
       </div>
 
       <h2 className="mt-5 font-heading text-xl font-bold text-primary-dark">
-        {hasSearch ? "No matching books found" : "No books available"}
+        {hasSearch ? t("noMatchingTitle") : t("noBooksTitle")}
       </h2>
 
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
-        {hasSearch
-          ? "Try another book name, subtitle or keyword."
-          : "Published books will appear here automatically."}
+        {hasSearch ? t("noMatchingBody") : t("noBooksBody")}
       </p>
 
       {hasSearch && (
@@ -863,7 +872,7 @@ function NoResultsState({
           onClick={onClear}
           className="mt-6 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
         >
-          Clear search
+          {t("clearSearch")}
         </button>
       )}
     </div>

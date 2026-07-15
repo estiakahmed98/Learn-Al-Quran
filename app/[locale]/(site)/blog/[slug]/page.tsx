@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import BlogDetails from "@/components/admin/blog/BlogDetails";
 import { prisma } from "@/lib/prisma";
 import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
@@ -10,12 +11,15 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const blog = await prisma.blog.findUnique({ where: { slug: params.slug } }).catch(() => null);
+  const [blog, t] = await Promise.all([
+    prisma.blog.findUnique({ where: { slug: params.slug } }).catch(() => null),
+    getTranslations("sitePages.blog")
+  ]);
 
   if (!blog) {
     return {
-      title: "Blog Post",
-      description: "Read the latest articles from Learn Al Quran Online BD.",
+      title: t("notFound"),
+      description: t("heroSubtitle"),
       alternates: buildAlternates(`/blog/${params.slug}`)
     };
   }
@@ -37,11 +41,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogDetailsPage({ params }: Props) {
-  const blog = await prisma.blog.findUnique({ where: { slug: params.slug } }).catch(() => null);
+  const [blog, t] = await Promise.all([
+    prisma.blog.findUnique({ where: { slug: params.slug } }).catch(() => null),
+    getTranslations("sitePages.blog")
+  ]);
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: siteUrl },
-    { name: "Blog", url: `${siteUrl}/blog` },
+    { name: t("eyebrow"), url: `${siteUrl}/blog` },
     { name: blog?.title || params.slug, url: `${siteUrl}/blog/${params.slug}` }
   ]);
 
