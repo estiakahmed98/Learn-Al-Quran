@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { canAccessSection, sectionForPath } from "@/lib/permissions";
+import { canAccessAnySection, sectionsForPath } from "@/lib/permissions";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -17,9 +17,9 @@ export async function middleware(request: NextRequest) {
     }
 
     if (role === "TEACHER") {
-      const section = sectionForPath(pathname);
+      const sections = sectionsForPath(pathname);
       const permissions = (token as any).permissions || [];
-      if (section && !canAccessSection(role, permissions, section)) {
+      if (sections && !canAccessAnySection(role, permissions, sections)) {
         return NextResponse.redirect(new URL("/admin", request.url));
       }
     }

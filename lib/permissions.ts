@@ -40,21 +40,30 @@ export function canAccessSection(
   return effectivePermissions(role, permissions).includes(section);
 }
 
-export const SECTION_PATHS: { section: AdminSection; path: string }[] = [
-  { section: "DASHBOARD", path: "/admin" },
-  { section: "ANALYTICS", path: "/admin/analytics" },
-  { section: "BLOG", path: "/admin/blog" },
-  { section: "COURSES", path: "/admin/courses" },
-  { section: "USERS", path: "/admin/trials" },
-  { section: "USERS", path: "/admin/users" },
-  { section: "PAYMENTS", path: "/admin/payments" },
-  { section: "CONTENT", path: "/admin/content" },
-  { section: "SETTINGS", path: "/admin/settings" }
+// A path can be satisfied by any one of several sections (e.g. /admin/settings
+// hosts both the Content tab and the Settings tab, so either permission unlocks it).
+export const SECTION_PATHS: { sections: AdminSection[]; path: string }[] = [
+  { sections: ["DASHBOARD"], path: "/admin" },
+  { sections: ["ANALYTICS"], path: "/admin/analytics" },
+  { sections: ["BLOG"], path: "/admin/blog" },
+  { sections: ["COURSES"], path: "/admin/courses" },
+  { sections: ["USERS"], path: "/admin/trials" },
+  { sections: ["USERS"], path: "/admin/users" },
+  { sections: ["PAYMENTS"], path: "/admin/payments" },
+  { sections: ["CONTENT", "SETTINGS"], path: "/admin/settings" }
 ];
 
-export function sectionForPath(pathname: string): AdminSection | null {
+export function sectionsForPath(pathname: string): AdminSection[] | null {
   const match = [...SECTION_PATHS]
     .sort((a, b) => b.path.length - a.path.length)
     .find((entry) => (entry.path === "/admin" ? pathname === "/admin" : pathname.startsWith(entry.path)));
-  return match?.section ?? null;
+  return match?.sections ?? null;
+}
+
+export function canAccessAnySection(
+  role: UserRole,
+  permissions: AdminSection[] | null | undefined,
+  sections: AdminSection[]
+): boolean {
+  return sections.some((section) => canAccessSection(role, permissions, section));
 }

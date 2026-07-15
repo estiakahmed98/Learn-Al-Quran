@@ -21,35 +21,45 @@ export default function SettingsTabs({
   settings,
   content,
   teachers,
+  canSettings,
+  canContent,
 }: {
   settings: SiteSetting | null;
   content: Content[];
   teachers: TeacherSummary[];
+  canSettings: boolean;
+  canContent: boolean;
 }) {
-  const [tab, setTab] = useState<Tab>("settings");
-
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "settings", label: "⚙️ Site Settings" },
-    { id: "content", label: "🗂 Content" },
+  const allTabs: { id: Tab; label: string; visible: boolean }[] = [
+    { id: "settings", label: "⚙️ Site Settings", visible: canSettings },
+    { id: "content", label: "🗂 Content", visible: canContent },
   ];
+  const tabs = allTabs.filter((t) => t.visible);
+  const [tab, setTab] = useState<Tab>(tabs[0]?.id ?? "settings");
+
+  if (tabs.length === 0) {
+    return <p className="text-sm text-gray-500">You don&apos;t have access to this section.</p>;
+  }
 
   return (
     <div>
-      <div className="flex gap-1 border-b border-gray-200">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`rounded-t-lg px-4 py-2.5 text-sm font-semibold transition ${
-              tab === t.id
-                ? "border-b-2 border-primary text-primary-dark"
-                : "text-gray-500 hover:text-primary-dark"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      {tabs.length > 1 && (
+        <div className="flex gap-1 border-b border-gray-200">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`rounded-t-lg px-4 py-2.5 text-sm font-semibold transition ${
+                tab === t.id
+                  ? "border-b-2 border-primary text-primary-dark"
+                  : "text-gray-500 hover:text-primary-dark"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="mt-6">
         {tab === "settings" ? (
