@@ -5,11 +5,12 @@ import EnrollmentForm from "@/components/enrollment/EnrollmentForm";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-config";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Enroll in a Course",
   description: "Create your student account, select a Quran course and submit your payment details.",
-  alternates: { canonical: "/enroll" }
+  alternates: buildAlternates("/enroll")
 };
 
 export const dynamic = "force-dynamic";

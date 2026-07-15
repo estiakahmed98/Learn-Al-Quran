@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Teachers from "@/components/home/Teachers";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about our mission, teaching methodology, and certified Quran teachers.",
-  alternates: { canonical: "/about-us" }
+  alternates: buildAlternates("/about-us")
 };
 
 export const revalidate = 3600;

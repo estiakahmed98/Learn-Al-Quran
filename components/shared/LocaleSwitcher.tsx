@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 
 const targetLabel: Record<string, string> = {
@@ -12,12 +12,20 @@ const targetLabel: Record<string, string> = {
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   function toggle() {
     const next = locale === "en" ? "bn" : "en";
-    document.cookie = `NEXT_LOCALE=${next};path=/;max-age=31536000;samesite=lax`;
-    startTransition(() => router.refresh());
+
+    // Strip an existing locale prefix (e.g. "/bn/courses" -> "/courses").
+    const withoutLocale = pathname.replace(/^\/(en|bn)(?=\/|$)/, "") || "/";
+    const nextPath = next === "en" ? withoutLocale : `/bn${withoutLocale === "/" ? "" : withoutLocale}`;
+    const query = searchParams.toString();
+    const destination = query ? `${nextPath}?${query}` : nextPath;
+
+    startTransition(() => router.push(destination || "/"));
   }
 
   return (

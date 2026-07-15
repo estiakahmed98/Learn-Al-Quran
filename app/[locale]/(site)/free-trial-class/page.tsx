@@ -4,12 +4,13 @@ import { getLocale } from "next-intl/server";
 import FreeTrialApplication from "@/components/trial/FreeTrialApplication";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Free Trial Class",
   description:
     "Book your free trial class with Learn Al Quran Online BD. Experience our live one-to-one Quran, Tajweed and Hifz teaching before you enroll.",
-  alternates: { canonical: "/free-trial-class" }
+  alternates: buildAlternates("/free-trial-class")
 };
 
 export const dynamic = "force-dynamic";

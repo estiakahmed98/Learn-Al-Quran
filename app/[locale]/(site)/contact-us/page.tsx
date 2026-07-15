@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
 import { getSiteSettings } from "@/lib/site-config";
 import { getTranslations } from "next-intl/server";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Get in touch with Learn Al Quran Online BD. Call, WhatsApp, or email us to learn more about our online Quran courses or book a free trial class.",
-  alternates: { canonical: "/contact-us" },
+  alternates: buildAlternates("/contact-us"),
 };
 
 export const revalidate = 3600;

@@ -12,12 +12,14 @@ import { getLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-config";
 import { pickText } from "@/lib/course-content";
+import { buildAlternates } from "@/lib/seo";
+import JsonLd from "@/components/shared/JsonLd";
 
 export const metadata: Metadata = {
   title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
   description:
     "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes. Book a free trial class today.",
-  alternates: { canonical: "/" },
+  alternates: buildAlternates("/"),
 };
 
 export const revalidate = 3600;
@@ -77,8 +79,24 @@ export default async function HomePage() {
   const aboutTitle = pickText(locale, settings.aboutTitleEn, settings.aboutTitleBn);
   const aboutDescription = pickText(locale, settings.aboutDescriptionEn, settings.aboutDescriptionBn);
 
+  const faqJsonLd = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.title,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.description || ""
+          }
+        }))
+      }
+    : null;
+
   return (
     <>
+      {faqJsonLd && <JsonLd data={faqJsonLd} />}
       <Hero
         phone={settings.phone || ""}
         badge={heroBadge || undefined}

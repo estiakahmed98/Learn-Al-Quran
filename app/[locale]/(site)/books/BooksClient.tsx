@@ -75,7 +75,7 @@ function stripHtml(value: string | null) {
     .trim();
 }
 
-export default function BooksPage() {
+export default function BooksClient() {
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 

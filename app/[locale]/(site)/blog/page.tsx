@@ -1,5 +1,16 @@
+import type { Metadata } from "next";
 import AllBlogs from "@/components/admin/blog/AllBlogs";
 import { ArrowRight, BookOpenText, Mail, Search, Sparkles } from "lucide-react";
+import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { siteUrl } from "@/lib/site-config";
+import JsonLd from "@/components/shared/JsonLd";
+
+export const metadata: Metadata = {
+  title: "Blog | Learn Al Quran Online BD",
+  description:
+    "Read articles and guidance on Quran learning, Tajweed, Hifz, Islamic education and student stories from Learn Al Quran Online BD.",
+  alternates: buildAlternates("/blog")
+};
 
 const categories = [
   "All Posts",
@@ -11,8 +22,14 @@ const categories = [
 ];
 
 export default function BlogsPage() {
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: siteUrl },
+    { name: "Blog", url: `${siteUrl}/blog` }
+  ]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#fbfcfa]">
+      <JsonLd data={breadcrumbJsonLd} />
       {/* Global decorative background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
