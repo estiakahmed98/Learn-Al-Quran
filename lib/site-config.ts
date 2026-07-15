@@ -6,6 +6,8 @@ export const ga4Id = process.env.NEXT_PUBLIC_GA4_ID || "";
 
 export const fallbackSettings = {
   siteName,
+  logo: "/Learn_Al_Quran_Logo.png",
+  favicon: "",
   phone: process.env.NEXT_PUBLIC_PHONE_NUMBER || "+8801234567890",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801234567890",
   email: "info@learnalquranonlinebd.com",
@@ -24,7 +26,19 @@ export const fallbackSettings = {
   ga4Id,
   privacyPolicy: "",
   terms: "",
-  copyrightText: `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`
+  copyrightText: `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`,
+  heroBadgeEn: "",
+  heroBadgeBn: "",
+  heroTitleEn: "",
+  heroTitleBn: "",
+  heroSubtitleEn: "",
+  heroSubtitleBn: "",
+  heroImage: "/images/hero-banner.jpg",
+  aboutTitleEn: "",
+  aboutTitleBn: "",
+  aboutDescriptionEn: "",
+  aboutDescriptionBn: "",
+  aboutImage: "/images/about-madrasa.jpg"
 };
 
 // Cached fetch of site settings from the DB, gracefully falling back

@@ -4,8 +4,21 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 
-export default function Hero({ phone }: { phone: string }) {
+interface HeroProps {
+  phone: string;
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  image?: string;
+}
+
+export default function Hero({ phone, badge, title, subtitle, image }: HeroProps) {
   const t = useTranslations("hero");
+
+  const heroBadge = badge || t("badge");
+  const heroTitle = title || `${t("titleLine1")} ${t("titleLine2")} ${t("titleLine3")}`;
+  const heroSubtitle = subtitle || t("subtitle");
+  const heroImage = image || "/images/hero-banner.jpg";
 
   return (
     <section className="relative overflow-hidden bg-primary-dark">
@@ -18,19 +31,15 @@ export default function Hero({ phone }: { phone: string }) {
         {/* Left: copy */}
         <div className="text-center lg:text-left">
           <p className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-white/5 px-4 py-1.5 text-xs font-semibold text-gold sm:text-sm">
-            <span aria-hidden>☪️</span> {t("badge")}
+            <span aria-hidden>☪️</span> {heroBadge}
           </p>
 
           <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.15] text-white sm:text-5xl lg:text-6xl">
-            {t("titleLine1")}
-            <br />
-            {t("titleLine2")}
-            <br />
-            <span className="text-gold">{t("titleLine3")}</span>
+            {heroTitle}
           </h1>
 
           <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-gold-light/80 lg:mx-0 lg:text-base">
-            {t("subtitle")}
+            {heroSubtitle}
           </p>
 
           <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
@@ -67,7 +76,7 @@ export default function Hero({ phone }: { phone: string }) {
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/hero-banner.jpg"
+              src={heroImage}
               alt={t("imageAlt")}
               className="h-full w-full object-cover"
             />

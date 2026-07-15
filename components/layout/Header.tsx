@@ -46,7 +46,16 @@ function UserAvatar({
   );
 }
 
-export default function Header({ phone }: { phone: string }) {
+export default function Header({
+  phone,
+  siteName = "Learn Al Quran Online BD",
+  logo = "/Learn_Al_Quran_Logo.png",
+}: {
+  phone: string;
+  siteName?: string;
+  logo?: string;
+}) {
+
   const [open, setOpen] = useState(false);
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -75,17 +84,12 @@ export default function Header({ phone }: { phone: string }) {
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/Learn_Al_Quran_Logo.png"
-            alt="Learn Al Quran Online BD logo"
+            src={logo}
+            alt={`${siteName} logo`}
             className="h-11 w-11 shrink-0 rounded-full border-2 border-gold/40 object-cover"
           />
-          <span className="leading-tight">
-            <span className="block font-heading text-base font-bold uppercase tracking-wide text-white lg:text-lg">
-              Learn Al Quran
-            </span>
-            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-light">
-              Online BD
-            </span>
+          <span className="block font-heading text-base font-bold uppercase tracking-wide text-white lg:text-lg">
+            {siteName}
           </span>
         </Link>
 

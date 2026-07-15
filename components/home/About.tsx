@@ -3,11 +3,20 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-export default function About() {
+interface AboutProps {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+export default function About({ title, description, image }: AboutProps) {
   const t = useTranslations("about");
   const bold = (chunks: React.ReactNode) => (
     <strong className="font-semibold text-primary-dark">{chunks}</strong>
   );
+
+  const aboutTitle = title || t("title");
+  const aboutImage = image || "/images/about-madrasa.jpg";
 
   return (
     <section id="about" className="relative overflow-hidden bg-primary/5">
@@ -75,7 +84,7 @@ export default function About() {
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/about-madrasa.jpg"
+              src={aboutImage}
               alt={t("imageAlt")}
               className="h-full w-full object-cover aspect-[4/3] sm:aspect-auto"
             />
@@ -98,22 +107,30 @@ export default function About() {
             <span className="text-gold" aria-hidden>
               ❝
             </span>{" "}
-            {t("title")}{" "}
+            {aboutTitle}{" "}
             <span className="text-gold" aria-hidden>
               ❞
             </span>
           </h2>
 
           <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-600 sm:mt-5 sm:space-y-4 sm:text-base lg:text-base">
-            <p className="relative pl-3 sm:pl-4 border-l-2 border-gold/30">
-              {t.rich("p1", { b: bold })}
-            </p>
-            <p className="relative pl-3 sm:pl-4 border-l-2 border-primary/20">
-              {t.rich("p2", { b: bold })}
-            </p>
-            <p className="relative pl-3 sm:pl-4 border-l-2 border-gold/30">
-              {t.rich("p3", { b: bold })}
-            </p>
+            {description ? (
+              <p className="relative pl-3 sm:pl-4 border-l-2 border-gold/30 whitespace-pre-line">
+                {description}
+              </p>
+            ) : (
+              <>
+                <p className="relative pl-3 sm:pl-4 border-l-2 border-gold/30">
+                  {t.rich("p1", { b: bold })}
+                </p>
+                <p className="relative pl-3 sm:pl-4 border-l-2 border-primary/20">
+                  {t.rich("p2", { b: bold })}
+                </p>
+                <p className="relative pl-3 sm:pl-4 border-l-2 border-gold/30">
+                  {t.rich("p3", { b: bold })}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 sm:mt-8">

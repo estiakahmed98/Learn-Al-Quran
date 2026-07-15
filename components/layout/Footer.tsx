@@ -12,6 +12,8 @@ interface FooterProps {
   instagramUrl?: string | null;
   linkedinUrl?: string | null;
   copyrightText?: string | null;
+  siteName?: string;
+  logo?: string;
 }
 
 export default function Footer({
@@ -23,7 +25,9 @@ export default function Footer({
   youtubeUrl,
   instagramUrl,
   linkedinUrl,
-  copyrightText
+  copyrightText,
+  siteName = "Learn Al Quran Online BD",
+  logo = "/Learn_Al_Quran_Logo.png"
 }: FooterProps) {
   const t = useTranslations("footer");
   const socials = [
@@ -53,17 +57,12 @@ export default function Footer({
           <Link href="/" className="inline-flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/Learn_Al_Quran_Logo.png"
-              alt="Learn Al Quran Online BD logo"
+              src={logo}
+              alt={`${siteName} logo`}
               className="h-14 w-14 shrink-0 rounded-full border border-gold/30 object-cover"
             />
-            <span className="leading-tight">
-              <span className="block font-heading text-lg font-bold uppercase tracking-wide text-white">
-                Learn Al Quran
-              </span>
-              <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-light">
-                Online BD
-              </span>
+            <span className="block font-heading text-lg font-bold uppercase tracking-wide text-white">
+              {siteName}
             </span>
           </Link>
 

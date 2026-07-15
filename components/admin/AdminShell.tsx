@@ -30,6 +30,7 @@ const navLinks: { href: string; label: string; title: string; section: AdminSect
     section: "PAYMENTS"
   },
   { href: "/admin/content", label: "🗂 Content", title: "Content", section: "CONTENT" },
+  { href: "/admin/settings", label: "⚙️ Settings", title: "Site Settings", section: "SETTINGS" },
   { href: "/", label: "🌐 View Site", title: "Admin Panel", section: null }
 ];
 

@@ -8,8 +8,10 @@ import ReviewForm from "@/components/home/ReviewForm";
 import FAQ from "@/components/home/FAQ";
 import LeadForm from "@/components/home/LeadForm";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
+import { getLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-config";
+import { pickText } from "@/lib/course-content";
 
 export const metadata: Metadata = {
   title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
@@ -64,12 +66,31 @@ async function getHomeData() {
 }
 
 export default async function HomePage() {
-  const { courses, teachers, reviews, faqs, settings } = await getHomeData();
+  const [{ courses, teachers, reviews, faqs, settings }, locale] = await Promise.all([
+    getHomeData(),
+    getLocale(),
+  ]);
+
+  const heroBadge = pickText(locale, settings.heroBadgeEn, settings.heroBadgeBn);
+  const heroTitle = pickText(locale, settings.heroTitleEn, settings.heroTitleBn);
+  const heroSubtitle = pickText(locale, settings.heroSubtitleEn, settings.heroSubtitleBn);
+  const aboutTitle = pickText(locale, settings.aboutTitleEn, settings.aboutTitleBn);
+  const aboutDescription = pickText(locale, settings.aboutDescriptionEn, settings.aboutDescriptionBn);
 
   return (
     <>
-      <Hero phone={settings.phone || ""} />
-      <About />
+      <Hero
+        phone={settings.phone || ""}
+        badge={heroBadge || undefined}
+        title={heroTitle || undefined}
+        subtitle={heroSubtitle || undefined}
+        image={settings.heroImage || undefined}
+      />
+      <About
+        title={aboutTitle || undefined}
+        description={aboutDescription || undefined}
+        image={settings.aboutImage || undefined}
+      />
       <Courses />
 
       <Teachers teachers={teachers} embedded />

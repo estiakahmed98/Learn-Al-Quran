@@ -28,7 +28,8 @@ const SECTION_LABELS: Record<AdminSection, string> = {
   COURSES: "Courses",
   USERS: "Users Management",
   PAYMENTS: "Payments",
-  CONTENT: "Content"
+  CONTENT: "Content",
+  SETTINGS: "Settings"
 };
 
 const emptyValues: UserFormValues = {

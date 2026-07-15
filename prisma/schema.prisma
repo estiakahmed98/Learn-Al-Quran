@@ -33,6 +33,7 @@ enum AdminSection {
   USERS
   PAYMENTS
   CONTENT
+  SETTINGS
 }
 
 enum EnrollmentStatus {
@@ -333,6 +334,22 @@ model SiteSetting {
   copyrightText String?
   privacyPolicy String? @db.Text
   terms         String? @db.Text
+
+  // Hero section
+  heroBadgeEn    String?
+  heroBadgeBn    String?
+  heroTitleEn    String? @db.Text
+  heroTitleBn    String? @db.Text
+  heroSubtitleEn String? @db.Text
+  heroSubtitleBn String? @db.Text
+  heroImage      String?
+
+  // About us section
+  aboutTitleEn       String?
+  aboutTitleBn       String?
+  aboutDescriptionEn String? @db.Text
+  aboutDescriptionBn String? @db.Text
+  aboutImage         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -113,7 +113,21 @@ async function main() {
       googleMapUrl:
         "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed",
       ga4Id: process.env.NEXT_PUBLIC_GA4_ID || "",
-      copyrightText: `© ${new Date().getFullYear()} Learn Al Quran Online BD. All rights reserved.`
+      copyrightText: `© ${new Date().getFullYear()} Learn Al Quran Online BD. All rights reserved.`,
+      heroBadgeEn: "Trusted by Thousands of Families Worldwide",
+      heroBadgeBn: "বিশ্বজুড়ে হাজারো পরিবারের আস্থা",
+      heroTitleEn: "Your Online Quran Learning Journey Starts Here",
+      heroTitleBn: "আপনার অনলাইন কুরআন শেখার যাত্রা শুরু হোক এখানেই",
+      heroSubtitleEn:
+        "Begin your journey of Quran learning with us — a trusted online platform designed to make recitation, Tajweed, and understanding the Quran easier for everyone.",
+      heroSubtitleBn:
+        "আমাদের সাথে শুরু করুন আপনার কুরআন শেখার যাত্রা — একটি বিশ্বস্ত অনলাইন প্ল্যাটফর্ম, যেখানে তিলাওয়াত, তাজবীদ ও কুরআন বোঝা সবার জন্য সহজ করা হয়েছে।",
+      aboutTitleEn: "Who we are?",
+      aboutTitleBn: "আমরা কারা?",
+      aboutDescriptionEn:
+        "We are a dedicated team of experienced Quran teachers committed to educating our Muslim community about the knowledge of the Holy Quran. We generally start taking children as young as 4 years, and because we have both male and female teachers, we are able to teach both genders privately or in group sessions. Our classes are conducted primarily online via Skype or Zoom. Please contact us to check availability.",
+      aboutDescriptionBn:
+        "আমরা অভিজ্ঞ কুরআন শিক্ষকদের একটি নিবেদিতপ্রাণ দল, যারা আমাদের মুসলিম সম্প্রদায়কে পবিত্র কুরআনের জ্ঞান শেখাতে প্রতিশ্রুতিবদ্ধ। আমরা সাধারণত ৪ বছর বয়স থেকে শিশুদের ভর্তি করি, এবং আমাদের পুরুষ ও নারী উভয় শিক্ষক থাকায় ছেলে-মেয়ে উভয়কে ব্যক্তিগতভাবে বা গ্রুপ সেশনে পড়াতে পারি। আমাদের ক্লাসগুলো মূলত স্কাইপ বা জুমের মাধ্যমে অনলাইনে পরিচালিত হয়। উপলব্ধতা জানতে যোগাযোগ করুন।"
     }
   });
 
