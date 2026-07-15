@@ -253,7 +253,78 @@ export default function ContentManager({
         </button>
       </div>
 
-      {activeTab === "TEACHER" ? (
+      {activeTab === "BOOK" ? (
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+            >
+              <div className="h-48 w-full shrink-0 bg-cream">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-gold">
+                    <svg
+                      className="h-10 w-10"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s4.332.477 5.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-1 flex-col p-4">
+                <p className="font-medium text-gray-800">{item.title}</p>
+                {item.subtitle && <p className="mt-0.5 text-xs text-gray-400">{item.subtitle}</p>}
+                {item.description && (
+                  <p className="mt-2 line-clamp-3 text-xs text-gray-500">{item.description}</p>
+                )}
+                <div className="mt-4 flex items-center justify-between gap-2 pt-2">
+                  <button
+                    onClick={() => togglePublish(item)}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      item.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
+                    {item.isPublished ? "Published" : "Hidden"}
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => openEditForm(item)}
+                      className="text-xs font-semibold text-primary hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => remove(item)}
+                      className="text-xs font-semibold text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <p className="col-span-full rounded-xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-400">
+              No books yet. Click &quot;+ Add Books&quot; to create one.
+            </p>
+          )}
+        </div>
+      ) : activeTab === "TEACHER" ? (
         <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {teachers.map((teacher) => (
             <div
