@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import NextLink from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
 import { useCourses } from "@/hooks/useCourses";
 import { pickText } from "@/lib/course-content";
@@ -223,7 +223,7 @@ export default function Header({
                         {user.email}
                       </p>
                     </div>
-                    <Link
+                    <NextLink
                       href={
                         user.role === "ADMIN" ? "/admin" : "/student/dashboard"
                       }
@@ -232,7 +232,7 @@ export default function Header({
                       {user.role === "ADMIN"
                         ? `🛠 ${t("adminPanel")}`
                         : `🎓 ${t("myDashboard")}`}
-                    </Link>
+                    </NextLink>
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
                       className="block w-full px-4 py-2.5 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
@@ -243,24 +243,24 @@ export default function Header({
                 </div>
               </div>
             ) : (
-              <Link
+              <NextLink
                 href="/auth/login"
                 className="rounded-full border-2 border-gold px-5 py-2 text-sm font-semibold text-gold transition hover:bg-gold hover:text-primary-dark"
               >
                 {t("login")}
-              </Link>
+              </NextLink>
             ))}
         </div>
 
         {/* Mobile trigger area */}
         <div className="flex items-center gap-3 lg:hidden">
           {status !== "loading" && user && (
-            <Link
+            <NextLink
               href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
               aria-label={t("myDashboard")}
             >
               <UserAvatar name={user.name} image={user.image} size="h-8 w-8" />
-            </Link>
+            </NextLink>
           )}
           <button
             className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-xl text-gold transition hover:border-gold"
@@ -363,7 +363,7 @@ export default function Header({
 
           {user ? (
             <>
-              <Link
+              <NextLink
                 href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
                 onClick={() => setOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-gold"
@@ -371,7 +371,7 @@ export default function Header({
                 {user.role === "ADMIN"
                   ? `🛠 ${t("adminPanel")}`
                   : `🎓 ${t("myDashboard")}`}
-              </Link>
+              </NextLink>
               <button
                 onClick={() => {
                   setOpen(false);
@@ -383,13 +383,13 @@ export default function Header({
               </button>
             </>
           ) : (
-            <Link
+            <NextLink
               href="/auth/login"
               onClick={() => setOpen(false)}
               className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-gold"
             >
               🔑 {t("loginSignup")}
-            </Link>
+            </NextLink>
           )}
 
           <div className="mt-3">
