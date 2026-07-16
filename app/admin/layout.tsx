@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { Toaster } from "sonner";
 import { authOptions } from "@/lib/auth";
 import AuthProvider from "@/components/admin/AuthProvider";
 import AdminShell from "@/components/admin/AdminShell";
@@ -25,6 +26,7 @@ export default async function AdminLayout({
       <html lang="en">
         <body className="flex min-h-screen flex-col font-body">
           <AuthProvider>{children}</AuthProvider>
+          <Toaster richColors position="top-right" />
         </body>
       </html>
     );
@@ -41,6 +43,7 @@ export default async function AdminLayout({
             {children}
           </AdminShell>
         </AuthProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

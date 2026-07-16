@@ -6,6 +6,19 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 
+async function subscribeToNewsletter(email: string | null | undefined) {
+  const normalizedEmail = email?.trim().toLowerCase();
+  if (!normalizedEmail) return;
+
+  await prisma.newsletterSubscriber.upsert({
+    where: { email: normalizedEmail },
+    update: { status: "subscribed", unsubscribedAt: null },
+    create: { email: normalizedEmail, status: "subscribed" }
+  }).catch((error) => {
+    console.error("Newsletter subscribe error:", error);
+  });
+}
+
 const enrollSchema = z.object({
   courseSlug: z.string().min(1, "Please select a course"),
   studentName: z.string().trim().optional(),
@@ -65,6 +78,7 @@ export async function POST(request: Request) {
           paymentAmount: course.fee
         }
       });
+      await subscribeToNewsletter(user.email);
       return NextResponse.json({ success: true, id: enrollment.id, accountCreated: false }, { status: 201 });
     }
 
@@ -111,6 +125,7 @@ export async function POST(request: Request) {
           paymentAmount: course.fee
         }
       });
+      await subscribeToNewsletter(email);
       return NextResponse.json(
         { success: true, id: enrollment.id, account, accountCreated: Boolean(account) },
         { status: 201 }
@@ -158,6 +173,8 @@ export async function POST(request: Request) {
       });
       return { enrollmentId: enrollment.id, userId: user.id };
     });
+
+    await subscribeToNewsletter(email);
 
     return NextResponse.json(
       { success: true, id: result.enrollmentId, accountCreated: true },

@@ -29,6 +29,12 @@ const navLinks: { href: string; label: string; title: string; section: AdminSect
     title: "Payments & Approvals",
     section: "PAYMENTS"
   },
+  {
+    href: "/admin/newsletter",
+    label: "📧 Newsletter",
+    title: "Newsletter Management",
+    section: "SETTINGS"
+  },
   { href: "/admin/settings", label: "⚙️ Settings", title: "Site Settings", section: "SETTINGS" },
   { href: "/", label: "🌐 View Site", title: "Admin Panel", section: null }
 ];
