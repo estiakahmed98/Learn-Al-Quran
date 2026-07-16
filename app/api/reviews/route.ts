@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/utils";
+import { sendAdminNotification } from "@/lib/admin-notification";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -34,6 +35,12 @@ export async function POST(request: Request) {
       data: { rating },
       isPublished: false
     }
+  });
+
+  await sendAdminNotification({
+    subject: `New website review from ${name}`,
+    heading: "A new review was submitted",
+    fields: { Name: name, Role: role, Rating: `${rating}/5`, Message: message },
   });
 
   return NextResponse.json({ id: review.id }, { status: 201 });

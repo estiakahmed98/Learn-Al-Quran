@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendAdminNotification } from "@/lib/admin-notification";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
 
   const course = await prisma.course.findFirst({
     where: { id: String(body.courseId), isActive: true },
-    select: { id: true }
+    select: { id: true, title: true }
   });
   if (!course) {
     return NextResponse.json({ message: "The selected course is unavailable." }, { status: 400 });
@@ -46,6 +47,17 @@ export async function POST(request: Request) {
             note: String(body.note || "").trim() || null
           }
         });
+      });
+      await sendAdminNotification({
+        subject: `New free trial application — ${course.title}`,
+        heading: "A new free trial application was submitted",
+        fields: {
+          Name: session.user.name,
+          Email: session.user.email,
+          Course: course.title,
+          "Preferred schedule": body.preferredSchedule,
+          Note: body.note,
+        },
       });
       return NextResponse.json({ application, accountCreated: false }, { status: 201 });
     }
@@ -91,6 +103,19 @@ export async function POST(request: Request) {
         }
       });
       return { application, userId: user.id };
+    });
+
+    await sendAdminNotification({
+      subject: `New free trial application from ${name}`,
+      heading: "A new free trial application was submitted",
+      fields: {
+        Name: name,
+        Email: email,
+        Phone: phone,
+        Course: course.title,
+        "Preferred schedule": body.preferredSchedule,
+        Note: body.note,
+      },
     });
 
     return NextResponse.json({ ...result, accountCreated: true }, { status: 201 });

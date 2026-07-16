@@ -5,6 +5,29 @@ import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { sendAdminNotification } from "@/lib/admin-notification";
+
+async function notifyEnrollment(fields: {
+  studentName: string;
+  email?: string | null;
+  phone: string;
+  course: string;
+  paymentMethod: string;
+  transactionId?: string | null;
+}) {
+  await sendAdminNotification({
+    subject: `New enrollment: ${fields.studentName} — ${fields.course}`,
+    heading: "A new course enrollment was submitted",
+    fields: {
+      "Student name": fields.studentName,
+      Email: fields.email,
+      "Phone / WhatsApp": fields.phone,
+      Course: fields.course,
+      "Payment method": fields.paymentMethod,
+      "Transaction ID": fields.transactionId,
+    },
+  });
+}
 
 async function subscribeToNewsletter(email: string | null | undefined) {
   const normalizedEmail = email?.trim().toLowerCase();
@@ -79,6 +102,14 @@ export async function POST(request: Request) {
         }
       });
       await subscribeToNewsletter(user.email);
+      await notifyEnrollment({
+        studentName: user.name,
+        email: user.email,
+        phone: user.whatsapp || phone,
+        course: course.title,
+        paymentMethod: data.paymentMethod,
+        transactionId: data.transactionId,
+      });
       return NextResponse.json({ success: true, id: enrollment.id, accountCreated: false }, { status: 201 });
     }
 
@@ -126,6 +157,14 @@ export async function POST(request: Request) {
         }
       });
       await subscribeToNewsletter(email);
+      await notifyEnrollment({
+        studentName: name || "Student",
+        email: email || null,
+        phone: data.whatsappNumber || phone,
+        course: course.title,
+        paymentMethod: data.paymentMethod,
+        transactionId: data.transactionId,
+      });
       return NextResponse.json(
         { success: true, id: enrollment.id, account, accountCreated: Boolean(account) },
         { status: 201 }
@@ -175,6 +214,14 @@ export async function POST(request: Request) {
     });
 
     await subscribeToNewsletter(email);
+    await notifyEnrollment({
+      studentName: name,
+      email,
+      phone,
+      course: course.title,
+      paymentMethod: data.paymentMethod,
+      transactionId: data.transactionId,
+    });
 
     return NextResponse.json(
       { success: true, id: result.enrollmentId, accountCreated: true },
