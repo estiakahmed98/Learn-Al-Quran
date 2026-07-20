@@ -167,7 +167,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
               <tr key={student.id} className="border-t border-gray-100">
                 <td className="px-4 py-3">
                   <Link
-                    href={`/admin/users/${student.id}`}
+                    href={`/admin/students/${student.id}`}
                     className="font-medium text-gray-800 hover:text-primary hover:underline"
                   >
                     {student.name}
@@ -191,7 +191,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
                 </td>
                 <td className="px-4 py-3">
                   <Link
-                    href={`/admin/users/${student.id}`}
+                    href={`/admin/students/${student.id}`}
                     className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
                   >
                     {student._count.enrollments}
@@ -212,7 +212,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Link
-                      href={`/admin/users/${student.id}`}
+                      href={`/admin/students/${student.id}`}
                       className="text-xs font-semibold text-primary hover:underline"
                     >
                       Manage

@@ -32,7 +32,7 @@ const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 min GA-like
 const HEARTBEAT_SEC = 10;
 
 // ✅ exclude these pages from analytics (no count, no show)
-const EXCLUDED_PATH_PREFIXES = ["/auth/signin", "/auth/signup", "/admin"];
+const EXCLUDED_PATH_PREFIXES = ["/auth/signin", "/admin"];
 function isExcludedPath(pathname: string | null | undefined) {
   if (!pathname) return false;
   return EXCLUDED_PATH_PREFIXES.some((p) => pathname.startsWith(p));

@@ -409,7 +409,7 @@ export default function Header({
               onClick={() => setOpen(false)}
               className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-gold"
             >
-              🔑 {t("loginSignup")}
+              🔑 {t("login")}
             </NextLink>
           )}
 

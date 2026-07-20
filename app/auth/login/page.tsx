@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -94,13 +93,6 @@ function LoginForm() {
             {loading ? t("signingIn") : t("signIn")}
           </button>
         </form>
-
-        <p className="mt-4 text-center text-sm text-gray-600">
-          {t("newStudent")}{" "}
-          <Link href="/auth/signup" className="font-semibold text-primary hover:underline">
-            {t("createAccount")}
-          </Link>
-        </p>
       </div>
     </div>
   );

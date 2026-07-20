@@ -40,7 +40,7 @@ function isLocalOrPrivateIp(ip: string) {
 }
 
 // ✅ pages you never want to track
-const EXCLUDED_PATH_PREFIXES = ["/auth/signin", "/auth/signup", "/admin"];
+const EXCLUDED_PATH_PREFIXES = ["/auth/signin", "/admin"];
 
 type AnalyticsEventType = "session_start" | "page_view" | "heartbeat";
 
