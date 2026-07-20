@@ -21,8 +21,10 @@ export interface CourseRow {
 
 export default function CoursesTable({
   initialCourses,
+  teachers = [],
 }: {
   initialCourses: CourseRow[];
+  teachers?: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [courses, setCourses] = useState(initialCourses);
@@ -182,6 +184,7 @@ export default function CoursesTable({
               </button>
             </div>
             <CourseForm
+              teachers={teachers}
               onSaved={(created) => {
                 setCourses((prev) => [
                   ...prev,

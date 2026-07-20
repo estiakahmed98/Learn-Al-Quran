@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { randomBytes } from "crypto";
-import bcrypt from "bcryptjs";
-import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
 import { sendAdminNotification } from "@/lib/admin-notification";
 
 async function notifyEnrollment(fields: {
   studentName: string;
+  guardianName?: string | null;
   email?: string | null;
   phone: string;
   course: string;
@@ -20,6 +17,7 @@ async function notifyEnrollment(fields: {
     heading: "A new course enrollment was submitted",
     fields: {
       "Student name": fields.studentName,
+      "Guardian name": fields.guardianName,
       Email: fields.email,
       "Phone / WhatsApp": fields.phone,
       Course: fields.course,
@@ -44,14 +42,17 @@ async function subscribeToNewsletter(email: string | null | undefined) {
 
 const enrollSchema = z.object({
   courseSlug: z.string().min(1, "Please select a course"),
-  studentName: z.string().trim().optional(),
+  studentName: z.string().trim().min(2, "Student name is required"),
+  guardianName: z.string().trim().optional(),
   phone: z.string().trim().optional(),
   whatsappNumber: z.string().trim().optional(),
   contactNumber: z.string().trim().optional(),
-  email: z.string().trim().email().optional(),
-  password: z.string().optional(),
+  email: z.string().trim().email().optional().or(z.literal("")),
   paymentMethod: z.enum(["BKASH", "NAGAD", "ROCKET", "WESTERN_UNION", "BANK_TRANSFER"]),
-  transactionId: z.string().trim().optional()
+  transactionId: z.string().trim().optional(),
+  consentAccepted: z.boolean().refine((value) => value === true, {
+    message: "You must agree to the Terms & Conditions and Privacy Policy."
+  })
 });
 
 export async function POST(request: Request) {
@@ -73,149 +74,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Selected course was not found." }, { status: 404 });
     }
 
-    const session = await getServerSession(authOptions);
-    if (session?.user?.id) {
-      const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-      if (!user || user.role !== "STUDENT") {
-        return NextResponse.json({ message: "Only student accounts can enroll." }, { status: 403 });
-      }
-
-      const existingEnrollment = await prisma.enrollment.findFirst({
-        where: { userId: user.id, courseId: course.id, enrollmentStatus: { not: "CANCELLED" } }
-      });
-      if (existingEnrollment) {
-        return NextResponse.json({ message: "You already enrolled in this course." }, { status: 409 });
-      }
-
-      const phone = user.phone || user.whatsapp || "";
-      const enrollment = await prisma.enrollment.create({
-        data: {
-          courseId: course.id,
-          userId: user.id,
-          studentName: user.name,
-          whatsappNumber: user.whatsapp || phone,
-          email: user.email,
-          contactNumber: phone,
-          paymentMethod: data.paymentMethod,
-          transactionId: data.transactionId || null,
-          paymentAmount: course.fee
-        }
-      });
-      await subscribeToNewsletter(user.email);
-      await notifyEnrollment({
-        studentName: user.name,
-        email: user.email,
-        phone: user.whatsapp || phone,
-        course: course.title,
-        paymentMethod: data.paymentMethod,
-        transactionId: data.transactionId,
-      });
-      return NextResponse.json({ success: true, id: enrollment.id, accountCreated: false }, { status: 201 });
-    }
-
-    const name = data.studentName?.trim() || "";
-    const email = data.email?.trim().toLowerCase() || "";
     const phone = data.phone?.trim() || data.contactNumber?.trim() || data.whatsappNumber?.trim() || "";
-    const password = data.password || "";
+    const email = data.email?.trim().toLowerCase() || null;
 
-    // Keep the compact admission form on the homepage working. The dedicated
-    // /enroll page always supplies a user-selected password.
-    if (!password) {
-      let userId: string | undefined;
-      let account: { email: string; password: string } | null = null;
-      if (email) {
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-          userId = existingUser.id;
-        } else {
-          const temporaryPassword = randomBytes(4).toString("hex");
-          const user = await prisma.user.create({
-            data: {
-              name: name || "Student",
-              email,
-              phone: phone || null,
-              whatsapp: data.whatsappNumber || phone || null,
-              passwordHash: await bcrypt.hash(temporaryPassword, 10),
-              role: "STUDENT"
-            }
-          });
-          userId = user.id;
-          account = { email, password: temporaryPassword };
-        }
-      }
-      const enrollment = await prisma.enrollment.create({
-        data: {
-          courseId: course.id,
-          userId,
-          studentName: name || "Student",
-          whatsappNumber: data.whatsappNumber || phone,
-          email: email || null,
-          contactNumber: data.contactNumber || phone,
-          paymentMethod: data.paymentMethod,
-          transactionId: data.transactionId || null,
-          paymentAmount: course.fee
-        }
-      });
-      await subscribeToNewsletter(email);
-      await notifyEnrollment({
-        studentName: name || "Student",
-        email: email || null,
-        phone: data.whatsappNumber || phone,
-        course: course.title,
+    if (phone.length < 6) {
+      return NextResponse.json({ message: "A valid phone / WhatsApp number is required." }, { status: 400 });
+    }
+
+    const enrollment = await prisma.enrollment.create({
+      data: {
+        courseId: course.id,
+        studentName: data.studentName,
+        guardianName: data.guardianName || null,
+        whatsappNumber: data.whatsappNumber || phone,
+        email,
+        contactNumber: data.contactNumber || phone,
         paymentMethod: data.paymentMethod,
-        transactionId: data.transactionId,
-      });
-      return NextResponse.json(
-        { success: true, id: enrollment.id, account, accountCreated: Boolean(account) },
-        { status: 201 }
-      );
-    }
-
-    if (name.length < 2 || !email || phone.length < 6 || password.length < 6) {
-      return NextResponse.json(
-        { message: "Name, email, phone and a password of at least 6 characters are required." },
-        { status: 400 }
-      );
-    }
-
-    const existingUser = await prisma.user.findUnique({ where: { email }, select: { id: true } });
-    if (existingUser) {
-      return NextResponse.json(
-        { message: "An account already exists with this email. Please log in to enroll." },
-        { status: 409 }
-      );
-    }
-
-    const result = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          name,
-          email,
-          phone,
-          whatsapp: phone,
-          passwordHash: await bcrypt.hash(password, 10),
-          role: "STUDENT"
-        }
-      });
-      const enrollment = await tx.enrollment.create({
-        data: {
-          courseId: course.id,
-          userId: user.id,
-          studentName: name,
-          whatsappNumber: phone,
-          email,
-          contactNumber: phone,
-          paymentMethod: data.paymentMethod,
-          transactionId: data.transactionId || null,
-          paymentAmount: course.fee
-        }
-      });
-      return { enrollmentId: enrollment.id, userId: user.id };
+        transactionId: data.transactionId || null,
+        paymentAmount: course.fee,
+        consentAccepted: data.consentAccepted
+      }
     });
 
     await subscribeToNewsletter(email);
     await notifyEnrollment({
-      studentName: name,
+      studentName: data.studentName,
+      guardianName: data.guardianName,
       email,
       phone,
       course: course.title,
@@ -223,10 +107,7 @@ export async function POST(request: Request) {
       transactionId: data.transactionId,
     });
 
-    return NextResponse.json(
-      { success: true, id: result.enrollmentId, accountCreated: true },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true, id: enrollment.id }, { status: 201 });
   } catch (error) {
     console.error("Enrollment error:", error);
     return NextResponse.json(

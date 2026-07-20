@@ -30,6 +30,12 @@ const navLinks: { href: string; label: string; title: string; section: AdminSect
     section: "PAYMENTS"
   },
   {
+    href: "/admin/class-reports",
+    label: "🗓️ Class Reports",
+    title: "Teacher Class Reports",
+    section: "REPORTS"
+  },
+  {
     href: "/admin/newsletter",
     label: "📧 Newsletter",
     title: "Newsletter Management",

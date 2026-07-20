@@ -170,12 +170,8 @@ export default function Header({
           <Link href="/blog" className={navLinkClass("/blog")}>
             {t("blog")}
           </Link>
-
-          <Link
-            href="/#courses"
-            className="flex items-center gap-2 rounded-full border border-gold bg-gold px-5 py-2 text-sm font-bold uppercase tracking-wide text-primary-dark shadow-sm transition hover:bg-gold-light"
-          >
-            <span>★</span> {t("masterClasses")}
+          <Link href="/about-us" className={navLinkClass("/about-us")}>
+            {t("aboutUs")}
           </Link>
         </nav>
 
@@ -225,12 +221,18 @@ export default function Header({
                     </div>
                     <NextLink
                       href={
-                        user.role === "ADMIN" ? "/admin" : "/student/dashboard"
+                        user.role === "ADMIN"
+                          ? "/admin"
+                          : user.role === "TEACHER"
+                          ? "/teacher"
+                          : "/student/dashboard"
                       }
                       className="block px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-cream hover:text-primary-dark"
                     >
                       {user.role === "ADMIN"
                         ? `🛠 ${t("adminPanel")}`
+                        : user.role === "TEACHER"
+                        ? `🎓 ${t("myDashboard")}`
                         : `🎓 ${t("myDashboard")}`}
                     </NextLink>
                     <button
@@ -256,7 +258,13 @@ export default function Header({
         <div className="flex items-center gap-3 lg:hidden">
           {status !== "loading" && user && (
             <NextLink
-              href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
+              href={
+                user.role === "ADMIN"
+                  ? "/admin"
+                  : user.role === "TEACHER"
+                  ? "/teacher"
+                  : "/student/dashboard"
+              }
               aria-label={t("myDashboard")}
             >
               <UserAvatar name={user.name} image={user.image} size="h-8 w-8" />
@@ -352,6 +360,13 @@ export default function Header({
             {t("blog")}
           </Link>
           <Link
+            href="/about-us"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/85"
+          >
+            {t("aboutUs")}
+          </Link>
+          <Link
             href="/contact-us"
             onClick={() => setOpen(false)}
             className="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/85"
@@ -364,7 +379,13 @@ export default function Header({
           {user ? (
             <>
               <NextLink
-                href={user.role === "ADMIN" ? "/admin" : "/student/dashboard"}
+                href={
+                  user.role === "ADMIN"
+                    ? "/admin"
+                    : user.role === "TEACHER"
+                    ? "/teacher"
+                    : "/student/dashboard"
+                }
                 onClick={() => setOpen(false)}
                 className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-gold"
               >

@@ -21,6 +21,7 @@ export interface CourseFormValues {
   level: string;
   levelBn: string;
   instructorName: string;
+  instructorId: string;
   totalLessons: string;
   totalHours: string;
   startDate: string; // yyyy-mm-dd
@@ -59,6 +60,7 @@ const emptyValues: CourseFormValues = {
   level: "",
   levelBn: "",
   instructorName: "",
+  instructorId: "",
   totalLessons: "",
   totalHours: "",
   startDate: "",
@@ -95,11 +97,13 @@ function slugify(text: string) {
 export default function CourseForm({
   courseId,
   initial,
-  onSaved
+  onSaved,
+  teachers = []
 }: {
   courseId?: string;
   initial?: Partial<CourseFormValues>;
   onSaved?: (course: any) => void;
+  teachers?: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState<CourseFormValues>({ ...emptyValues, ...initial });
@@ -180,6 +184,7 @@ export default function CourseForm({
       level: values.level.trim() || null,
       levelBn: values.levelBn.trim() || null,
       instructorName: values.instructorName.trim() || null,
+      instructorId: values.instructorId || null,
       totalLessons: values.totalLessons ? Number(values.totalLessons) : null,
       totalHours: values.totalHours ? Number(values.totalHours) : null,
       startDate: values.startDate ? new Date(values.startDate).toISOString() : null,
@@ -338,7 +343,24 @@ export default function CourseForm({
         <h3 className={sectionTitleClass}>Course Info</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <label className={labelClass}>Instructor Name</label>
+            <label className={labelClass}>Assigned Teacher</label>
+            <select
+              value={values.instructorId}
+              onChange={(e) => {
+                const teacher = teachers.find((t) => t.id === e.target.value);
+                set("instructorId", e.target.value);
+                if (teacher) set("instructorName", teacher.name);
+              }}
+              className={inputClass}
+            >
+              <option value="">— Not assigned —</option>
+              {teachers.map((teacher) => (
+                <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Instructor Name (display)</label>
             <input value={values.instructorName} onChange={(e) => set("instructorName", e.target.value)} className={inputClass} placeholder="Ustad ..." />
           </div>
           <div>

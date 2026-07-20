@@ -135,7 +135,7 @@ export default function About({ title, description, image }: AboutProps) {
 
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 sm:mt-8">
             <Link
-              href="/contact-us"
+              href="/about-us"
               className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 sm:px-8 sm:py-2.5"
             >
               <span>{t("learnMore")}</span>

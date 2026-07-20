@@ -34,6 +34,7 @@ enum AdminSection {
   PAYMENTS
   CONTENT
   SETTINGS
+  REPORTS
 }
 
 enum EnrollmentStatus {
@@ -87,6 +88,8 @@ model User {
 
   enrollments       Enrollment[]
   trialApplications TrialApplication[]
+  taughtCourses     Course[]           @relation("CourseInstructor")
+  classReports      ClassReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -117,6 +120,7 @@ model Course {
   levelBn      String?
 
   instructorName String?
+  instructorId   String?
 
   totalLessons Int?
   totalHours   Int?
@@ -149,11 +153,15 @@ model Course {
   notes             Note[]
   trialGroups       TrialGroup[]
   trialApplications TrialApplication[]
+  classReports      ClassReport[]
+
+  instructor User? @relation("CourseInstructor", fields: [instructorId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([isActive, sortOrder])
+  @@index([instructorId])
 }
 
 model TrialGroup {
@@ -175,25 +183,38 @@ model TrialGroup {
 }
 
 model TrialApplication {
-  id                String                 @id @default(cuid())
-  userId            String
-  courseId          String
-  groupId           String?
-  status            TrialApplicationStatus @default(PENDING)
-  preferredSchedule String?
-  note              String?                @db.Text
-  adminNote         String?                @db.Text
+  id       String  @id @default(cuid())
+  userId   String?
+  courseId String
+  groupId  String?
 
-  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status TrialApplicationStatus @default(PENDING)
+
+  studentName     String?
+  guardianName    String?
+  studentAge      Int?
+  mobileNumber    String?
+  whatsappNumber  String?
+  email           String?
+  preferredDate   String?
+  preferredTime   String?
+  country         String?
+  consentAccepted Boolean @default(false)
+
+  preferredSchedule String?
+  note              String? @db.Text
+  adminNote         String? @db.Text
+
+  user   User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   course Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
   group  TrialGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, courseId])
   @@index([status])
   @@index([groupId])
+  @@index([userId])
 }
 
 model ClassSchedule {
@@ -215,6 +236,29 @@ model ClassSchedule {
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
+}
+
+model ClassReport {
+  id        String @id @default(cuid())
+  teacherId String
+  courseId  String
+
+  classDate DateTime
+  startTime String
+  endTime   String?
+  completed Boolean  @default(true)
+  attended  Int?
+  notes     String?  @db.Text
+
+  teacher User   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([teacherId, courseId, classDate])
+  @@index([courseId])
+  @@index([teacherId, classDate])
 }
 
 model Note {
@@ -239,10 +283,12 @@ model Enrollment {
   userId   String?
   courseId String
 
-  studentName    String
-  whatsappNumber String
-  email          String?
-  contactNumber  String
+  studentName     String
+  guardianName    String?
+  whatsappNumber  String
+  email           String?
+  contactNumber   String
+  consentAccepted Boolean @default(false)
 
   paymentMethod PaymentMethod
   transactionId String?

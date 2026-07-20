@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import type { Course } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
+import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 
 interface LeadFormProps {
   courses: Course[];
@@ -36,13 +36,15 @@ export default function LeadForm({
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [account, setAccount] = useState<{
-    email: string;
-    password: string;
-  } | null>(null);
+  const [consentAccepted, setConsentAccepted] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!consentAccepted) {
+      setStatus("error");
+      setErrorMsg(t("genericError"));
+      return;
+    }
     setStatus("loading");
     setErrorMsg("");
 
@@ -52,11 +54,13 @@ export default function LeadForm({
     const payload = {
       courseSlug: data.get("courseSlug"),
       studentName: data.get("studentName"),
+      guardianName: data.get("guardianName") || undefined,
       whatsappNumber: data.get("whatsappNumber") || phone,
       email: data.get("email") || undefined,
       paymentMethod: data.get("paymentMethod"),
       transactionId: data.get("transactionId") || undefined,
       contactNumber: data.get("contactNumber") || phone,
+      consentAccepted,
     };
 
     try {
@@ -66,16 +70,15 @@ export default function LeadForm({
         body: JSON.stringify(payload),
       });
 
-      const body = await res.json().catch(() => ({}));
-
       if (!res.ok) {
-        throw new Error(t("genericError"));
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.message || t("genericError"));
       }
 
-      setAccount(body.account || null);
       trackEvent("generate_lead", { course: payload.courseSlug });
       setStatus("success");
       form.reset();
+      setConsentAccepted(false);
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : t("genericError"));
@@ -146,40 +149,6 @@ export default function LeadForm({
                 {t("successTitle")}
               </p>
               <p className="mt-1 text-sm text-cream/80">{t("successBody")}</p>
-              {account && (
-                <div className="mt-4 rounded-lg bg-white/10 p-4 text-left text-sm text-cream border border-white/5">
-                  <p className="font-semibold text-gold-light flex items-center gap-2">
-                    <span className="text-lg">🎓</span>
-                    {t("accountCreated")}
-                  </p>
-                  <div className="mt-3 space-y-1.5">
-                    <p className="flex justify-between">
-                      <span className="text-cream/70">{t("emailLabel")}:</span>
-                      <span className="font-semibold text-white">
-                        {account.email}
-                      </span>
-                    </p>
-                    <p className="flex justify-between">
-                      <span className="text-cream/70">
-                        {t("passwordLabel")}:
-                      </span>
-                      <span className="font-semibold text-white">
-                        {account.password}
-                      </span>
-                    </p>
-                  </div>
-                  <p className="mt-3 text-xs text-cream/70 flex items-center gap-1">
-                    <span>ℹ️</span>
-                    {t("savePassword")}{" "}
-                    <Link
-                      href="/auth/login"
-                      className="font-semibold text-gold-light underline hover:text-gold transition-colors"
-                    >
-                      {t("loginNow")}
-                    </Link>
-                  </p>
-                </div>
-              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-5 space-y-3">
@@ -191,6 +160,15 @@ export default function LeadForm({
                   placeholder={t("yourName")}
                   className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
                 />
+                <input
+                  name="guardianName"
+                  type="text"
+                  placeholder={t("guardianName")}
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                />
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
                 <input
                   name="email"
                   type="email"
@@ -279,6 +257,8 @@ export default function LeadForm({
                 </p>
               </div>
 
+              <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} dark />
+
               {status === "error" && (
                 <p className="rounded-lg bg-red-500/20 backdrop-blur-sm px-4 py-2 text-sm text-red-200 border border-red-500/30">
                   {errorMsg}
@@ -287,7 +267,7 @@ export default function LeadForm({
 
               <button
                 type="submit"
-                disabled={status === "loading"}
+                disabled={status === "loading" || !consentAccepted}
                 className="group w-full rounded-lg bg-gradient-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
                 <span className="flex items-center justify-center gap-2">
@@ -419,40 +399,6 @@ export default function LeadForm({
                 {t("successTitle")}
               </p>
               <p className="mt-1 text-sm text-gray-600">{t("successBody")}</p>
-              {account && (
-                <div className="mt-4 rounded-lg border border-gold/20 bg-white p-4 text-left text-sm text-gray-700 shadow-sm">
-                  <p className="font-semibold text-primary-dark flex items-center gap-2">
-                    <span className="text-lg">🎓</span>
-                    {t("accountCreated")}
-                  </p>
-                  <div className="mt-3 space-y-1.5">
-                    <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                      <span className="text-gray-500">{t("emailLabel")}:</span>
-                      <span className="font-semibold text-gray-800">
-                        {account.email}
-                      </span>
-                    </p>
-                    <p className="flex justify-between">
-                      <span className="text-gray-500">
-                        {t("passwordLabel")}:
-                      </span>
-                      <span className="font-semibold text-gray-800">
-                        {account.password}
-                      </span>
-                    </p>
-                  </div>
-                  <p className="mt-3 text-xs text-gray-500 flex items-center gap-1">
-                    <span>ℹ️</span>
-                    {t("savePassword")}{" "}
-                    <Link
-                      href="/auth/login"
-                      className="font-semibold text-primary underline hover:text-primary-dark transition-colors"
-                    >
-                      {t("loginNow")}
-                    </Link>
-                  </p>
-                </div>
-              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -513,6 +459,18 @@ export default function LeadForm({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <span className="text-gold">👪</span>
+                    {t("guardianName")}
+                  </label>
+                  <input
+                    name="guardianName"
+                    type="text"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder={t("guardianName")}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <span className="text-gold">✉️</span>
                     {t("emailOptional")}
                   </label>
@@ -571,6 +529,8 @@ export default function LeadForm({
                 />
               </div>
 
+              <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} />
+
               {status === "error" && (
                 <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 border border-red-200">
                   {errorMsg}
@@ -579,7 +539,7 @@ export default function LeadForm({
 
               <button
                 type="submit"
-                disabled={status === "loading"}
+                disabled={status === "loading" || !consentAccepted}
                 className="group w-full rounded-full bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
                 <span className="flex items-center justify-center gap-2">

@@ -21,16 +21,19 @@ export default function Hero({ phone, badge, title, subtitle, image }: HeroProps
   const heroImage = image || "/images/hero-banner.jpg";
 
   return (
-    <section className="relative overflow-hidden bg-primary-dark">
-      {/* subtle decorations */}
-      <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-[0.04]" />
-      <div className="absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-primary/60 blur-3xl" />
-      <div className="absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-primary/40 blur-3xl" />
+    <section className="relative min-h-[32rem] overflow-hidden bg-primary-dark sm:min-h-[38rem] lg:min-h-[44rem]">
+      {/* Full-bleed cover image */}
+      <div className="absolute inset-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImage} alt={t("imageAlt")} className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/75 to-primary-dark/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/70 via-transparent to-transparent" />
+      </div>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 lg:grid-cols-2 lg:px-8 lg:py-24">
-        {/* Left: copy */}
-        <div className="text-center lg:text-left">
-          <p className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-white/5 px-4 py-1.5 text-xs font-semibold text-gold sm:text-sm">
+      {/* Left-aligned copy over the image */}
+      <div className="relative mx-auto flex min-h-[32rem] max-w-7xl items-center px-4 py-14 sm:min-h-[38rem] lg:min-h-[44rem] lg:px-8 lg:py-24">
+        <div className="max-w-xl text-left">
+          <p className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-white/5 px-4 py-1.5 text-xs font-semibold text-gold backdrop-blur-sm sm:text-sm">
             <span aria-hidden>☪️</span> {heroBadge}
           </p>
 
@@ -38,11 +41,11 @@ export default function Hero({ phone, badge, title, subtitle, image }: HeroProps
             {heroTitle}
           </h1>
 
-          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-gold-light/80 lg:mx-0 lg:text-base">
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-gold-light/80 lg:text-base">
             {heroSubtitle}
           </p>
 
-          <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
+          <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row">
             <Link
               href="/free-trial-class"
               onClick={() =>
@@ -69,52 +72,16 @@ export default function Hero({ phone, badge, title, subtitle, image }: HeroProps
               📞 {t("callUs")}: <span dir="ltr">{phone}</span>
             </a>
           )}
-        </div>
 
-        {/* Right: image with floating cards (shown first on mobile) */}
-        <div className="relative order-first mx-auto w-full max-w-lg lg:order-none">
-          <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={heroImage}
-              alt={t("imageAlt")}
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/40 to-transparent" />
-          </div>
-
-          {/* Rating card */}
-          <div className="absolute -top-4 right-2 rounded-xl border border-white/10 bg-primary/90 p-2.5 shadow-xl backdrop-blur sm:-right-4 sm:-top-5 sm:rounded-2xl sm:p-4">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <p className="text-lg font-bold text-white sm:text-2xl">5.0</p>
-              <p
-                className="text-xs tracking-wider text-gold sm:text-sm"
-                aria-label="5 out of 5 stars"
-              >
+          <div className="mt-8 inline-flex items-center gap-3 rounded-xl border border-white/10 bg-primary/60 p-3 shadow-xl backdrop-blur">
+            <div className="flex items-center gap-1.5">
+              <p className="text-lg font-bold text-white">5.0</p>
+              <p className="text-xs tracking-wider text-gold" aria-label="5 out of 5 stars">
                 ★★★★★
               </p>
             </div>
-            <p className="mt-1 max-w-[7rem] text-[10px] text-white/70 sm:max-w-[9rem] sm:text-xs">
-              {t("trustedBy")}
-            </p>
-          </div>
-
-          {/* Info card */}
-          <div className="absolute -bottom-4 left-2 flex max-w-[14rem] items-center gap-2 rounded-xl border border-white/10 bg-primary/90 p-2.5 shadow-xl backdrop-blur sm:-bottom-6 sm:-left-6 sm:max-w-[18rem] sm:gap-3 sm:rounded-2xl sm:p-4">
-            <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-base sm:h-12 sm:w-12 sm:rounded-xl sm:text-2xl"
-              aria-hidden
-            >
-              📖
-            </span>
-            <div>
-              <p className="text-xs font-semibold text-white sm:text-sm">
-                {t("cardTitle")}
-              </p>
-              <p className="mt-0.5 text-[10px] leading-snug text-white/70 sm:text-xs">
-                {t("cardBody")}
-              </p>
-            </div>
+            <span className="h-6 w-px bg-white/15" />
+            <p className="max-w-[10rem] text-[11px] leading-snug text-white/70">{t("trustedBy")}</p>
           </div>
         </div>
       </div>

@@ -15,22 +15,29 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AdminCourseDetailPage({ params }: { params: { id: string } }) {
-  const course = await prisma.course
-    .findUnique({
-      where: { id: params.id },
-      include: {
-        enrollments: {
-          include: {
-            course: { select: { title: true } },
-            results: { orderBy: { examDate: "desc" } }
+  const [course, teachers] = await Promise.all([
+    prisma.course
+      .findUnique({
+        where: { id: params.id },
+        include: {
+          enrollments: {
+            include: {
+              course: { select: { title: true } },
+              results: { orderBy: { examDate: "desc" } }
+            },
+            orderBy: { createdAt: "desc" }
           },
-          orderBy: { createdAt: "desc" }
-        },
-        classSchedules: { orderBy: { dayOfWeek: "asc" } },
-        notes: { orderBy: { createdAt: "desc" } }
-      }
+          classSchedules: { orderBy: { dayOfWeek: "asc" } },
+          notes: { orderBy: { createdAt: "desc" } }
+        }
+      })
+      .catch(() => null),
+    prisma.user.findMany({
+      where: { role: "TEACHER", isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
     })
-    .catch(() => null);
+  ]);
 
   if (!course) notFound();
 
@@ -86,6 +93,7 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
         <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Course Details</h2>
         <CourseForm
           courseId={course.id}
+          teachers={teachers}
           initial={{
             title: course.title,
             titleBn: course.titleBn ?? "",
@@ -101,6 +109,7 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
             level: course.level ?? "",
             levelBn: course.levelBn ?? "",
             instructorName: course.instructorName ?? "",
+            instructorId: course.instructorId ?? "",
             totalLessons: course.totalLessons?.toString() ?? "",
             totalHours: course.totalHours?.toString() ?? "",
             startDate: course.startDate ? course.startDate.toISOString().slice(0, 10) : "",

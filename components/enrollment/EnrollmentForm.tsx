@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { CheckCircle2, CreditCard, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
+import { CheckCircle2, CreditCard, UserRound } from "lucide-react";
+import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 
 type Course = {
   id: string;
@@ -14,19 +13,11 @@ type Course = {
   fee: number;
 };
 
-type Student = {
-  name: string;
-  email: string;
-  phone: string | null;
-  whatsapp: string | null;
-} | null;
-
 const paymentMethods = ["BKASH", "NAGAD", "ROCKET", "WESTERN_UNION", "BANK_TRANSFER"] as const;
 
 interface EnrollmentFormProps {
   courses: Course[];
   defaultCourseSlug?: string;
-  student: Student;
   isBangla: boolean;
   paymentInfo: {
     bkashNumber: string;
@@ -40,7 +31,6 @@ interface EnrollmentFormProps {
 export default function EnrollmentForm({
   courses,
   defaultCourseSlug,
-  student,
   isBangla,
   paymentInfo
 }: EnrollmentFormProps) {
@@ -48,14 +38,14 @@ export default function EnrollmentForm({
   const initialCourse = courses.find((course) => course.slug === defaultCourseSlug) || courses[0];
   const [form, setForm] = useState({
     courseSlug: initialCourse?.slug || "",
-    studentName: student?.name || "",
-    email: student?.email || "",
-    phone: student?.phone || student?.whatsapp || "",
-    password: "",
+    studentName: "",
+    guardianName: "",
+    email: "",
+    phone: "",
     paymentMethod: "BKASH",
     transactionId: ""
   });
-  const [showPassword, setShowPassword] = useState(false);
+  const [consentAccepted, setConsentAccepted] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [error, setError] = useState("");
 
@@ -69,26 +59,22 @@ export default function EnrollmentForm({
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!consentAccepted) {
+      setError(t("genericError"));
+      return;
+    }
     setStatus("submitting");
     setError("");
     const response = await fetch("/api/enroll", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
+      body: JSON.stringify({ ...form, consentAccepted })
     });
     const body = await response.json().catch(() => null);
     if (!response.ok) {
       setError(body?.message || t("genericError"));
       setStatus("idle");
       return;
-    }
-
-    if (!student) {
-      await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false
-      });
     }
     setStatus("success");
   }
@@ -100,9 +86,9 @@ export default function EnrollmentForm({
           <CheckCircle2 className="mx-auto h-14 w-14 text-green-600" />
           <h1 className="mt-5 font-heading text-3xl font-bold text-primary-dark">{t("successTitle")}</h1>
           <p className="mx-auto mt-3 max-w-xl leading-7 text-gray-600">{t("successBody")}</p>
-          <Link href="/student/dashboard" className="mt-7 inline-flex rounded-full bg-primary px-7 py-3 text-sm font-bold text-white hover:bg-primary-dark">
-            {t("openDashboard")}
-          </Link>
+          <a href="/" className="mt-7 inline-flex rounded-full bg-primary px-7 py-3 text-sm font-bold text-white hover:bg-primary-dark">
+            {t("backHome")}
+          </a>
         </div>
       </section>
     );
@@ -130,31 +116,24 @@ export default function EnrollmentForm({
         </aside>
 
         <div className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-xl sm:p-9">
-          <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary/20 text-primary-dark"><LockKeyhole className="h-5 w-5" /></span><div><h2 className="font-heading text-2xl font-bold text-primary-dark">{t("formTitle")}</h2><p className="text-sm text-gray-500">{student ? t("signedInHint") : t("guestHint")}</p></div></div>
-
-          {student && (
-            <div className="mt-6 flex items-center gap-4 rounded-2xl bg-cream p-4">
-              <UserRound className="h-8 w-8 text-primary" />
-              <div><p className="font-bold text-primary-dark">{student.name}</p><p className="text-sm text-gray-500">{student.email}{student.phone || student.whatsapp ? ` · ${student.phone || student.whatsapp}` : ""}</p></div>
-            </div>
-          )}
+          <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary/20 text-primary-dark"><UserRound className="h-5 w-5" /></span><div><h2 className="font-heading text-2xl font-bold text-primary-dark">{t("formTitle")}</h2><p className="text-sm text-gray-500">{t("guestHint")}</p></div></div>
 
           <form onSubmit={submit} className="mt-6 grid gap-4 sm:grid-cols-2">
-            {!student && <>
-              <label className="text-sm font-semibold text-gray-700">{t("name")}<input required minLength={2} value={form.studentName} onChange={(event) => update("studentName", event.target.value)} className={inputClass} /></label>
-              <label className="text-sm font-semibold text-gray-700">{t("email")}<input required type="email" value={form.email} onChange={(event) => update("email", event.target.value)} className={inputClass} /></label>
-              <label className="text-sm font-semibold text-gray-700">{t("phone")}<input required minLength={6} type="tel" value={form.phone} onChange={(event) => update("phone", event.target.value)} className={inputClass} /></label>
-              <label className="relative text-sm font-semibold text-gray-700">{t("password")}<span className="relative block"><input required minLength={6} type={showPassword ? "text" : "password"} value={form.password} onChange={(event) => update("password", event.target.value)} className={`${inputClass} pr-12`} /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? t("hidePassword") : t("showPassword")} className="absolute inset-y-0 right-0 mt-1.5 flex w-12 items-center justify-center text-gray-400 hover:text-primary">{showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button></span></label>
-            </>}
+            <label className="text-sm font-semibold text-gray-700">{t("name")}<input required minLength={2} value={form.studentName} onChange={(event) => update("studentName", event.target.value)} className={inputClass} /></label>
+            <label className="text-sm font-semibold text-gray-700">{t("guardianName")}<input value={form.guardianName} onChange={(event) => update("guardianName", event.target.value)} className={inputClass} /></label>
+            <label className="text-sm font-semibold text-gray-700">{t("email")}<input required type="email" value={form.email} onChange={(event) => update("email", event.target.value)} className={inputClass} /></label>
+            <label className="text-sm font-semibold text-gray-700">{t("phone")}<input required minLength={6} type="tel" value={form.phone} onChange={(event) => update("phone", event.target.value)} className={inputClass} /></label>
 
             <label className="text-sm font-semibold text-gray-700">{t("course")}<select required value={form.courseSlug} onChange={(event) => update("courseSlug", event.target.value)} className={inputClass}><option value="">{t("selectCourse")}</option>{courses.map((course) => <option key={course.id} value={course.slug}>{isBangla && course.titleBn ? course.titleBn : course.title} — ৳{course.fee.toLocaleString()}</option>)}</select></label>
             <label className="text-sm font-semibold text-gray-700">{t("paymentMethod")}<select required value={form.paymentMethod} onChange={(event) => update("paymentMethod", event.target.value)} className={inputClass}>{paymentMethods.map((method) => <option key={method} value={method}>{t(`paymentMethods.${method}`)}</option>)}</select></label>
             <label className="text-sm font-semibold text-gray-700 sm:col-span-2">{t("transactionId")}<input value={form.transactionId} onChange={(event) => update("transactionId", event.target.value)} placeholder={t("transactionPlaceholder")} className={inputClass} /></label>
 
             {selectedCourse && <div className="flex items-center justify-between rounded-xl bg-primary/5 px-4 py-3 text-sm sm:col-span-2"><span className="text-gray-600">{t("courseFee")}</span><span className="font-heading text-lg font-bold text-primary-dark">৳{selectedCourse.fee.toLocaleString()}</span></div>}
+            <div className="sm:col-span-2">
+              <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} />
+            </div>
             {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 sm:col-span-2">{error}</p>}
-            <button disabled={status === "submitting" || !form.courseSlug} className="rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-primary hover:text-white disabled:opacity-50 sm:col-span-2">{status === "submitting" ? t("submitting") : t("submit")}</button>
-            {!student && <p className="text-center text-xs text-gray-500 sm:col-span-2">{t("haveAccount")} <Link href={`/auth/login?callbackUrl=${encodeURIComponent(`/enroll?course=${form.courseSlug}`)}`} className="font-bold text-primary hover:underline">{t("login")}</Link></p>}
+            <button disabled={status === "submitting" || !form.courseSlug || !consentAccepted} className="rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-primary hover:text-white disabled:opacity-50 sm:col-span-2">{status === "submitting" ? t("submitting") : t("submit")}</button>
           </form>
         </div>
       </div>

@@ -18,7 +18,8 @@ export const ALL_ADMIN_SECTIONS: AdminSection[] = [
   "USERS",
   "PAYMENTS",
   "CONTENT",
-  "SETTINGS"
+  "SETTINGS",
+  "REPORTS"
 ];
 
 export function effectivePermissions(
@@ -50,7 +51,8 @@ export const SECTION_PATHS: { sections: AdminSection[]; path: string }[] = [
   { sections: ["USERS"], path: "/admin/trials" },
   { sections: ["USERS"], path: "/admin/users" },
   { sections: ["PAYMENTS"], path: "/admin/payments" },
-  { sections: ["CONTENT", "SETTINGS"], path: "/admin/settings" }
+  { sections: ["CONTENT", "SETTINGS"], path: "/admin/settings" },
+  { sections: ["REPORTS"], path: "/admin/class-reports" }
 ];
 
 export function sectionsForPath(pathname: string): AdminSection[] | null {
