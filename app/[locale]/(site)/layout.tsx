@@ -1,3 +1,4 @@
+import TopBar from "@/components/layout/TopBar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
@@ -8,6 +9,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <>
+      <TopBar phone={settings.phone || ""} />
       <Header
         phone={settings.phone || ""}
         siteName={settings.siteName}

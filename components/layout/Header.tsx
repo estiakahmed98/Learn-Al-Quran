@@ -79,7 +79,7 @@ export default function Header({
     }`;
 
   return (
-    <header className="sticky top-0 z-40 overflow-hidden bg-primary-dark">
+    <header className="sticky top-0 z-40 bg-primary-dark">
       <IslamicPattern tone="gold" opacity={0.06} />
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
