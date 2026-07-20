@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import StudentCourseCard from "@/components/dashboard/StudentCourseCard";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "My Courses", robots: { index: false, follow: false } };
@@ -39,9 +40,10 @@ export default async function StudentCoursesPage() {
           <p className="mt-3 font-semibold text-gray-700">You have not enrolled in any course yet.</p>
           <Link
             href="/courses"
-            className="mt-4 inline-block rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark"
+            className="relative isolate mt-4 inline-block overflow-hidden rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark"
           >
-            Browse Courses
+            <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+            <span className="relative z-10">Browse Courses</span>
           </Link>
         </div>
       ) : (

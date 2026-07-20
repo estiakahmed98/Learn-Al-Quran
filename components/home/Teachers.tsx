@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { GraduationCap } from "lucide-react";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export interface TeacherCard {
   id: string;
@@ -20,74 +22,65 @@ function TeacherCardItem({
 }) {
   return (
     <div
-      className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
+      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-gold/10 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gold/30"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* Decorative corner elements */}
-      <div className="absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {/* Image panel */}
+      <div className="relative isolate h-56 w-full shrink-0 overflow-hidden bg-primary-dark sm:h-64">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={teacher.imageURL || "/images/teacher-placeholder.jpg"}
+          alt={teacher.name}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
 
-      {/* Background pattern */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
-          `,
-        }}
-      />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/15 to-transparent" />
+        <IslamicPattern tone="gold" opacity={0.1} />
 
-      <div className="relative w-full">
-        {/* Profile image with ring */}
-        <div className="relative mx-auto h-20 w-20 sm:h-24 sm:w-24">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold/20 to-primary/20 animate-pulse" />
-          <div className="absolute inset-0.5 rounded-full bg-white" />
-          <div className="absolute inset-0 rounded-full ring-2 ring-gold/40 ring-offset-2 ring-offset-white transition-all duration-300 group-hover:ring-4 group-hover:ring-gold/60">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={teacher.imageURL || "/images/teacher-placeholder.jpg"}
-              alt={teacher.name}
-              className="h-full w-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
+        {/* Corner icon badge */}
+        <span className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-black/25 text-gold shadow-lg backdrop-blur-md">
+          <GraduationCap className="h-5 w-5" />
+        </span>
 
-          {/* Decorative dots around the image */}
-          <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-gold/30" />
-          <div className="absolute -bottom-1 -left-1 h-3 w-3 rounded-full bg-gold/30" />
-          <div className="absolute -top-1 -left-1 h-2 w-2 rounded-full bg-primary/20" />
-          <div className="absolute -bottom-1 -right-1 h-2 w-2 rounded-full bg-primary/20" />
+        {/* Decorative number */}
+        <span
+          aria-hidden
+          className="absolute -right-1 -top-3 z-0 font-heading text-7xl font-bold leading-none text-white/10"
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
+        {/* Bottom info panel over image */}
+        <div className="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-5">
+          <h3 className="font-heading text-base font-bold uppercase tracking-wide text-white sm:text-lg">
+            {teacher.name}
+          </h3>
+          {teacher.designation && (
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-gold">
+              {teacher.designation}
+            </p>
+          )}
         </div>
+      </div>
 
-        <h3 className="mt-4 font-heading text-sm sm:text-base font-bold uppercase tracking-wide text-primary-dark group-hover:text-primary transition-colors duration-300 line-clamp-1">
-          {teacher.name}
-        </h3>
-
-        <div className="mx-auto mt-2 flex items-center gap-2">
+      {/* Content */}
+      <div className="relative flex flex-1 flex-col p-4 text-center sm:p-5">
+        <div className="mx-auto flex items-center gap-2">
           <span className="h-px w-6 bg-gold/30" />
           <span className="h-1 w-1 rounded-full bg-gold" />
           <span className="h-px w-6 bg-gold/30" />
         </div>
 
-        {teacher.designation && (
-          <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-secondary line-clamp-1">
-            {teacher.designation}
-          </p>
-        )}
-
         {teacher.description && (
-          <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700 lg:text-sm">
+          <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-gray-600 transition-colors duration-300 group-hover:text-gray-700 lg:text-sm">
             {teacher.description}
           </p>
         )}
-
-        {/* Decorative bottom element */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="h-1 w-1 rounded-full bg-gold/40" />
-          <span className="h-1 w-1 rounded-full bg-gold/60" />
-          <span className="h-1 w-1 rounded-full bg-gold/40" />
-        </div>
       </div>
+
+      {/* Decorative corner elements */}
+      <div className="pointer-events-none absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="pointer-events-none absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
   );
 }
@@ -150,62 +143,11 @@ export default function Teachers({
     goToSlide(currentIndex - 1);
   };
 
-  // Get current visible teachers
-  const startIndex = currentIndex * itemsPerView;
-  const visibleTeachers = teachers.slice(startIndex, startIndex + itemsPerView);
-
-  // Duplicate teachers for infinite scroll feel if needed
   const hasMultipleSlides = totalSlides > 1;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white">
-      {/* Islamic Geometric Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.04]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-              repeating-linear-gradient(45deg, 
-                transparent 0px, 
-                transparent 30px, 
-                rgba(212, 175, 55, 0.08) 30px, 
-                rgba(212, 175, 55, 0.08) 31px
-              ),
-              repeating-linear-gradient(-45deg, 
-                transparent 0px, 
-                transparent 30px, 
-                rgba(212, 175, 55, 0.08) 30px, 
-                rgba(212, 175, 55, 0.08) 31px
-              )
-            `,
-          }}
-        />
-
-        {/* Islamic Star Pattern */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 10% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 30%),
-              radial-gradient(circle at 90% 20%, rgba(212, 175, 55, 0.06) 0%, transparent 30%),
-              repeating-linear-gradient(60deg, 
-                transparent 0px, 
-                transparent 50px, 
-                rgba(212, 175, 55, 0.04) 50px, 
-                rgba(212, 175, 55, 0.04) 51px
-              ),
-              repeating-linear-gradient(-60deg, 
-                transparent 0px, 
-                transparent 50px, 
-                rgba(212, 175, 55, 0.04) 50px, 
-                rgba(212, 175, 55, 0.04) 51px
-              )
-            `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.04} />
 
       {/* Decorative circles */}
       <div className="pointer-events-none absolute -left-20 top-1/2 hidden h-[20rem] w-[20rem] -translate-y-1/2 rounded-full border-[20px] border-primary-dark/5 lg:block" />
@@ -261,11 +203,12 @@ export default function Teachers({
               <button
                 onClick={prevSlide}
                 disabled={currentIndex === 0 || isAnimating}
-                className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex items-center justify-center h-10 w-10 rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
+                className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex isolate items-center justify-center h-10 w-10 overflow-hidden rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
                 aria-label="Previous slide"
               >
+                <IslamicPattern tone="green" opacity={0.14} className="z-0" />
                 <svg
-                  className="w-5 h-5"
+                  className="relative z-10 w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -282,11 +225,12 @@ export default function Teachers({
               <button
                 onClick={nextSlide}
                 disabled={currentIndex >= maxIndex || isAnimating}
-                className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex items-center justify-center h-10 w-10 rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
+                className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex isolate items-center justify-center h-10 w-10 overflow-hidden rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
                 aria-label="Next slide"
               >
+                <IslamicPattern tone="green" opacity={0.14} className="z-0" />
                 <svg
-                  className="w-5 h-5"
+                  className="relative z-10 w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -337,7 +281,7 @@ export default function Teachers({
                         <TeacherCardItem
                           key={teacher.id}
                           teacher={teacher}
-                          index={idx}
+                          index={start + idx}
                         />
                       ) : (
                         <div key={`empty-${idx}`} className="invisible" />

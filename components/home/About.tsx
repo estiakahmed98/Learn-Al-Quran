@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 interface AboutProps {
   title?: string;
@@ -20,53 +21,7 @@ export default function About({ title, description, image }: AboutProps) {
 
   return (
     <section id="about" className="relative overflow-hidden bg-primary/5">
-      {/* Islamic Geometric Pattern Background */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-            repeating-linear-gradient(45deg, 
-              transparent 0px, 
-              transparent 20px, 
-              rgba(212, 175, 55, 0.05) 20px, 
-              rgba(212, 175, 55, 0.05) 21px
-            ),
-            repeating-linear-gradient(-45deg, 
-              transparent 0px, 
-              transparent 20px, 
-              rgba(212, 175, 55, 0.05) 20px, 
-              rgba(212, 175, 55, 0.05) 21px
-            )
-          `,
-          }}
-        />
-
-        {/* Star Pattern */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 30%),
-            radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 30%),
-            repeating-linear-gradient(60deg, 
-              transparent 0px, 
-              transparent 30px, 
-              rgba(212, 175, 55, 0.03) 30px, 
-              rgba(212, 175, 55, 0.03) 31px
-            ),
-            repeating-linear-gradient(-60deg, 
-              transparent 0px, 
-              transparent 30px, 
-              rgba(212, 175, 55, 0.03) 30px, 
-              rgba(212, 175, 55, 0.03) 31px
-            )
-          `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.05} />
 
       {/* Decorative circle behind the image */}
       <div className="pointer-events-none absolute -left-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
@@ -136,11 +91,12 @@ export default function About({ title, description, image }: AboutProps) {
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 sm:mt-8">
             <Link
               href="/about-us"
-              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 sm:px-8 sm:py-2.5"
+              className="relative isolate inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 sm:px-8 sm:py-2.5"
             >
-              <span>{t("learnMore")}</span>
+              <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("learnMore")}</span>
               <svg
-                className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                className="relative z-10 w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

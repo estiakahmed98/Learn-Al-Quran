@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }) {
   const now = new Date();
@@ -46,9 +47,10 @@ export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }
       <button
         onClick={download}
         disabled={downloading}
-        className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white hover:bg-primary-dark disabled:opacity-50"
+        className="relative isolate overflow-hidden rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white hover:bg-primary-dark disabled:opacity-50"
       >
-        {downloading ? "Preparing..." : "Download PDF"}
+        <IslamicPattern tone="gold" opacity={0.14} className="z-0" />
+        <span className="relative z-10">{downloading ? "Preparing..." : "Download PDF"}</span>
       </button>
     </div>
   );

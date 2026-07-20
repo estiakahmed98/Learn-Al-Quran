@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 type Course = { id: string; title: string; titleBn: string | null };
 
@@ -109,9 +110,10 @@ export default function ClassReportForm({
 
       <button
         disabled={status === "submitting" || !form.courseId}
-        className="w-full rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-white transition hover:bg-primary-dark disabled:opacity-50"
+        className="relative isolate w-full overflow-hidden rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-white transition hover:bg-primary-dark disabled:opacity-50"
       >
-        {status === "submitting" ? "Submitting..." : "Submit report"}
+        <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+        <span className="relative z-10">{status === "submitting" ? "Submitting..." : "Submit report"}</span>
       </button>
     </form>
   );

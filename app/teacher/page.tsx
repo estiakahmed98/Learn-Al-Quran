@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export default async function TeacherDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -30,9 +31,10 @@ export default async function TeacherDashboardPage() {
               {course.titleBn && <p className="text-sm text-gray-500">{course.titleBn}</p>}
               <Link
                 href={`/teacher/classes?courseId=${course.id}`}
-                className="mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-dark"
+                className="relative isolate mt-4 inline-flex overflow-hidden rounded-full bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-dark"
               >
-                Submit Class Report
+                <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+                <span className="relative z-10">Submit Class Report</span>
               </Link>
             </div>
           ))}

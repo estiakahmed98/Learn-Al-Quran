@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export default function ReviewForm() {
   const t = useTranslations("sitePages.reviewForm");
@@ -47,15 +48,7 @@ export default function ReviewForm() {
     return (
       <div className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 text-center shadow-lg sm:p-8 transition-all duration-300 hover:shadow-xl hover:border-gold/30">
         {/* Decorative pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
-          `,
-          }}
-        />
+        <IslamicPattern opacity={0.03} />
 
         {/* Decorative corners */}
         <div className="absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -105,28 +98,7 @@ export default function ReviewForm() {
       onSubmit={handleSubmit}
       className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:border-gold/30 sm:p-8"
     >
-      {/* Islamic Pattern Background */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-          radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-          radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-          repeating-linear-gradient(45deg, 
-            transparent 0px, 
-            transparent 30px, 
-            rgba(212, 175, 55, 0.05) 30px, 
-            rgba(212, 175, 55, 0.05) 31px
-          ),
-          repeating-linear-gradient(-45deg, 
-            transparent 0px, 
-            transparent 30px, 
-            rgba(212, 175, 55, 0.05) 30px, 
-            rgba(212, 175, 55, 0.05) 31px
-          )
-        `,
-        }}
-      />
+      <IslamicPattern opacity={0.03} />
 
       {/* Decorative corners */}
       <div className="absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -233,9 +205,10 @@ export default function ReviewForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="group/btn w-full sm:w-auto rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+            className="group/btn relative isolate w-full overflow-hidden sm:w-auto rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
           >
-            <span className="flex items-center justify-center gap-2">
+            <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+            <span className="relative z-10 flex items-center justify-center gap-2">
               {submitting ? (
                 <>
                   <svg

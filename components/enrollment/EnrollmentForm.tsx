@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { CheckCircle2, CreditCard, UserRound } from "lucide-react";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 type Course = {
   id: string;
@@ -133,7 +134,7 @@ export default function EnrollmentForm({
               <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} />
             </div>
             {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 sm:col-span-2">{error}</p>}
-            <button disabled={status === "submitting" || !form.courseSlug || !consentAccepted} className="rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-primary hover:text-white disabled:opacity-50 sm:col-span-2">{status === "submitting" ? t("submitting") : t("submit")}</button>
+            <button disabled={status === "submitting" || !form.courseSlug || !consentAccepted} className="relative isolate overflow-hidden rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-primary hover:text-white disabled:opacity-50 sm:col-span-2"><IslamicPattern tone="green" opacity={0.12} className="z-0" /><span className="relative z-10">{status === "submitting" ? t("submitting") : t("submit")}</span></button>
           </form>
         </div>
       </div>

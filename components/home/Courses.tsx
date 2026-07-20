@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { pickText } from "@/lib/course-content";
 import { useCourses } from "@/hooks/useCourses";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 const courseIcons: Record<string, string> = {
   "smart-maktab-learning": "📖",
@@ -27,53 +28,7 @@ export default function Courses() {
       id="courses"
       className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white"
     >
-      {/* Islamic Geometric Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.04]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-            repeating-linear-gradient(45deg, 
-              transparent 0px, 
-              transparent 25px, 
-              rgba(212, 175, 55, 0.08) 25px, 
-              rgba(212, 175, 55, 0.08) 26px
-            ),
-            repeating-linear-gradient(-45deg, 
-              transparent 0px, 
-              transparent 25px, 
-              rgba(212, 175, 55, 0.08) 25px, 
-              rgba(212, 175, 55, 0.08) 26px
-            )
-          `,
-          }}
-        />
-
-        {/* Islamic Star Pattern */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 25%),
-            radial-gradient(circle at 85% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 25%),
-            repeating-linear-gradient(30deg, 
-              transparent 0px, 
-              transparent 40px, 
-              rgba(212, 175, 55, 0.04) 40px, 
-              rgba(212, 175, 55, 0.04) 41px
-            ),
-            repeating-linear-gradient(-30deg, 
-              transparent 0px, 
-              transparent 40px, 
-              rgba(212, 175, 55, 0.04) 40px, 
-              rgba(212, 175, 55, 0.04) 41px
-            )
-          `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.04} />
 
       {/* Decorative circles */}
       <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
@@ -170,15 +125,20 @@ export default function Courses() {
                   <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Link
                       href={`/courses/${course.slug}`}
-                      className="flex-1 rounded-lg border border-primary/30 px-3 py-2 text-xs font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md sm:py-2.5 sm:text-sm"
+                      className="relative isolate flex-1 overflow-hidden rounded-lg border border-primary/30 px-3 py-2 text-center text-xs font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md sm:py-2.5 sm:text-sm"
                     >
-                      {t("details")}
+                      <span className="relative z-10">{t("details")}</span>
                     </Link>
                     <Link
                       href={`/enroll?course=${course.slug}`}
-                      className="flex-1 rounded-lg bg-gradient-to-r from-primary to-primary-dark px-3 py-2 text-xs font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 sm:py-2.5 sm:text-sm"
+                      className="relative isolate flex-1 overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-3 py-2 text-center text-xs font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 sm:py-2.5 sm:text-sm"
                     >
-                      {t("enrollNow")}
+                      <IslamicPattern
+                        tone="gold"
+                        opacity={0.12}
+                        className="z-0"
+                      />
+                      <span className="relative z-10">{t("enrollNow")}</span>
                     </Link>
                   </div>
                 </div>
@@ -191,11 +151,12 @@ export default function Courses() {
           <div className="mt-10 sm:mt-12 text-center">
             <Link
               href="/courses"
-              className="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 sm:px-10 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+              className="group relative isolate inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 sm:px-10 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
-              <span>{t("viewAll")}</span>
+              <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("viewAll")}</span>
               <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 interface Props {
   slug: string;
@@ -93,9 +94,10 @@ export default function PriceCard({
             <button
               type="button"
               onClick={applyCoupon}
-              className="shrink-0 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-primary hover:text-white"
+              className="relative isolate shrink-0 overflow-hidden rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-primary hover:text-white"
             >
-              {t("apply")}
+              <IslamicPattern tone="green" opacity={0.1} className="z-0" />
+              <span className="relative z-10">{t("apply")}</span>
             </button>
           </div>
         ) : null}
@@ -104,9 +106,10 @@ export default function PriceCard({
 
         <Link
           href={`/enroll?course=${slug}${applied ? `&coupon=${couponCode}` : ""}`}
-          className="mt-5 block rounded-xl bg-gold py-3.5 text-center font-bold text-primary-dark shadow-lg transition hover:bg-gold-light"
+          className="relative isolate mt-5 block overflow-hidden rounded-xl bg-gold py-3.5 text-center font-bold text-primary-dark shadow-lg transition hover:bg-gold-light"
         >
-          {t("enrollInCourse")}
+          <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+          <span className="relative z-10">{t("enrollInCourse")}</span>
         </Link>
 
         {deadlineText && (

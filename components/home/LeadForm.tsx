@@ -5,6 +5,7 @@ import type { Course } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 interface LeadFormProps {
   courses: Course[];
@@ -91,30 +92,7 @@ export default function LeadForm({
         id="admission"
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark p-6 shadow-xl sm:p-8"
       >
-        {/* Islamic Pattern Background */}
-        <div className="absolute inset-0 opacity-[0.06]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-              radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.2) 0%, transparent 40%),
-              radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.2) 0%, transparent 40%),
-              repeating-linear-gradient(45deg, 
-                transparent 0px, 
-                transparent 20px, 
-                rgba(212, 175, 55, 0.1) 20px, 
-                rgba(212, 175, 55, 0.1) 21px
-              ),
-              repeating-linear-gradient(-45deg, 
-                transparent 0px, 
-                transparent 20px, 
-                rgba(212, 175, 55, 0.1) 20px, 
-                rgba(212, 175, 55, 0.1) 21px
-              )
-            `,
-            }}
-          />
-        </div>
+        <IslamicPattern tone="gold" opacity={0.06} />
 
         {/* Decorative elements */}
         <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full border-[12px] border-gold/10" />
@@ -268,9 +246,10 @@ export default function LeadForm({
               <button
                 type="submit"
                 disabled={status === "loading" || !consentAccepted}
-                className="group w-full rounded-lg bg-gradient-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+                className="group relative isolate w-full overflow-hidden rounded-lg bg-gradient-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
-                <span className="flex items-center justify-center gap-2">
+                <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   {status === "loading" ? t("submitting") : t("submitNow")}
                   {status !== "loading" && (
                     <svg
@@ -301,30 +280,7 @@ export default function LeadForm({
       id="admission"
       className="relative overflow-hidden bg-gradient-to-b from-cream to-white py-12 sm:py-16"
     >
-      {/* Islamic Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.04]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            repeating-linear-gradient(45deg, 
-              transparent 0px, 
-              transparent 30px, 
-              rgba(212, 175, 55, 0.06) 30px, 
-              rgba(212, 175, 55, 0.06) 31px
-            ),
-            repeating-linear-gradient(-45deg, 
-              transparent 0px, 
-              transparent 30px, 
-              rgba(212, 175, 55, 0.06) 30px, 
-              rgba(212, 175, 55, 0.06) 31px
-            )
-          `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.04} />
 
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
@@ -540,9 +496,10 @@ export default function LeadForm({
               <button
                 type="submit"
                 disabled={status === "loading" || !consentAccepted}
-                className="group w-full rounded-full bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+                className="group relative isolate w-full overflow-hidden rounded-full bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
-                <span className="flex items-center justify-center gap-2">
+                <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   {status === "loading" ? t("submitting") : t("submitNow")}
                   {status !== "loading" && (
                     <svg

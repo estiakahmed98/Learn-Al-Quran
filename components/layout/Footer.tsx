@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 interface FooterProps {
   phone: string;
@@ -49,6 +50,8 @@ export default function Footer({
 
   return (
     <footer className="relative overflow-hidden bg-primary-dark text-cream">
+      <IslamicPattern tone="gold" opacity={0.06} />
+
       <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full border-[28px] border-white/[0.025]" />
       <div className="pointer-events-none absolute -bottom-28 right-10 h-72 w-72 rounded-full border-[32px] border-gold/[0.035]" />
 
@@ -147,10 +150,13 @@ export default function Footer({
             <p className="mt-3 text-sm leading-6 text-cream/65">{t("ctaText")}</p>
             <Link
               href="/free-trial-class"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-bold text-primary-dark transition hover:bg-gold-light"
+              className="relative isolate mt-5 inline-flex items-center gap-2 overflow-hidden rounded-full bg-gold px-5 py-2.5 text-sm font-bold text-primary-dark transition hover:bg-gold-light"
             >
-              {t("bookFreeTrial")}
-              <ArrowRight className="h-4 w-4" />
+              <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+              <span className="relative z-10 inline-flex items-center gap-2">
+                {t("bookFreeTrial")}
+                <ArrowRight className="h-4 w-4" />
+              </span>
             </Link>
           </div>
         </div>

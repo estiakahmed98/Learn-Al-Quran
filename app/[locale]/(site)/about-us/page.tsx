@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Teachers from "@/components/home/Teachers";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -116,14 +117,17 @@ export default async function AboutUsPage() {
         <div className="mt-14 text-center">
           <h2 className="font-heading text-2xl font-bold text-primary-dark">{t("ctaTitle")}</h2>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/courses" className="rounded-full bg-primary px-7 py-3 text-sm font-bold text-white hover:bg-primary-dark">
-              {t("ctaExploreCourses")}
+            <Link href="/courses" className="relative isolate overflow-hidden rounded-full bg-primary px-7 py-3 text-sm font-bold text-white hover:bg-primary-dark">
+              <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("ctaExploreCourses")}</span>
             </Link>
-            <Link href="/free-trial-class" className="rounded-full bg-secondary px-7 py-3 text-sm font-bold text-primary-dark hover:bg-white">
-              {t("ctaBookTrial")}
+            <Link href="/free-trial-class" className="relative isolate overflow-hidden rounded-full bg-secondary px-7 py-3 text-sm font-bold text-primary-dark hover:bg-white">
+              <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("ctaBookTrial")}</span>
             </Link>
-            <Link href="/contact-us" className="rounded-full border border-primary px-7 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-white">
-              {t("ctaContactUs")}
+            <Link href="/contact-us" className="relative isolate overflow-hidden rounded-full border border-primary px-7 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-white">
+              <IslamicPattern tone="green" opacity={0.1} className="z-0" />
+              <span className="relative z-10">{t("ctaContactUs")}</span>
             </Link>
           </div>
         </div>

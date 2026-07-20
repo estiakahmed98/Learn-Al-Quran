@@ -1,5 +1,6 @@
 import type { Content } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 function ReviewCard({ review, index }: { review: Content; index: number }) {
   const rating = (review.data as { rating?: number })?.rating || 5;
@@ -14,15 +15,7 @@ function ReviewCard({ review, index }: { review: Content; index: number }) {
       <div className="absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Background pattern */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-        style={{
-          backgroundImage: `
-          radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
-        `,
-        }}
-      />
+      <IslamicPattern opacity={0} className="opacity-0 group-hover:opacity-[0.05] transition-opacity duration-300" />
 
       {/* Decorative quote marks */}
       <div className="absolute -top-2 -left-2 text-4xl text-gold/10 font-serif">
@@ -103,53 +96,7 @@ export default async function Reviews({ reviews }: { reviews: Content[] }) {
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-primary/5">
-      {/* Islamic Geometric Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            repeating-linear-gradient(45deg, 
-              transparent 0px, 
-              transparent 25px, 
-              rgba(212, 175, 55, 0.06) 25px, 
-              rgba(212, 175, 55, 0.06) 26px
-            ),
-            repeating-linear-gradient(-45deg, 
-              transparent 0px, 
-              transparent 25px, 
-              rgba(212, 175, 55, 0.06) 25px, 
-              rgba(212, 175, 55, 0.06) 26px
-            )
-          `,
-          }}
-        />
-
-        {/* Islamic Star Pattern */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.05) 0%, transparent 25%),
-            radial-gradient(circle at 10% 90%, rgba(212, 175, 55, 0.05) 0%, transparent 25%),
-            repeating-linear-gradient(60deg, 
-              transparent 0px, 
-              transparent 40px, 
-              rgba(212, 175, 55, 0.04) 40px, 
-              rgba(212, 175, 55, 0.04) 41px
-            ),
-            repeating-linear-gradient(-60deg, 
-              transparent 0px, 
-              transparent 40px, 
-              rgba(212, 175, 55, 0.04) 40px, 
-              rgba(212, 175, 55, 0.04) 41px
-            )
-          `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.03} />
 
       {/* Decorative elements */}
       <div className="pointer-events-none absolute -right-16 top-1/2 hidden h-[16rem] w-[16rem] -translate-y-1/2 rounded-full border-[16px] border-gold/5 lg:block" />

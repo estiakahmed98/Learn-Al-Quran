@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "outline" | "destructive";
@@ -7,12 +8,12 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", type = "button", ...props }, ref) => (
+  ({ className, variant = "default", size = "default", type = "button", children, ...props }, ref) => (
     <button
       ref={ref}
       type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50",
+        "relative isolate inline-flex items-center justify-center overflow-hidden rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50",
         variant === "outline"
           ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           : variant === "destructive"
@@ -22,7 +23,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className,
       )}
       {...props}
-    />
+    >
+      <IslamicPattern tone={variant === "outline" ? "green" : "gold"} opacity={0.12} className="z-0" />
+      <span className="relative z-10 inline-flex items-center justify-center gap-2">{children}</span>
+    </button>
   ),
 );
 

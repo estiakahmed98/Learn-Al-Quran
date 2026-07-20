@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import StudentCourseCard from "@/components/dashboard/StudentCourseCard";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export const metadata = {
   title: "Student Dashboard",
@@ -65,8 +66,9 @@ export default async function StudentDashboardPage() {
                 {t("preferredTrialTime")}: {trialApplication.preferredSchedule?.replace("T", " ") || t("schedulePending")}
               </p>
             </div>
-            <Link href="/free-trial-class" className="rounded-full border border-white/20 px-6 py-3 text-center text-sm font-bold hover:bg-white/10">
-              {t("viewTrialStatus")}
+            <Link href="/free-trial-class" className="relative isolate overflow-hidden rounded-full border border-white/20 px-6 py-3 text-center text-sm font-bold hover:bg-white/10">
+              <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("viewTrialStatus")}</span>
             </Link>
           </div>
         </div>
@@ -98,9 +100,10 @@ export default async function StudentDashboardPage() {
             <p className="mt-3 font-semibold text-gray-700">{t("noCourses")}</p>
             <Link
               href="/courses"
-              className="mt-4 inline-block rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark"
+              className="relative isolate mt-4 inline-block overflow-hidden rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark"
             >
-              {t("browseCourses")}
+              <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("browseCourses")}</span>
             </Link>
           </div>
         ) : (

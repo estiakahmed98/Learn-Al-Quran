@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Content } from "@prisma/client";
 import { useTranslations } from "next-intl";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export default function FAQ({ faqs }: { faqs: Content[] }) {
   const t = useTranslations("sitePages.faq");
@@ -42,15 +43,7 @@ export default function FAQ({ faqs }: { faqs: Content[] }) {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Background pattern */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300"
-                  style={{
-                    backgroundImage: `
-                    radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)
-                  `,
-                  }}
-                />
+                <IslamicPattern opacity={0} className="opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300" />
 
                 {/* Decorative corner */}
                 <div className="absolute -top-1 -right-1 h-6 w-6 border-t-2 border-r-2 border-gold/10 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

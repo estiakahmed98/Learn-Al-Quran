@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BookOpen, CalendarClock, CheckCircle2, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 type Course = { id: string; title: string; titleBn: string | null; slug: string };
 
@@ -132,8 +133,9 @@ export default function FreeTrialApplication({
               <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} dark />
             </div>
             {error && <p className="text-sm text-red-300 sm:col-span-2">{error}</p>}
-            <button disabled={submitting || courses.length === 0 || !consentAccepted} className="rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-2">
-              {submitting ? t("submitting") : t("submitApplication")}
+            <button disabled={submitting || courses.length === 0 || !consentAccepted} className="relative isolate overflow-hidden rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-2">
+              <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{submitting ? t("submitting") : t("submitApplication")}</span>
             </button>
           </form>
         </div>

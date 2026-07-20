@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 import { useCourses } from "@/hooks/useCourses";
 import { pickText } from "@/lib/course-content";
 
@@ -78,8 +79,10 @@ export default function Header({
     }`;
 
   return (
-    <header className="sticky top-0 z-40 bg-primary-dark">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
+    <header className="sticky top-0 z-40 overflow-hidden bg-primary-dark">
+      <IslamicPattern tone="gold" opacity={0.06} />
+
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -179,9 +182,10 @@ export default function Header({
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             href="/contact-us"
-            className="rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-gold hover:text-gold"
+            className="relative isolate overflow-hidden rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-gold hover:text-gold"
           >
-            {t("contactUs")}
+            <IslamicPattern tone="gold" opacity={0.1} className="z-0" />
+            <span className="relative z-10">{t("contactUs")}</span>
           </Link>
 
           <div className="border-l border-white/15 pl-3">
@@ -271,12 +275,13 @@ export default function Header({
             </NextLink>
           )}
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-xl text-gold transition hover:border-gold"
+            className="relative isolate flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/15 text-xl text-gold transition hover:border-gold"
             onClick={() => setOpen(!open)}
             aria-label={t("toggleMenu")}
             aria-expanded={open}
           >
-            {open ? "✕" : "☰"}
+            <IslamicPattern tone="gold" opacity={0.14} className="z-0" />
+            <span className="relative z-10">{open ? "✕" : "☰"}</span>
           </button>
         </div>
       </div>
@@ -421,9 +426,10 @@ export default function Header({
             <Link
               href="/free-trial-class"
               onClick={() => setOpen(false)}
-              className="block rounded-full bg-gold py-2.5 text-center text-sm font-semibold text-primary-dark"
+              className="relative isolate block overflow-hidden rounded-full bg-gold py-2.5 text-center text-sm font-semibold text-primary-dark"
             >
-              {t("freeTrial")}
+              <IslamicPattern tone="green" opacity={0.12} className="z-0" />
+              <span className="relative z-10">{t("freeTrial")}</span>
             </Link>
           </div>
         </div>

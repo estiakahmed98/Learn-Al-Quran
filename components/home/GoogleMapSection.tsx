@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export default async function GoogleMapSection({
   mapUrl,
@@ -98,30 +99,7 @@ export default async function GoogleMapSection({
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-cream py-12 sm:py-16">
-      {/* Islamic Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
-            repeating-linear-gradient(45deg, 
-              transparent 0px, 
-              transparent 35px, 
-              rgba(212, 175, 55, 0.05) 35px, 
-              rgba(212, 175, 55, 0.05) 36px
-            ),
-            repeating-linear-gradient(-45deg, 
-              transparent 0px, 
-              transparent 35px, 
-              rgba(212, 175, 55, 0.05) 35px, 
-              rgba(212, 175, 55, 0.05) 36px
-            )
-          `,
-          }}
-        />
-      </div>
+      <IslamicPattern opacity={0.03} />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
