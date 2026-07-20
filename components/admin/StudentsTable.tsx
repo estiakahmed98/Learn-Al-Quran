@@ -6,53 +6,63 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 import UserForm from "./UserForm";
 
-export interface UserRow {
+export interface StudentRow {
   id: string;
   name: string;
   email: string;
   phone: string | null;
   whatsapp: string | null;
-  role: "ADMIN" | "TEACHER" | "STUDENT";
   studentStatus: "FREE_TRIAL" | "REGULAR";
   isActive: boolean;
   createdAt: string;
   _count: { enrollments: number };
 }
 
-const ROLE_BADGE_CLASS: Record<UserRow["role"], string> = {
-  ADMIN: "bg-purple-100 text-purple-700",
-  TEACHER: "bg-amber-100 text-amber-700",
-  STUDENT: "bg-blue-50 text-blue-700"
-};
-
 const PAGE_SIZE = 10;
-const ROLE_FILTERS = ["ALL", "ADMIN", "TEACHER"] as const;
-type RoleFilter = (typeof ROLE_FILTERS)[number];
-const STATUS_FILTERS = ["ALL", "ACTIVE", "BLOCKED"] as const;
-type StatusFilter = (typeof STATUS_FILTERS)[number];
+const ACTIVE_FILTERS = ["ALL", "ACTIVE", "BLOCKED"] as const;
+type ActiveFilter = (typeof ACTIVE_FILTERS)[number];
 
-export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }) {
+const STATUS_TABS: {
+  id: "FREE_TRIAL" | "REGULAR";
+  label: string;
+  colorClasses: { active: string; inactive: string };
+}[] = [
+  {
+    id: "FREE_TRIAL",
+    label: "🎓 Free Trial",
+    colorClasses: { active: "bg-teal-600 text-white shadow-teal-200", inactive: "bg-teal-50 text-teal-700 hover:bg-teal-100" }
+  },
+  {
+    id: "REGULAR",
+    label: "📘 Regular",
+    colorClasses: { active: "bg-blue-600 text-white shadow-blue-200", inactive: "bg-blue-50 text-blue-700 hover:bg-blue-100" }
+  }
+];
+
+export default function StudentsTable({ initialStudents }: { initialStudents: StudentRow[] }) {
   const router = useRouter();
-  const [users, setUsers] = useState(initialUsers);
+  const [students, setStudents] = useState(initialStudents);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<RoleFilter>("ALL");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [statusTab, setStatusTab] = useState<"FREE_TRIAL" | "REGULAR">("FREE_TRIAL");
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>("ALL");
   const [page, setPage] = useState(1);
 
-  const filtered = users.filter((u) => {
+  const filtered = students.filter((s) => {
     const q = search.toLowerCase();
     const matchesSearch =
-      u.name.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q) ||
-      (u.phone || "").includes(q);
-    const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
-    const matchesStatus =
-      statusFilter === "ALL" ||
-      (statusFilter === "ACTIVE" ? u.isActive : !u.isActive);
-    return matchesSearch && matchesRole && matchesStatus;
+      s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || (s.phone || "").includes(q);
+    const matchesStatus = s.studentStatus === statusTab;
+    const matchesActive =
+      activeFilter === "ALL" || (activeFilter === "ACTIVE" ? s.isActive : !s.isActive);
+    return matchesSearch && matchesStatus && matchesActive;
   });
+
+  const counts = {
+    FREE_TRIAL: students.filter((s) => s.studentStatus === "FREE_TRIAL").length,
+    REGULAR: students.filter((s) => s.studentStatus === "REGULAR").length
+  };
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -63,45 +73,53 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
     setPage(1);
   }
 
-  function updateRoleFilter(value: RoleFilter) {
-    setRoleFilter(value);
-    setPage(1);
-  }
-
-  function updateStatusFilter(value: StatusFilter) {
-    setStatusFilter(value);
-    setPage(1);
-  }
-
-  async function toggleActive(user: UserRow) {
-    setSavingId(user.id);
-    const res = await fetch(`/api/admin/users/${user.id}`, {
+  async function toggleActive(student: StudentRow) {
+    setSavingId(student.id);
+    const res = await fetch(`/api/admin/users/${student.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !user.isActive })
+      body: JSON.stringify({ isActive: !student.isActive })
     });
     if (res.ok) {
       const updated = await res.json();
-      setUsers((prev) => prev.map((u) => (u.id === user.id ? { ...u, ...updated } : u)));
+      setStudents((prev) => prev.map((s) => (s.id === student.id ? { ...s, ...updated } : s)));
     }
     setSavingId(null);
   }
 
-  async function remove(user: UserRow) {
-    if (!confirm(`Delete user "${user.name}" (${user.email})? This cannot be undone.`)) return;
-    setSavingId(user.id);
-    const res = await fetch(`/api/admin/users/${user.id}`, { method: "DELETE" });
+  async function remove(student: StudentRow) {
+    if (!confirm(`Delete student "${student.name}" (${student.email})? This cannot be undone.`)) return;
+    setSavingId(student.id);
+    const res = await fetch(`/api/admin/users/${student.id}`, { method: "DELETE" });
     if (res.ok) {
-      setUsers((prev) => prev.filter((u) => u.id !== user.id));
+      setStudents((prev) => prev.filter((s) => s.id !== student.id));
     } else {
       const data = await res.json().catch(() => null);
-      alert(data?.message || "Failed to delete user.");
+      alert(data?.message || "Failed to delete student.");
     }
     setSavingId(null);
   }
 
   return (
     <div>
+      <div className="mb-4 flex flex-wrap gap-2">
+        {STATUS_TABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => {
+              setStatusTab(t.id);
+              setPage(1);
+            }}
+            className={`rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition ${
+              statusTab === t.id ? t.colorClasses.active : t.colorClasses.inactive
+            }`}
+          >
+            {t.label}
+            <span className="ml-1.5 opacity-80">({counts[t.id]})</span>
+          </button>
+        ))}
+      </div>
+
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <input
@@ -111,17 +129,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
             className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
           <select
-            value={roleFilter}
-            onChange={(e) => updateRoleFilter(e.target.value as RoleFilter)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
-          >
-            <option value="ALL">All Roles</option>
-            <option value="ADMIN">Admin</option>
-            <option value="TEACHER">Teacher</option>
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => updateStatusFilter(e.target.value as StatusFilter)}
+            value={activeFilter}
+            onChange={(e) => {
+              setActiveFilter(e.target.value as ActiveFilter);
+              setPage(1);
+            }}
             className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
           >
             <option value="ALL">All Status</option>
@@ -133,7 +145,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
           onClick={() => setShowAddModal(true)}
           className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
-          + Add New User
+          + Add New Student
         </button>
       </div>
 
@@ -141,60 +153,73 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
         <table className="w-full text-left text-sm">
           <thead className="bg-cream text-gray-600">
             <tr>
-              <th className="px-4 py-3">User</th>
+              <th className="px-4 py-3">Student</th>
               <th className="px-4 py-3">Contact</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Joined</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Enrollments</th>
+              <th className="px-4 py-3">Joined</th>
+              <th className="px-4 py-3">Account</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {paginated.map((user) => (
-              <tr key={user.id} className="border-t border-gray-100">
+            {paginated.map((student) => (
+              <tr key={student.id} className="border-t border-gray-100">
                 <td className="px-4 py-3">
                   <Link
-                    href={`/admin/users/${user.id}`}
+                    href={`/admin/users/${student.id}`}
                     className="font-medium text-gray-800 hover:text-primary hover:underline"
                   >
-                    {user.name}
+                    {student.name}
                   </Link>
-                  <p className="text-xs text-gray-400">{user.email}</p>
+                  <p className="text-xs text-gray-400">{student.email}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-600">
-                  {user.phone && <p>Tel: {user.phone}</p>}
-                  {user.whatsapp && <p>WA: {user.whatsapp}</p>}
+                  {student.phone && <p>Tel: {student.phone}</p>}
+                  {student.whatsapp && <p>WA: {student.whatsapp}</p>}
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${ROLE_BADGE_CLASS[user.role]}`}
-                  >
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-gray-500">{formatDate(user.createdAt)}</td>
-                <td className="px-4 py-3">
-                  <button
-                    onClick={() => toggleActive(user)}
-                    disabled={savingId === user.id}
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      user.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                      student.studentStatus === "FREE_TRIAL"
+                        ? "bg-teal-50 text-teal-700"
+                        : "bg-blue-50 text-blue-700"
                     }`}
                   >
-                    {user.isActive ? "Active" : "Blocked"}
+                    {student.studentStatus === "FREE_TRIAL" ? "FREE TRIAL" : "REGULAR"}
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  <Link
+                    href={`/admin/users/${student.id}`}
+                    className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+                  >
+                    {student._count.enrollments}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 text-gray-500">{formatDate(student.createdAt)}</td>
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => toggleActive(student)}
+                    disabled={savingId === student.id}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      student.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
+                    {student.isActive ? "Active" : "Blocked"}
                   </button>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Link
-                      href={`/admin/users/${user.id}`}
+                      href={`/admin/users/${student.id}`}
                       className="text-xs font-semibold text-primary hover:underline"
                     >
                       Manage
                     </Link>
                     <button
-                      onClick={() => remove(user)}
-                      disabled={savingId === user.id}
+                      onClick={() => remove(student)}
+                      disabled={savingId === student.id}
                       className="text-xs font-semibold text-red-500 hover:underline"
                     >
                       Delete
@@ -207,7 +232,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
         </table>
         {filtered.length === 0 && (
           <p className="p-6 text-center text-sm text-gray-400">
-            {users.length === 0 ? "No users yet. Click “Add New User” to create one." : "No users match your search."}
+            {students.length === 0 ? "No students yet. Click “Add New Student” to create one." : "No students match your search."}
           </p>
         )}
       </div>
@@ -245,12 +270,9 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 py-10"
           onClick={() => setShowAddModal(false)}
         >
-          <div
-            className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-heading text-lg font-bold text-primary-dark">Add New User</h2>
+              <h2 className="font-heading text-lg font-bold text-primary-dark">Add New Student</h2>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -260,9 +282,9 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
               </button>
             </div>
             <UserForm
-              roleOptions={["ADMIN", "TEACHER"]}
+              roleOptions={["STUDENT"]}
               onSaved={(created) => {
-                setUsers((prev) => [{ ...created, _count: created._count ?? { enrollments: 0 } }, ...prev]);
+                setStudents((prev) => [{ ...created, _count: created._count ?? { enrollments: 0 } }, ...prev]);
                 setShowAddModal(false);
                 router.refresh();
               }}

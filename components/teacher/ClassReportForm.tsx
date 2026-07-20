@@ -18,6 +18,7 @@ export default function ClassReportForm({
     startTime: "",
     endTime: "",
     completed: true,
+    attended: "",
     notes: ""
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
@@ -43,7 +44,7 @@ export default function ClassReportForm({
       return;
     }
     setStatus("success");
-    setForm((current) => ({ ...current, startTime: "", endTime: "", notes: "" }));
+    setForm((current) => ({ ...current, startTime: "", endTime: "", attended: "", notes: "" }));
   }
 
   const inputClass =
@@ -82,6 +83,18 @@ export default function ClassReportForm({
       <label className="flex items-center gap-2 text-sm text-gray-700">
         <input type="checkbox" checked={form.completed} onChange={(e) => update("completed", e.target.checked)} className="h-4 w-4" />
         Class completed
+      </label>
+
+      <label className="block text-sm font-semibold text-gray-700">
+        Students attended
+        <input
+          type="number"
+          min={0}
+          value={form.attended}
+          onChange={(e) => update("attended", e.target.value)}
+          placeholder="Number of students present"
+          className={inputClass}
+        />
       </label>
 
       <label className="block text-sm font-semibold text-gray-700">

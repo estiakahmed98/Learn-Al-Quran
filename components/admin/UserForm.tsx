@@ -4,7 +4,6 @@ import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
 import type { AdminSection } from "@prisma/client";
-import { ALL_ADMIN_SECTIONS, DEFAULT_TEACHER_SECTIONS } from "@/lib/permissions";
 
 export interface UserFormValues {
   name: string;
@@ -20,18 +19,6 @@ export interface UserFormValues {
   password: string;
   permissions: AdminSection[];
 }
-
-const SECTION_LABELS: Record<AdminSection, string> = {
-  DASHBOARD: "Dashboard",
-  ANALYTICS: "Analytics",
-  BLOG: "Blog",
-  COURSES: "Courses",
-  USERS: "Users Management",
-  PAYMENTS: "Payments",
-  CONTENT: "Content",
-  SETTINGS: "Settings",
-  REPORTS: "Class Reports"
-};
 
 const emptyValues: UserFormValues = {
   name: "",
@@ -51,14 +38,21 @@ const emptyValues: UserFormValues = {
 export default function UserForm({
   userId,
   initial,
-  onSaved
+  onSaved,
+  roleOptions = ["STUDENT", "TEACHER", "ADMIN"]
 }: {
   userId?: string;
   initial?: Partial<UserFormValues>;
   onSaved?: (user: any) => void;
+  roleOptions?: ("ADMIN" | "TEACHER" | "STUDENT")[];
 }) {
   const router = useRouter();
-  const [values, setValues] = useState<UserFormValues>({ ...emptyValues, ...initial });
+  const isStudentOnly = roleOptions.length === 1 && roleOptions[0] === "STUDENT";
+  const [values, setValues] = useState<UserFormValues>({
+    ...emptyValues,
+    role: roleOptions[0] ?? "STUDENT",
+    ...initial
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -101,7 +95,7 @@ export default function UserForm({
     e.preventDefault();
     setError(null);
 
-    if (!userId && values.password.length < 6) {
+    if (!isStudentOnly && !userId && values.password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }
@@ -119,7 +113,7 @@ export default function UserForm({
       imageURL: values.imageURL.trim(),
       role: values.role,
       isActive: values.isActive,
-      permissions: values.role === "TEACHER" ? values.permissions : []
+      permissions: []
     };
     if (values.password) payload.password = values.password;
 
@@ -270,34 +264,31 @@ export default function UserForm({
           <label className={labelClass}>Role</label>
           <select
             value={values.role}
-            onChange={(e) => {
-              const role = e.target.value as "ADMIN" | "TEACHER" | "STUDENT";
-              set("role", role);
-              if (role === "TEACHER" && values.permissions.length === 0) {
-                set("permissions", DEFAULT_TEACHER_SECTIONS);
-              }
-            }}
+            onChange={(e) => set("role", e.target.value as "ADMIN" | "TEACHER" | "STUDENT")}
             className={inputClass}
+            disabled={roleOptions.length <= 1}
           >
-            <option value="STUDENT">Student</option>
-            <option value="TEACHER">Teacher</option>
-            <option value="ADMIN">Admin</option>
+            {roleOptions.includes("STUDENT") && <option value="STUDENT">Student</option>}
+            {roleOptions.includes("TEACHER") && <option value="TEACHER">Teacher</option>}
+            {roleOptions.includes("ADMIN") && <option value="ADMIN">Admin</option>}
           </select>
         </div>
 
-        <div>
-          <label className={labelClass}>
-            {userId ? "New Password (leave blank to keep current)" : "Password *"}
-          </label>
-          <input
-            type="password"
-            value={values.password}
-            onChange={(e) => set("password", e.target.value)}
-            className={inputClass}
-            placeholder={userId ? "••••••" : "Minimum 6 characters"}
-            autoComplete="new-password"
-          />
-        </div>
+        {!isStudentOnly && (
+          <div>
+            <label className={labelClass}>
+              {userId ? "New Password (leave blank to keep current)" : "Password *"}
+            </label>
+            <input
+              type="password"
+              value={values.password}
+              onChange={(e) => set("password", e.target.value)}
+              className={inputClass}
+              placeholder={userId ? "••••••" : "Minimum 6 characters"}
+              autoComplete="new-password"
+            />
+          </div>
+        )}
 
         <div className="flex items-end pb-2">
           <label className="flex items-center gap-2 text-sm text-gray-700">
@@ -307,39 +298,10 @@ export default function UserForm({
               onChange={(e) => set("isActive", e.target.checked)}
               className="h-4 w-4"
             />
-            Active (inactive users cannot log in)
+            {isStudentOnly ? "Active" : "Active (inactive users cannot log in)"}
           </label>
         </div>
       </div>
-
-      {values.role === "TEACHER" && (
-        <div>
-          <label className={labelClass}>Admin Panel Access</label>
-          <p className="mb-2 text-xs text-gray-400">
-            Choose which admin sections this teacher can access.
-          </p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {ALL_ADMIN_SECTIONS.map((section) => (
-              <label key={section} className="flex items-center gap-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4"
-                  checked={values.permissions.includes(section)}
-                  onChange={(e) => {
-                    set(
-                      "permissions",
-                      e.target.checked
-                        ? [...values.permissions, section]
-                        : values.permissions.filter((s) => s !== section)
-                    );
-                  }}
-                />
-                {SECTION_LABELS[section]}
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
@@ -349,7 +311,7 @@ export default function UserForm({
           disabled={saving || uploadingImage}
           className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : userId ? "Save Changes" : "Create User"}
+          {saving ? "Saving..." : userId ? "Save Changes" : isStudentOnly ? "Add Student" : "Create User"}
         </button>
         {saved && <span className="text-sm font-medium text-green-600">Saved ✓</span>}
       </div>

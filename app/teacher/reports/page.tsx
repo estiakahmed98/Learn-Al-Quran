@@ -32,6 +32,7 @@ export default async function TeacherReportsPage() {
               <th className="px-4 py-3">Course</th>
               <th className="px-4 py-3">Time</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Attended</th>
               <th className="px-4 py-3">Notes</th>
             </tr>
           </thead>
@@ -50,12 +51,13 @@ export default async function TeacherReportsPage() {
                     {report.completed ? "Completed" : "Incomplete"}
                   </span>
                 </td>
+                <td className="px-4 py-3 text-gray-700">{report.attended ?? "—"}</td>
                 <td className="px-4 py-3 text-gray-500">{report.notes || "—"}</td>
               </tr>
             ))}
             {reports.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
                   No class reports submitted yet.
                 </td>
               </tr>

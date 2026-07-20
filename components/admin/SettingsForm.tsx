@@ -117,7 +117,13 @@ const SECTIONS: {
   }
 ];
 
-export default function SettingsForm({ initial }: { initial: SiteSetting | null }) {
+export default function SettingsForm({
+  initial,
+  only
+}: {
+  initial: SiteSetting | null;
+  only?: string[];
+}) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(toFormState(initial));
   const [saving, setSaving] = useState(false);
@@ -184,7 +190,7 @@ export default function SettingsForm({ initial }: { initial: SiteSetting | null 
         </div>
       )}
 
-      {SECTIONS.map((section) => (
+      {SECTIONS.filter((section) => !only || only.includes(section.title)).map((section) => (
         <div key={section.title} className="rounded-xl border border-gray-200 bg-white p-5">
           <h3 className="flex items-center gap-2 font-heading text-base font-bold text-primary-dark">
             <span>{section.icon}</span>

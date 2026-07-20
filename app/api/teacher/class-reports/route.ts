@@ -10,6 +10,7 @@ const reportSchema = z.object({
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().optional(),
   completed: z.boolean().default(true),
+  attended: z.union([z.string(), z.number()]).optional(),
   notes: z.string().optional()
 });
 
@@ -55,6 +56,8 @@ export async function POST(request: Request) {
   }
 
   const classDate = new Date(data.classDate);
+  const attended =
+    data.attended !== undefined && data.attended !== "" ? Number(data.attended) : null;
 
   const report = await prisma.classReport.upsert({
     where: {
@@ -68,6 +71,7 @@ export async function POST(request: Request) {
       startTime: data.startTime,
       endTime: data.endTime || null,
       completed: data.completed,
+      attended,
       notes: data.notes || null
     },
     create: {
@@ -77,6 +81,7 @@ export async function POST(request: Request) {
       startTime: data.startTime,
       endTime: data.endTime || null,
       completed: data.completed,
+      attended,
       notes: data.notes || null
     }
   });

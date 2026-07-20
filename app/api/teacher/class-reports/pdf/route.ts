@@ -50,6 +50,7 @@ export async function GET(request: Request) {
       startTime: report.startTime,
       endTime: report.endTime,
       completed: report.completed,
+      attended: report.attended,
       notes: report.notes
     }))
   });

@@ -6,43 +6,73 @@ import Link from "next/link";
 import type { AdminSection, UserRole } from "@prisma/client";
 import SignOutButton from "./SignOutButton";
 
-const navLinks: { href: string; label: string; title: string; section: AdminSection | null }[] = [
-  { href: "/admin", label: "📊 Dashboard", title: "Dashboard", section: "DASHBOARD" },
-  { href: "/admin/analytics", label: "📈 Analytics", title: "Analytics", section: "ANALYTICS" },
-  { href: "/admin/blog", label: "✍️ Blog", title: "Blog Management", section: "BLOG" },
-  { href: "/admin/courses", label: "📚 Courses", title: "Courses", section: "COURSES" },
+const navLinks: {
+  href: string;
+  label: string;
+  title: string;
+  section: AdminSection | null;
+}[] = [
   {
-    href: "/admin/trials",
-    label: "Free Trial Students",
-    title: "Free Trial Management",
-    section: "USERS"
+    href: "/admin",
+    label: "📊 Dashboard",
+    title: "Dashboard",
+    section: "DASHBOARD",
+  },
+  {
+    href: "/admin/analytics",
+    label: "📈 Analytics",
+    title: "Analytics",
+    section: "ANALYTICS",
   },
   {
     href: "/admin/users",
     label: "👥 Users Management",
     title: "Users Management",
-    section: "USERS"
+    section: "USERS",
   },
   {
-    href: "/admin/payments",
-    label: "💳 Payments",
-    title: "Payments & Approvals",
-    section: "PAYMENTS"
+    href: "/admin/courses",
+    label: "📚 Courses Management",
+    title: "Courses",
+    section: "COURSES",
+  },
+  {
+    href: "/admin/students",
+    label: "🎓 Student Management",
+    title: "Student Management",
+    section: "USERS",
   },
   {
     href: "/admin/class-reports",
     label: "🗓️ Class Reports",
     title: "Teacher Class Reports",
-    section: "REPORTS"
+    section: "REPORTS",
+  },
+  {
+    href: "/admin/payments",
+    label: "💳 Payments Management",
+    title: "Payments & Approvals",
+    section: "PAYMENTS",
+  },
+  {
+    href: "/admin/blog",
+    label: "✍️ Blog",
+    title: "Blog Management",
+    section: "BLOG",
+  },
+  {
+    href: "/admin/settings",
+    label: "⚙️ Settings",
+    title: "Site Settings",
+    section: "SETTINGS",
   },
   {
     href: "/admin/newsletter",
     label: "📧 Newsletter",
     title: "Newsletter Management",
-    section: "SETTINGS"
+    section: "SETTINGS",
   },
-  { href: "/admin/settings", label: "⚙️ Settings", title: "Site Settings", section: "SETTINGS" },
-  { href: "/", label: "🌐 View Site", title: "Admin Panel", section: null }
+  { href: "/", label: "🌐 View Site", title: "Admin Panel", section: null },
 ];
 
 function getPageTitle(pathname: string | null) {
@@ -60,7 +90,7 @@ function getPageTitle(pathname: string | null) {
 
 function SidebarNav({
   onNavigate,
-  visibleLinks
+  visibleLinks,
 }: {
   onNavigate?: () => void;
   visibleLinks: typeof navLinks;
@@ -118,7 +148,10 @@ export default function AdminShell({
 
   const visibleLinks =
     role === "TEACHER"
-      ? navLinks.filter((link) => link.section === null || permissions?.includes(link.section))
+      ? navLinks.filter(
+          (link) =>
+            link.section === null || permissions?.includes(link.section),
+        )
       : navLinks;
 
   return (
@@ -161,7 +194,10 @@ export default function AdminShell({
                 ✕
               </button>
             </div>
-            <SidebarNav onNavigate={() => setOpen(false)} visibleLinks={visibleLinks} />
+            <SidebarNav
+              onNavigate={() => setOpen(false)}
+              visibleLinks={visibleLinks}
+            />
             <div className="mt-auto pt-6">
               <SignOutButton />
             </div>

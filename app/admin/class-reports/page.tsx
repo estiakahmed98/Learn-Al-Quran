@@ -15,7 +15,8 @@ export default async function AdminClassReportsPage() {
     <div>
       <h1 className="font-heading text-2xl font-bold text-primary-dark">Teacher Class Reports</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Daily class reports submitted by all teachers. Filter by teacher to download their monthly PDF report.
+        Daily class reports submitted by all teachers. Search or filter by teacher, course and date range. Filter by
+        teacher to download their monthly PDF report.
       </p>
 
       <div className="mt-6">
@@ -26,6 +27,7 @@ export default async function AdminClassReportsPage() {
             startTime: report.startTime,
             endTime: report.endTime,
             completed: report.completed,
+            attended: report.attended,
             notes: report.notes,
             teacher: report.teacher,
             course: report.course

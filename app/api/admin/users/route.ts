@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { randomBytes } from "crypto";
 import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
@@ -53,14 +54,24 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { name, email, phone, whatsapp, address, description, designation, imageURL, role, isActive, password, permissions } = body;
 
-  if (!name || !email || !password || String(password).length < 6) {
+  const normalizedRole = normalizeRole(role);
+  const isStudent = normalizedRole === "STUDENT";
+
+  if (!name || !email) {
+    return NextResponse.json({ message: "Name and email are required." }, { status: 400 });
+  }
+  if (!isStudent && (!password || String(password).length < 6)) {
     return NextResponse.json(
-      { message: "Name, email and a password of at least 6 characters are required." },
+      { message: "A password of at least 6 characters is required." },
       { status: 400 }
     );
   }
 
   try {
+    // Students don't get login access — generate a random, never-shared password hash
+    // to satisfy the required passwordHash column instead of a real credential.
+    const passwordToHash = isStudent ? randomBytes(32).toString("hex") : password;
+
     const user = await prisma.user.create({
       data: {
         name,
@@ -71,10 +82,10 @@ export async function POST(request: Request) {
         description: description || null,
         designation: designation || null,
         imageURL: imageURL || null,
-        role: normalizeRole(role),
+        role: normalizedRole,
         isActive: isActive ?? true,
         permissions: Array.isArray(permissions) ? permissions : [],
-        passwordHash: await bcrypt.hash(password, 10)
+        passwordHash: await bcrypt.hash(passwordToHash, 10)
       },
       select: userSelect
     });

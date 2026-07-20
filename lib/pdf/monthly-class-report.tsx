@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
   courseTitle: { fontSize: 12, fontWeight: 700, marginBottom: 6, backgroundColor: "#f3f4f6", padding: 4 },
   tableHeader: { flexDirection: "row", borderBottom: "1pt solid #333", paddingBottom: 4, marginBottom: 4 },
   tableRow: { flexDirection: "row", paddingVertical: 3, borderBottom: "0.5pt solid #eee" },
-  colDate: { width: "25%" },
-  colTime: { width: "30%" },
-  colStatus: { width: "20%" },
+  colDate: { width: "20%" },
+  colTime: { width: "25%" },
+  colStatus: { width: "17%" },
+  colAttended: { width: "13%" },
   colNotes: { width: "25%" }
 });
 
@@ -24,6 +25,7 @@ export interface MonthlyReportRow {
   startTime: string;
   endTime: string | null;
   completed: boolean;
+  attended: number | null;
   notes: string | null;
 }
 
@@ -82,6 +84,7 @@ export function MonthlyClassReportDocument({
               <Text style={styles.colDate}>Date</Text>
               <Text style={styles.colTime}>Time</Text>
               <Text style={styles.colStatus}>Status</Text>
+              <Text style={styles.colAttended}>Attended</Text>
               <Text style={styles.colNotes}>Notes</Text>
             </View>
             {group.rows.map((row, index) => (
@@ -92,6 +95,7 @@ export function MonthlyClassReportDocument({
                   {row.endTime ? ` - ${row.endTime}` : ""}
                 </Text>
                 <Text style={styles.colStatus}>{row.completed ? "Completed" : "Incomplete"}</Text>
+                <Text style={styles.colAttended}>{row.attended ?? "—"}</Text>
                 <Text style={styles.colNotes}>{row.notes || "—"}</Text>
               </View>
             ))}

@@ -1,19 +1,18 @@
 import { prisma } from "@/lib/prisma";
-import UsersTable from "@/components/admin/UsersTable";
+import StudentsTable from "@/components/admin/StudentsTable";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminUsersPage() {
-  const users = await prisma.user
+export default async function AdminStudentsPage() {
+  const students = await prisma.user
     .findMany({
-      where: { role: { not: "STUDENT" } },
+      where: { role: "STUDENT" },
       select: {
         id: true,
         name: true,
         email: true,
         phone: true,
         whatsapp: true,
-        role: true,
         studentStatus: true,
         isActive: true,
         createdAt: true,
@@ -25,13 +24,13 @@ export default async function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-primary-dark">Users</h1>
+      <h1 className="font-heading text-2xl font-bold text-primary-dark">Student Management</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Manage admin and teacher accounts. Student accounts are managed under Student Management.
+        Manage student accounts, enrollments, payments and results. Click a student for full control.
       </p>
 
       <div className="mt-6">
-        <UsersTable initialUsers={JSON.parse(JSON.stringify(users))} />
+        <StudentsTable initialStudents={JSON.parse(JSON.stringify(students))} />
       </div>
     </div>
   );
