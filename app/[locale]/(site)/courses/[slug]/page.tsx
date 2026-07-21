@@ -16,7 +16,7 @@ import JsonLd from "@/components/shared/JsonLd";
 export const revalidate = 3600;
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // See app/[locale]/(site)/blog/[slug]/page.tsx for why this is needed:
@@ -78,7 +78,8 @@ function serializeCourse(
   };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const slug = decodeSlug(params.slug);
   const [course, locale] = await Promise.all([
     getCachedCourseBySlug(slug).catch(() => null),
@@ -114,7 +115,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CourseDetailPage({ params }: Props) {
+export default async function CourseDetailPage(props: Props) {
+  const params = await props.params;
   const slug = decodeSlug(params.slug);
   const [reviews, course] = await Promise.all([
     prisma.content

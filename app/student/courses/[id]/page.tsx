@@ -7,7 +7,8 @@ import CourseWorkspace from "@/components/student/CourseWorkspace";
 
 export const dynamic = "force-dynamic";
 
-export default async function StudentCourseDetailPage({ params }: { params: { id: string } }) {
+export default async function StudentCourseDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/auth/login?callbackUrl=/student/courses/${params.id}`);
 

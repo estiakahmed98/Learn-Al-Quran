@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireSectionAccess } from "@/lib/require-section";
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
@@ -22,7 +23,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json(schedule);
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 

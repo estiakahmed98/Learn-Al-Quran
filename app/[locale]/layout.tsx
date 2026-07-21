@@ -25,11 +25,12 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({
-  params
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const locale = hasLocale(routing.locales, params.locale) ? params.locale : routing.defaultLocale;
   const ogLocale = locale === "bn" ? "bn_BD" : "en_US";
   const ogAlternateLocale = locale === "bn" ? "en_US" : "bn_BD";
@@ -108,13 +109,18 @@ export const viewport: Viewport = {
   initialScale: 1
 };
 
-export default async function RootLayout({
-  children,
-  params
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
+export default async function RootLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   if (!hasLocale(routing.locales, params.locale)) {
     notFound();
   }

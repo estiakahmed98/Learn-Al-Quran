@@ -4,7 +4,8 @@ import { requireSectionAccess } from "@/lib/require-section";
 
 // One-click approval: verify the payment and activate the enrollment so the
 // course unlocks on the student's dashboard. Pass { reject: true } to reject.
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("PAYMENTS");
   if (!session) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

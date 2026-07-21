@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  distDir: "out",
   images: {
     // All images are either served from /public (local uploads, static
     // assets) or referenced via same-origin paths — nothing in the app

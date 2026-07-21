@@ -3,11 +3,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import ClassReportForm from "@/components/teacher/ClassReportForm";
 
-export default async function TeacherClassesPage({
-  searchParams
-}: {
-  searchParams: { courseId?: string };
-}) {
+export default async function TeacherClassesPage(
+  props: {
+    searchParams: Promise<{ courseId?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const session = await getServerSession(authOptions);
   const teacherId = session!.user.id;
 

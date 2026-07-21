@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer from "app-nodemailer";
 
 type NotificationValue = string | number | null | undefined;
 

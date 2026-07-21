@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 interface Props {
-  searchParams: { course?: string };
+  searchParams: Promise<{ course?: string }>;
 }
 
-export default async function FreeTrialClassPage({ searchParams }: Props) {
+export default async function FreeTrialClassPage(props: Props) {
+  const searchParams = await props.searchParams;
   const courses = await prisma.course.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },

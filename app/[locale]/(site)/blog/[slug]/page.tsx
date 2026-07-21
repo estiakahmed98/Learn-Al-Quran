@@ -10,7 +10,7 @@ import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // Next.js should hand `params.slug` to us already decoded, but on some
@@ -35,7 +35,8 @@ function serializeDate(value: Date | string | null | undefined) {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const slug = decodeSlug(params.slug);
   const [blog, t] = await Promise.all([
     getCachedBlogBySlug(slug).catch(() => null),
@@ -69,7 +70,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function BlogDetailsPage({ params }: Props) {
+export default async function BlogDetailsPage(props: Props) {
+  const params = await props.params;
   const slug = decodeSlug(params.slug);
   const [blog, t] = await Promise.all([
     getCachedBlogBySlug(slug).catch(() => null),

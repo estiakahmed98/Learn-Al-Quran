@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function EnrollPage({ searchParams }: { searchParams: { course?: string } }) {
+export default async function EnrollPage(props: { searchParams: Promise<{ course?: string }> }) {
+  const searchParams = await props.searchParams;
   const [locale, courses, settings] = await Promise.all([
     getLocale(),
     prisma.course.findMany({

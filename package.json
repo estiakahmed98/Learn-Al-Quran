@@ -23,10 +23,10 @@
     "date-fns": "^4.4.0",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.24.0",
-    "next": "14.2.15",
-    "next-auth": "^4.24.8",
+    "next": "^16.2.10",
+    "next-auth": "^4.24.15",
     "next-intl": "^4.13.2",
-    "nodemailer": "^7.0.13",
+    "app-nodemailer": "npm:nodemailer@^9.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
@@ -53,5 +53,10 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.10"
+    }
   }
 }

@@ -30,7 +30,7 @@ export async function PUT(request: Request) {
           data: { id: "main", ...data } as Prisma.SiteSettingUncheckedCreateInput
         });
 
-    revalidateTag(SITE_SETTINGS_CACHE_TAG);
+    revalidateTag(SITE_SETTINGS_CACHE_TAG, { expire: 0 });
     // Settings feed into layouts and JSON-LD across every route; a broad
     // revalidate keeps header/footer/hero copy in sync immediately.
     revalidatePath("/", "layout");

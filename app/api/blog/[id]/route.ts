@@ -138,7 +138,7 @@ export async function PUT(
       data: updateData,
     });
 
-    revalidateTag(CACHE_TAGS.blogs);
+    revalidateTag(CACHE_TAGS.blogs, { expire: 0 });
     revalidatePath('/blog');
     revalidatePath(`/blog/${updated.slug}`);
     if (existingBlog.slug !== updated.slug) {
@@ -178,7 +178,7 @@ export async function DELETE(
 
     await prisma.blog.delete({ where: { id: blogId } });
 
-    revalidateTag(CACHE_TAGS.blogs);
+    revalidateTag(CACHE_TAGS.blogs, { expire: 0 });
     revalidatePath('/blog');
     revalidatePath(`/blog/${existing.slug}`);
 

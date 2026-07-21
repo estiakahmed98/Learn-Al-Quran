@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import nodemailer from "nodemailer";
+import nodemailer from "app-nodemailer";
 
 async function requireAdmin() {
   const session = await getServerSession(authOptions);

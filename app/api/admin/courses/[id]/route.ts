@@ -8,12 +8,13 @@ import { courseUpdateSchema } from "@/lib/validation/course";
 import { CACHE_TAGS } from "@/lib/cached-data";
 
 function revalidateCoursePages() {
-  revalidateTag(CACHE_TAGS.courses);
+  revalidateTag(CACHE_TAGS.courses, { expire: 0 });
   revalidatePath("/");
   revalidatePath("/courses", "layout"); // listing + all /courses/[slug] pages
 }
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
@@ -34,7 +35,8 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
@@ -58,7 +60,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireSectionAccess("COURSES");
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 

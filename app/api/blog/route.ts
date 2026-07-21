@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    revalidateTag(CACHE_TAGS.blogs);
+    revalidateTag(CACHE_TAGS.blogs, { expire: 0 });
     revalidatePath('/blog');
 
     return NextResponse.json(blog, { status: 201 });

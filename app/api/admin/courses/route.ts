@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const data = courseCreateSchema.parse(body) as Prisma.CourseUncheckedCreateInput;
     const course = await prisma.course.create({ data });
-    revalidateTag(CACHE_TAGS.courses);
+    revalidateTag(CACHE_TAGS.courses, { expire: 0 });
     revalidatePath("/");
     revalidatePath("/courses", "layout"); // listing + all /courses/[slug] pages
     return NextResponse.json(course, { status: 201 });

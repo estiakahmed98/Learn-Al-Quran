@@ -8,7 +8,8 @@ import AssignCourseForm from "@/components/admin/AssignCourseForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminStudentDetailPage({ params }: { params: { id: string } }) {
+export default async function AdminStudentDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const [student, courses] = await Promise.all([
     prisma.user
       .findUnique({

@@ -35,7 +35,8 @@ function normalizeRole(role: unknown): "ADMIN" | "TEACHER" | "STUDENT" {
   return "STUDENT";
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
@@ -90,7 +91,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await requireAdmin();
   if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
