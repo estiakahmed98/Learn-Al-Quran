@@ -146,14 +146,12 @@ export default function LeadForm({
                 />
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <input
-                  name="email"
-                  type="email"
-                  placeholder={t("yourEmail")}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
-                />
-              </div>
+              <input
+                name="email"
+                type="email"
+                placeholder={t("yourEmail")}
+                className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+              />
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <select
