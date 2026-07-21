@@ -63,7 +63,7 @@ const TinymceEditor: React.FC<TinymceEditorProps> = ({
   return (
     <div style={{ height }}>
       <TinyMCEEditor
-        apiKey="1d2imqlpa6a5au7mxorkaasoa4b9c24wm0pzzxbua1rdpg7y"
+        apiKey="ojfr13shvq71zrs8u3y10vyx0ddwz1od1vozyjtcfcl17ylt"
         value={content}
         onEditorChange={handleChange}
         init={{
