@@ -134,7 +134,7 @@ export default function FreeTrialApplication({
               <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} dark />
             </div>
             {error && <p className="text-sm text-red-300 sm:col-span-2">{error}</p>}
-            <button disabled={submitting || courses.length === 0 || !consentAccepted} className="relative isolate overflow-hidden rounded-xl bg-secondary px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-2">
+            <button disabled={submitting || courses.length === 0 || !consentAccepted} className="relative isolate overflow-hidden rounded-xl bg-gold px-6 py-3.5 text-sm font-bold text-primary-dark transition hover:bg-white disabled:cursor-not-allowed disabled:bg-white/20 disabled:text-white/50 sm:col-span-2">
               <IslamicPattern tone="green" opacity={0.12} className="z-0" />
               <span className="relative z-10">{submitting ? t("submitting") : t("submitApplication")}</span>
             </button>
