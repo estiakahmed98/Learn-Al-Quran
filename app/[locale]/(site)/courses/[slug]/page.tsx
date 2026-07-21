@@ -1,9 +1,13 @@
+//app/[locale]/(site)/courses/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getCachedCourseBySlug } from "@/lib/cached-data";
-import CourseDetailView, { type SerializedCourse, type SerializedReview } from "@/components/courses/CourseDetailView";
+import CourseDetailView, {
+  type SerializedCourse,
+  type SerializedReview,
+} from "@/components/courses/CourseDetailView";
 import { pickText } from "@/lib/course-content";
 import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { siteUrl } from "@/lib/site-config";
@@ -25,7 +29,19 @@ function decodeSlug(slug: string) {
   }
 }
 
-function serializeCourse(course: NonNullable<Awaited<ReturnType<typeof getCachedCourseBySlug>>>): SerializedCourse {
+// `unstable_cache` persists values as JSON in production, so Prisma Date
+// instances can come back as ISO strings on a cache hit. Accept both shapes
+// instead of assuming every value still has Date.prototype.toISOString.
+function serializeDate(value: Date | string | null) {
+  if (!value) return null;
+
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function serializeCourse(
+  course: NonNullable<Awaited<ReturnType<typeof getCachedCourseBySlug>>>,
+): SerializedCourse {
   return {
     id: course.id,
     title: course.title,
@@ -46,8 +62,8 @@ function serializeCourse(course: NonNullable<Awaited<ReturnType<typeof getCached
     instructorName: course.instructorName,
     totalLessons: course.totalLessons,
     totalHours: course.totalHours,
-    startDate: course.startDate ? course.startDate.toISOString() : null,
-    enrollDeadline: course.enrollDeadline ? course.enrollDeadline.toISOString() : null,
+    startDate: serializeDate(course.startDate),
+    enrollDeadline: serializeDate(course.enrollDeadline),
     fee: course.fee,
     originalFee: course.originalFee,
     couponCode: course.couponCode,
@@ -58,7 +74,7 @@ function serializeCourse(course: NonNullable<Awaited<ReturnType<typeof getCached
     learnPoints: course.learnPoints,
     features: course.features,
     whyCards: course.whyCards,
-    faqs: course.faqs
+    faqs: course.faqs,
   };
 }
 
@@ -66,20 +82,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = decodeSlug(params.slug);
   const [course, locale] = await Promise.all([
     getCachedCourseBySlug(slug).catch(() => null),
-    getLocale()
+    getLocale(),
   ]);
 
   if (!course) {
     return {
       title: "Course Details",
-      description: "View course details, curriculum, schedule and enrollment information.",
-      alternates: buildAlternates(`/courses/${slug}`)
+      description:
+        "View course details, curriculum, schedule and enrollment information.",
+      alternates: buildAlternates(`/courses/${slug}`),
     };
   }
 
-  const title = course.metaTitle || pickText(locale, course.title, course.titleBn);
+  const title =
+    course.metaTitle || pickText(locale, course.title, course.titleBn);
   const description =
-    course.metaDescription || pickText(locale, course.description, course.descriptionBn);
+    course.metaDescription ||
+    pickText(locale, course.description, course.descriptionBn);
   const image = course.thumbnail || course.bannerImage;
 
   return {
@@ -90,8 +109,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       title,
       description,
-      images: image ? [{ url: image }] : undefined
-    }
+      images: image ? [{ url: image }] : undefined,
+    },
   };
 }
 
@@ -102,10 +121,10 @@ export default async function CourseDetailPage({ params }: Props) {
       .findMany({
         where: { type: "REVIEW", isPublished: true },
         orderBy: { sortOrder: "asc" },
-        take: 6
+        take: 6,
       })
       .catch(() => []),
-    getCachedCourseBySlug(slug).catch(() => null)
+    getCachedCourseBySlug(slug).catch(() => null),
   ]);
 
   if (!course) {
@@ -118,13 +137,13 @@ export default async function CourseDetailPage({ params }: Props) {
     title: review.title,
     subtitle: review.subtitle,
     description: review.description,
-    data: review.data
+    data: review.data,
   }));
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: siteUrl },
     { name: "Courses", url: `${siteUrl}/courses` },
-    { name: course.title, url: `${siteUrl}/courses/${course.slug}` }
+    { name: course.title, url: `${siteUrl}/courses/${course.slug}` },
   ]);
 
   const courseJsonLd = {
@@ -135,13 +154,13 @@ export default async function CourseDetailPage({ params }: Props) {
     provider: {
       "@type": "Organization",
       name: "Learn Al Quran Online BD",
-      sameAs: siteUrl
+      sameAs: siteUrl,
     },
     offers: {
       "@type": "Offer",
       price: course.fee,
-      priceCurrency: "BDT"
-    }
+      priceCurrency: "BDT",
+    },
   };
 
   return (

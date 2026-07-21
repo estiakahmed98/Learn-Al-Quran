@@ -37,7 +37,7 @@ export const getCachedCourseBySlug = unstable_cache(
     });
   },
   ["course-by-slug"],
-  { revalidate: 3600 }
+  { revalidate: 3600, tags: [CACHE_TAGS.courses] }
 );
 
 export const getCachedPublishedBlogs = unstable_cache(
