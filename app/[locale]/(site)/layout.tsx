@@ -21,10 +21,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         whatsapp={settings.whatsapp || ""}
         email={settings.email || ""}
         address={settings.address || ""}
-        facebookUrl={settings.facebookUrl}
-        youtubeUrl={settings.youtubeUrl}
-        instagramUrl={settings.instagramUrl}
-        linkedinUrl={settings.linkedinUrl}
+        socialLinks={settings.socialLinks}
         copyrightText={settings.copyrightText}
         siteName={settings.siteName}
         logo={settings.logo}

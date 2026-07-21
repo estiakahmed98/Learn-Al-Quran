@@ -110,6 +110,7 @@
     "copyright": "© {year} Learn Al Quran Online BD. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms & Conditions",
+    "returnPolicy": "Return Policy",
     "ctaEyebrow": "Start Learning Today",
     "ctaTitle": "Begin Your Quran Journey With Confidence",
     "ctaText": "Meet a qualified teacher and experience our live online learning approach.",
@@ -445,6 +446,14 @@
       "conductBody": "Students and parents are expected to maintain respectful conduct during classes. Learn Al Quran Online BD reserves the right to suspend access for any breach of conduct.",
       "contactTitle": "Contact",
       "contactBody": "For any questions about these terms, please contact us at {email}."
+    },
+    "returnPolicy": {
+      "title": "Return Policy",
+      "updated": "Last updated: {date}",
+      "policyTitle": "Our Return Policy",
+      "policyBody": "As our courses are personalized, live online classes, fees already paid for classes that have taken place are non-returnable. If a course package has been paid for in advance and classes have not yet started, you may request a return within 7 days of payment by contacting us.",
+      "contactTitle": "Contact",
+      "contactBody": "For any questions about returns, please contact us at {email}."
     }
   }
 }

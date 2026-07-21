@@ -37,7 +37,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...buildEntry("/free-trial-class", { changeFrequency: "monthly", priority: 0.9 }),
     ...buildEntry("/enroll", { changeFrequency: "monthly", priority: 0.8 }),
     ...buildEntry("/privacy-policy", { changeFrequency: "yearly", priority: 0.2 }),
-    ...buildEntry("/terms-and-conditions", { changeFrequency: "yearly", priority: 0.2 })
+    ...buildEntry("/terms-and-conditions", { changeFrequency: "yearly", priority: 0.2 }),
+    ...buildEntry("/return-policy", { changeFrequency: "yearly", priority: 0.2 })
   ];
 
   try {

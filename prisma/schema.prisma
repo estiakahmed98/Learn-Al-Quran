@@ -368,10 +368,7 @@ model SiteSetting {
   bankAccount      String?
   westernUnionInfo String?
 
-  facebookUrl  String?
-  youtubeUrl   String?
-  instagramUrl String?
-  linkedinUrl  String?
+  socialLinks Json?
 
   googleMapUrl String? @db.Text
 
@@ -380,6 +377,7 @@ model SiteSetting {
   copyrightText String?
   privacyPolicy String? @db.Text
   terms         String? @db.Text
+  returnPolicy  String? @db.Text
 
   // Hero section
   heroBadgeEn    String?

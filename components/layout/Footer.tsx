@@ -2,16 +2,14 @@ import Link from "next/link";
 import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { parseSocialLinks, socialPlatformInfo } from "@/lib/social-platforms";
 
 interface FooterProps {
   phone: string;
   whatsapp: string;
   email: string;
   address: string;
-  facebookUrl?: string | null;
-  youtubeUrl?: string | null;
-  instagramUrl?: string | null;
-  linkedinUrl?: string | null;
+  socialLinks?: unknown;
   copyrightText?: string | null;
   siteName?: string;
   logo?: string;
@@ -22,22 +20,18 @@ export default function Footer({
   whatsapp,
   email,
   address,
-  facebookUrl,
-  youtubeUrl,
-  instagramUrl,
-  linkedinUrl,
+  socialLinks,
   copyrightText,
   siteName = "Learn Al Quran Online BD",
   logo = "/Learn_Al_Quran_Logo.png"
 }: FooterProps) {
   const t = useTranslations("footer");
-  const socials = [
-    { label: "Fb", title: "Facebook", url: facebookUrl },
-    { label: "YT", title: "YouTube", url: youtubeUrl },
-    { label: "Ig", title: "Instagram", url: instagramUrl },
-    { label: "in", title: "LinkedIn", url: linkedinUrl },
-    { label: "WA", title: "WhatsApp", url: whatsapp ? `https://wa.me/${whatsapp}` : null }
-  ].filter((social) => social.url);
+  const socials = parseSocialLinks(socialLinks)
+    .filter((link) => link.url)
+    .map((link) => {
+      const info = socialPlatformInfo(link.platform);
+      return { label: info.label, title: info.title, url: link.url };
+    });
 
   const quickLinks = [
     { href: "/", label: t("home") },
@@ -165,10 +159,12 @@ export default function Footer({
       <div className="relative border-t border-white/10 bg-black/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 text-center text-xs text-cream/60 sm:flex-row sm:text-left lg:px-8">
           <p>{copyrightText || t("copyright", { year: new Date().getFullYear() })}</p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <Link href="/privacy-policy" className="transition hover:text-gold-light">{t("privacyPolicy")}</Link>
             <span className="text-white/20">|</span>
             <Link href="/terms-and-conditions" className="transition hover:text-gold-light">{t("terms")}</Link>
+            <span className="text-white/20">|</span>
+            <Link href="/return-policy" className="transition hover:text-gold-light">{t("returnPolicy")}</Link>
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
 import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
+import { parseSocialLinks } from "@/lib/social-platforms";
 import { routing } from "@/i18n/routing";
 
 export function generateStaticParams() {
@@ -134,7 +135,9 @@ export default async function RootLayout({
       addressLocality: "Dhaka",
       addressCountry: "BD"
     },
-    sameAs: [settings.facebookUrl, settings.youtubeUrl, settings.instagramUrl].filter(Boolean)
+    sameAs: parseSocialLinks(settings.socialLinks)
+      .map((link) => link.url)
+      .filter(Boolean)
   };
 
   const websiteJsonLd = {

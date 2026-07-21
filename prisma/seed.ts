@@ -108,8 +108,10 @@ async function main() {
       bkashNumber: "0123456789",
       nagadNumber: "0123456789",
       bankAccount: "Account Name: Learn Al Quran Online BD, A/C: 0000000000, Bank: -----",
-      facebookUrl: "https://facebook.com/",
-      youtubeUrl: "https://youtube.com/",
+      socialLinks: [
+        { platform: "facebook", url: "https://facebook.com/" },
+        { platform: "youtube", url: "https://youtube.com/" }
+      ],
       googleMapUrl:
         "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed",
       ga4Id: process.env.NEXT_PUBLIC_GA4_ID || "",

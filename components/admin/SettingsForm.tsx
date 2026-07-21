@@ -2,10 +2,12 @@
 
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Plus, Trash2 } from "lucide-react";
 import type { SiteSetting } from "@prisma/client";
+import { SOCIAL_PLATFORMS, parseSocialLinks, type SocialLink } from "@/lib/social-platforms";
 
 type FormState = {
-  [K in keyof Omit<SiteSetting, "id" | "createdAt" | "updatedAt">]: string;
+  [K in keyof Omit<SiteSetting, "id" | "createdAt" | "updatedAt" | "socialLinks">]: string;
 };
 
 function toFormState(settings: SiteSetting | null): FormState {
@@ -13,9 +15,8 @@ function toFormState(settings: SiteSetting | null): FormState {
     "siteName", "logo", "favicon",
     "phone", "whatsapp", "email", "address",
     "bkashNumber", "nagadNumber", "rocketNumber", "bankAccount", "westernUnionInfo",
-    "facebookUrl", "youtubeUrl", "instagramUrl", "linkedinUrl",
     "googleMapUrl", "ga4Id",
-    "copyrightText", "privacyPolicy", "terms",
+    "copyrightText", "privacyPolicy", "terms", "returnPolicy",
     "heroBadgeEn", "heroBadgeBn", "heroTitleEn", "heroTitleBn",
     "heroSubtitleEn", "heroSubtitleBn", "heroImage",
     "aboutTitleEn", "aboutTitleBn", "aboutDescriptionEn", "aboutDescriptionBn", "aboutImage"
@@ -92,22 +93,13 @@ const SECTIONS: {
     fields: [{ key: "googleMapUrl", label: "Google Map Embed URL", type: "textarea" }]
   },
   {
-    title: "Social Media",
-    icon: "🌐",
-    fields: [
-      { key: "facebookUrl", label: "Facebook URL" },
-      { key: "youtubeUrl", label: "YouTube URL" },
-      { key: "instagramUrl", label: "Instagram URL" },
-      { key: "linkedinUrl", label: "LinkedIn URL" }
-    ]
-  },
-  {
     title: "Footer & Legal",
     icon: "⚖️",
     fields: [
       { key: "copyrightText", label: "Copyright Text" },
       { key: "privacyPolicy", label: "Privacy Policy", type: "textarea" },
-      { key: "terms", label: "Terms & Conditions", type: "textarea" }
+      { key: "terms", label: "Terms & Conditions", type: "textarea" },
+      { key: "returnPolicy", label: "Return Policy", type: "textarea" }
     ]
   },
   {
@@ -116,6 +108,8 @@ const SECTIONS: {
     fields: [{ key: "ga4Id", label: "Google Analytics (GA4) ID" }]
   }
 ];
+
+const SOCIAL_SECTION_TITLE = "Social Media";
 
 export default function SettingsForm({
   initial,
@@ -126,12 +120,25 @@ export default function SettingsForm({
 }) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(toFormState(initial));
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(parseSocialLinks(initial?.socialLinks));
   const [saving, setSaving] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   function update(key: keyof FormState, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function addSocialLink() {
+    setSocialLinks((prev) => [...prev, { platform: SOCIAL_PLATFORMS[0].key, url: "" }]);
+  }
+
+  function updateSocialLink(index: number, patch: Partial<SocialLink>) {
+    setSocialLinks((prev) => prev.map((link, i) => (i === index ? { ...link, ...patch } : link)));
+  }
+
+  function removeSocialLink(index: number) {
+    setSocialLinks((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function handleImageChange(key: keyof FormState, e: ChangeEvent<HTMLInputElement>) {
@@ -164,7 +171,10 @@ export default function SettingsForm({
       const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          ...form,
+          socialLinks: socialLinks.filter((link) => link.url.trim())
+        })
       });
       if (!res.ok) throw new Error("Failed to save settings");
       setMessage({ type: "success", text: "Settings saved successfully." });
@@ -187,6 +197,55 @@ export default function SettingsForm({
           }`}
         >
           {message.text}
+        </div>
+      )}
+
+      {(!only || only.includes(SOCIAL_SECTION_TITLE)) && (
+        <div className="rounded-xl border border-gray-200 bg-white p-5">
+          <h3 className="flex items-center gap-2 font-heading text-base font-bold text-primary-dark">
+            <span>🌐</span>
+            {SOCIAL_SECTION_TITLE}
+          </h3>
+          <div className="mt-4 space-y-3">
+            {socialLinks.map((link, index) => (
+              <div key={index} className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <select
+                  value={link.platform}
+                  onChange={(e) => updateSocialLink(index, { platform: e.target.value })}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
+                  {SOCIAL_PLATFORMS.map((platform) => (
+                    <option key={platform.key} value={platform.key}>
+                      {platform.title}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  value={link.url}
+                  onChange={(e) => updateSocialLink(index, { url: e.target.value })}
+                  placeholder="https://..."
+                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSocialLink(index)}
+                  aria-label="Remove social link"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addSocialLink}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-gray-300 px-3 py-2 text-sm font-semibold text-primary-dark transition hover:border-primary hover:bg-primary/5"
+            >
+              <Plus className="h-4 w-4" />
+              Add Social Link
+            </button>
+          </div>
         </div>
       )}
 
