@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
   AlertCircle,
@@ -495,12 +496,13 @@ function BookCard({
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
         <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-white shadow-md">
           {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={imageUrl}
               alt={book.title}
-              loading={index < 4 ? "eager" : "lazy"}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              priority={index < 4}
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             />
           ) : (
             <BookPlaceholder title={book.title} />
@@ -632,12 +634,9 @@ function BookDetailsModal({
 
               <div className="relative z-10 w-full max-w-[280px]">
                 {imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={imageUrl}
-                    alt={book.title}
-                    className="aspect-[3/4] w-full rounded-xl object-cover shadow-2xl ring-1 ring-black/10"
-                  />
+                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/10">
+                    <Image src={imageUrl} alt={book.title} fill sizes="280px" className="object-cover" />
+                  </div>
                 ) : (
                   <BookPlaceholder title={book.title} />
                 )}

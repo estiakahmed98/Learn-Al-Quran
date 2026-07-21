@@ -1,4 +1,7 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+
+export const SITE_SETTINGS_CACHE_TAG = "site-settings";
 
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://learnalquranonlinebd.com";
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Learn Al Quran Online BD";
@@ -39,11 +42,19 @@ export const fallbackSettings = {
   aboutImage: "/images/about-madrasa.jpg"
 };
 
-// Cached fetch of site settings from the DB, gracefully falling back
-// so the site still renders even before a database is connected.
+const getCachedSiteSettingsRow = unstable_cache(
+  async () => prisma.siteSetting.findFirst(),
+  ["site-settings"],
+  { revalidate: 3600, tags: [SITE_SETTINGS_CACHE_TAG] }
+);
+
+// Cached fetch of site settings from the DB, gracefully falling back so the
+// site still renders even before a database is connected. Cached across
+// requests/deployments and invalidated via revalidateTag("site-settings")
+// whenever admin settings are saved.
 export async function getSiteSettings() {
   try {
-    const settings = await prisma.siteSetting.findFirst();
+    const settings = await getCachedSiteSettingsRow();
     if (!settings) return fallbackSettings;
 
     // Only override fallback values with DB values that are actually set (not null/empty).

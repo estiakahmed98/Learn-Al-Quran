@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sanitizeRichHtml } from "@/lib/sanitize-html";
+
+async function requireAdmin() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") return null;
+  return session;
+}
 
 // GET /api/newsletter/[id] - Get specific newsletter
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await requireAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   try {
     const { id } = await params;
     const newsletter = await prisma.newsletter.findUnique({
@@ -34,6 +46,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await requireAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   try {
     const { id } = await params;
     const { title, subject, content } = await request.json();
@@ -69,7 +84,7 @@ export async function PUT(
       data: {
         title,
         subject,
-        content,
+        content: sanitizeRichHtml(content),
         updatedAt: new Date(),
       },
     });
@@ -89,6 +104,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await requireAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   try {
     const { id } = await params;
     // Check if newsletter exists

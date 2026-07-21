@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { pickText } from "@/lib/course-content";
-import { useCourses } from "@/hooks/useCourses";
+import type { CourseListItem } from "@/hooks/useCourses";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
 const courseIcons: Record<string, string> = {
@@ -15,10 +16,9 @@ const courseIcons: Record<string, string> = {
   "english-speaking": "💬",
 };
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: CourseListItem[] }) {
   const t = useTranslations("courses");
   const locale = useLocale();
-  const { courses, isLoading } = useCourses();
 
   const visibleCourses = courses.slice(0, 6);
   const hasMore = courses.length > 6;
@@ -62,19 +62,7 @@ export default function Courses() {
           </p>
         </div>
 
-        {isLoading ? (
-          <div
-            className="mt-10 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            aria-label={t("loading")}
-          >
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                className="h-80 animate-pulse rounded-2xl bg-white/80 backdrop-blur-sm"
-              />
-            ))}
-          </div>
-        ) : visibleCourses.length === 0 ? (
+        {visibleCourses.length === 0 ? (
           <p className="mt-12 text-center text-gray-500">{t("empty")}</p>
         ) : (
           <div className="mt-10 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -91,11 +79,12 @@ export default function Courses() {
                 {/* Illustration / thumbnail */}
                 <div className="relative flex h-32 sm:h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 to-gold/5">
                   {course.thumbnail ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={course.thumbnail}
                       alt={pickText(locale, course.title, course.titleBn)}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <span className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl sm:text-4xl text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">

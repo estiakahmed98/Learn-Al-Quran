@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GraduationCap, Search, X } from "lucide-react";
@@ -200,11 +201,12 @@ export default function CoursesIndexView() {
                   <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
                     <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
                       {course.thumbnail ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={course.thumbnail}
                           alt={pickText(locale, course.title, course.titleBn)}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                         />
                       ) : (
                         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl text-white shadow">

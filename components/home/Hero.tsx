@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
@@ -32,11 +33,13 @@ export default function Hero({
     <section className="relative min-h-[32rem] overflow-hidden bg-primary-dark sm:min-h-[38rem] lg:min-h-[44rem]">
       {/* Full-bleed cover image */}
       <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={heroImage}
           alt={t("imageAlt")}
-          className="h-full w-full object-cover"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/75 to-primary-dark/25" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/70 via-transparent to-transparent" />

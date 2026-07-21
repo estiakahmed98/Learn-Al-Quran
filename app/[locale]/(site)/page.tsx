@@ -11,6 +11,7 @@ import GoogleMapSection from "@/components/home/GoogleMapSection";
 import { getLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-config";
+import { getCachedActiveCourses, getCachedTeachers } from "@/lib/cached-data";
 import { pickText } from "@/lib/course-content";
 import { buildAlternates } from "@/lib/seo";
 import JsonLd from "@/components/shared/JsonLd";
@@ -27,21 +28,8 @@ export const revalidate = 3600;
 async function getHomeData() {
   try {
     const [courses, teachers, reviews, faqs, settings] = await Promise.all([
-      prisma.course.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
-      }),
-      prisma.user.findMany({
-        where: { role: "TEACHER", isActive: true },
-        select: {
-          id: true,
-          name: true,
-          designation: true,
-          description: true,
-          imageURL: true,
-        },
-        orderBy: { name: "asc" },
-      }),
+      getCachedActiveCourses(),
+      getCachedTeachers(),
       prisma.content.findMany({
         where: { type: "REVIEW", isPublished: true },
         orderBy: { sortOrder: "asc" },
@@ -109,7 +97,7 @@ export default async function HomePage() {
         description={aboutDescription || undefined}
         image={settings.aboutImage || undefined}
       />
-      <Courses />
+      <Courses courses={courses} />
 
       <Teachers teachers={teachers} embedded />
       <Reviews reviews={reviews} />

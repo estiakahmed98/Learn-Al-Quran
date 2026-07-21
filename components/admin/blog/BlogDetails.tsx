@@ -1,15 +1,14 @@
 // components/admin/blog/BlogDetails.tsx
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Calendar, User, ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import RecentBlogs from "./RecentBlogs";
-interface Blog {
+import RecentBlogs, { type RecentBlog } from "./RecentBlogs";
+
+export interface Blog {
   id: number;
   slug: string;
   title: string;
@@ -77,73 +76,15 @@ const ProfessionalSummary = ({
   );
 };
 
-/* =================== LOADING =================== */
-const LoadingSkeleton = () => (
-  <div className="space-y-8">
-    <Skeleton className="h-10 w-2/3" />
-    <Skeleton className="h-4 w-1/3" />
-    <Skeleton className="h-64 w-full rounded-xl" />
-  </div>
-);
-
-export default function BlogDetails() {
+export default function BlogDetails({
+  blog,
+  recentBlogs
+}: {
+  blog: Blog;
+  recentBlogs: RecentBlog[];
+}) {
   const router = useRouter();
-  const params = useParams<{ slug: string }>();
-  const slug = params?.slug;
   const t = useTranslations("sitePages.blog");
-
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [cache] = useState<Map<string, Blog>>(new Map());
-  const [imageLoading, setImageLoading] = useState(true);
-
-  const fetchBlog = useCallback(
-    async (slug: string) => {
-      if (cache.has(slug)) {
-        setBlog(cache.get(slug)!);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        let res = await fetch(`/api/blog/slug/${slug}`);
-        if (!res.ok) res = await fetch(`/api/blog/${slug}`);
-
-        if (!res.ok) throw new Error("Failed to fetch blog");
-
-        const data = await res.json();
-        cache.set(slug, data);
-        setBlog(data);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [cache]
-  );
-
-  useEffect(() => {
-    if (slug) fetchBlog(slug);
-  }, [slug, fetchBlog]);
-
-  if (loading) {
-    return (
-      <div className="container max-w-5xl mx-auto px-4 py-10">
-        <LoadingSkeleton />
-      </div>
-    );
-  }
-
-  if (!blog) {
-    return (
-      <div className="container max-w-5xl mx-auto px-4 py-20 text-center">
-        <p className="text-muted-foreground">{t("articleNotFound")}</p>
-        <Button onClick={() => router.back()} className="mt-4">
-          {t("goBack")}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full">
@@ -152,7 +93,8 @@ export default function BlogDetails() {
         {/* LEFT */}
         <aside className="col-span-2 sticky top-24 pl-8 h-fit">
           {blog.ads ? (
-            <img src={blog.ads} className="rounded-lg border w-full" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={blog.ads} alt="" className="rounded-lg border w-full" />
           ) : (
             <div className="text-center text-muted-foreground border rounded-lg p-4">
               {t("adsNotFound")}
@@ -192,14 +134,11 @@ export default function BlogDetails() {
 
                 {blog.image && (
                   <div className="relative aspect-video rounded-xl overflow-hidden border">
-                    {imageLoading && <Skeleton className="absolute inset-0" />}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={blog.image}
                       alt={blog.title}
-                      className={`w-full h-full object-cover transition-opacity ${
-                        imageLoading ? "opacity-0" : "opacity-100"
-                      }`}
-                      onLoad={() => setImageLoading(false)}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 )}
@@ -224,7 +163,7 @@ export default function BlogDetails() {
         {/* RIGHT */}
         <aside className="col-span-3 sticky top-24 space-y-6 pr-6 h-fit">
           <RelatedBlogsCard t={t} />
-          <RecentBlogs />
+          <RecentBlogs blogs={recentBlogs} />
         </aside>
       </div>
 
@@ -245,7 +184,7 @@ export default function BlogDetails() {
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
 
-          <RecentBlogs />
+          <RecentBlogs blogs={recentBlogs} />
         </div>
       </div>
     </div>

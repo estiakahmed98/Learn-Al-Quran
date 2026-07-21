@@ -1,14 +1,10 @@
 // components/admin/blog/RecentBlogs.tsx
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, BookOpen } from "lucide-react";
 import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
 import { processBlogSummary } from "./summaryUtils";
 
-interface RecentBlog {
+export interface RecentBlog {
   id: number;
   slug: string;
   title: string;
@@ -17,60 +13,8 @@ interface RecentBlog {
   image?: string;
 }
 
-const RecentBlogSkeleton = () => (
-  <div className="flex flex-col gap-3 p-4 rounded-lg border bg-card animate-pulse">
-    <Skeleton className="h-32 w-full rounded-md" />
-    <Skeleton className="h-4 w-3/4" />
-    <Skeleton className="h-3 w-1/2" />
-  </div>
-);
-
-export default function RecentBlogs() {
-  const [recentBlogs, setRecentBlogs] = useState<RecentBlog[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchRecentBlogs = async () => {
-      try {
-        const response = await fetch("/api/blog?limit=4&sort=latest");
-        if (!response.ok) throw new Error("Failed to fetch recent blogs");
-
-        const data = await response.json();
-        setRecentBlogs(data.blogs || data);
-      } catch (error) {
-        console.error("Error fetching recent blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecentBlogs();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="rounded-2xl border border-[#be923c]/20 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-[#be923c]/20 bg-[#003535]/95">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#be923c]/15">
-            <BookOpen className="h-5 w-5 text-[#be923c]" />
-          </div>
-          <h3 className="text-base font-semibold tracking-wide text-[#be923c]">
-            Recent Articles
-          </h3>
-        </div>
-
-        {/* Skeleton Content */}
-        <div className="px-5 py-4 space-y-4">
-          {[1, 2, 3].map((i) => (
-            <RecentBlogSkeleton key={i} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (recentBlogs.length === 0) {
+export default function RecentBlogs({ blogs }: { blogs: RecentBlog[] }) {
+  if (blogs.length === 0) {
     return null;
   }
 
@@ -88,7 +32,7 @@ export default function RecentBlogs() {
 
       {/* Content */}
       <div className="p-4 space-y-4">
-        {recentBlogs.map((blog, index) => (
+        {blogs.map((blog, index) => (
           <Link
             key={blog.id}
             href={`/blog/${blog.slug}`}
@@ -105,6 +49,7 @@ export default function RecentBlogs() {
               {/* Image */}
               {blog.image && (
                 <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={blog.image}
                     alt={blog.title}
@@ -154,7 +99,7 @@ export default function RecentBlogs() {
 
         {/* View all */}
         <Link
-          href="/gravionne/blog"
+          href="/blog"
           className="mt-4 block text-center py-3 rounded-lg border border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 text-sm font-medium text-primary transition-all"
         >
           View all articles →

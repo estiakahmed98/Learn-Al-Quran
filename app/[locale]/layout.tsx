@@ -4,7 +4,9 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import "@fontsource/poppins/500.css";
+// Poppins is only used via font-heading, and in this codebase that's always
+// paired with font-bold (700) or, rarely, font-semibold (600) — 500 isn't
+// used and was dead weight.
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "@fontsource/hind-siliguri/400.css";

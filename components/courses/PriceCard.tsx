@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
@@ -50,8 +51,9 @@ export default function PriceCard({
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
       {bannerImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={bannerImage} alt={title} className="aspect-video w-full object-cover" />
+        <div className="relative aspect-video w-full">
+          <Image src={bannerImage} alt={title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
+        </div>
       )}
 
       <div className="p-6">

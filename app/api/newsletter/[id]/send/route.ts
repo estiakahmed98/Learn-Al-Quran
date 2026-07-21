@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
+
+async function requireAdmin() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") return null;
+  return session;
+}
 
 // ----------- SMTP CONFIG -------------
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
@@ -34,6 +42,9 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await requireAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   try {
     // ✅ AWAIT params
     const { id } = await params;

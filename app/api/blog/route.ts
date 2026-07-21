@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateSlug } from '@/lib/utils';
+import { sanitizeRichHtml } from '@/lib/sanitize-html';
+import { CACHE_TAGS } from '@/lib/cached-data';
 
 // GET all blogs - Public access
 export async function GET(request: NextRequest) {
@@ -94,10 +97,12 @@ export async function POST(request: NextRequest) {
       return final.trim();
     }
 
+    const sanitizedContent = sanitizeRichHtml(content || "");
+
     const computedSummary =
       summary && summary.trim().length > 0
         ? summary.trim()
-        : cleanSummary(content || "");
+        : cleanSummary(sanitizedContent);
 
     // Generate unique slug
     let slug = generateSlug(title);
@@ -119,13 +124,16 @@ export async function POST(request: NextRequest) {
         slug,
         title,
         summary: computedSummary,
-        content: content || '',
+        content: sanitizedContent,
         date: new Date(date),
         author,
         image: image || '',
         ads: ads ?? null,
       }
     });
+
+    revalidateTag(CACHE_TAGS.blogs);
+    revalidatePath('/blog');
 
     return NextResponse.json(blog, { status: 201 });
   } catch (error) {

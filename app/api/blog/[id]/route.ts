@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/utils";
+import { sanitizeRichHtml } from "@/lib/sanitize-html";
+import { CACHE_TAGS } from "@/lib/cached-data";
 
 // GET single blog by ID - Public access (for backward compatibility)
 export async function GET(
@@ -59,6 +62,7 @@ export async function PUT(
     const {
       title,
       summary,
+      content,
       date,
       author,
       image,
@@ -66,6 +70,7 @@ export async function PUT(
     }: {
       title?: string;
       summary?: string;
+      content?: string;
       date?: string;
       author?: string;
       image?: string;
@@ -77,6 +82,7 @@ export async function PUT(
       title?: string;
       slug?: string;
       summary: string;
+      content: string;
       date: Date;
       author: string;
       image: string;
@@ -86,6 +92,8 @@ export async function PUT(
         typeof summary === "string" && summary.trim().length > 0
           ? summary
           : existingBlog.summary,
+      content:
+        typeof content === "string" ? sanitizeRichHtml(content) : existingBlog.content,
       date: date ? new Date(date) : existingBlog.date,
       author: author ?? existingBlog.author,
       image: image ?? existingBlog.image,
@@ -130,6 +138,13 @@ export async function PUT(
       data: updateData,
     });
 
+    revalidateTag(CACHE_TAGS.blogs);
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${updated.slug}`);
+    if (existingBlog.slug !== updated.slug) {
+      revalidatePath(`/blog/${existingBlog.slug}`);
+    }
+
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Error updating blog:", error);
@@ -162,6 +177,11 @@ export async function DELETE(
     }
 
     await prisma.blog.delete({ where: { id: blogId } });
+
+    revalidateTag(CACHE_TAGS.blogs);
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${existing.slug}`);
+
     return NextResponse.json({ message: "Blog deleted successfully" });
   } catch (error) {
     console.error("Error deleting blog:", error);
