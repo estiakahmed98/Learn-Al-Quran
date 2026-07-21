@@ -13,6 +13,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import IslamicPattern from "@/components/shared/IslamicPattern";
 
 type Book = {
   id: string;
@@ -248,62 +249,7 @@ export default function BooksClient() {
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-primary/[0.045] via-white to-white">
       {/* Compact Page Header */}
       <section className="relative overflow-hidden border-b border-gold/10">
-        {/* Islamic geometric background */}
-        <div className="pointer-events-none absolute inset-0 opacity-[0.04]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-          radial-gradient(
-            circle at 12% 18%,
-            rgba(212, 175, 55, 0.16) 0%,
-            transparent 30%
-          ),
-          radial-gradient(
-            circle at 88% 78%,
-            rgba(212, 175, 55, 0.12) 0%,
-            transparent 32%
-          ),
-          repeating-linear-gradient(
-            45deg,
-            transparent 0px,
-            transparent 26px,
-            rgba(212, 175, 55, 0.07) 26px,
-            rgba(212, 175, 55, 0.07) 27px
-          ),
-          repeating-linear-gradient(
-            -45deg,
-            transparent 0px,
-            transparent 26px,
-            rgba(212, 175, 55, 0.07) 26px,
-            rgba(212, 175, 55, 0.07) 27px
-          )
-        `,
-            }}
-          />
-
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-          repeating-linear-gradient(
-            60deg,
-            transparent 0px,
-            transparent 48px,
-            rgba(212, 175, 55, 0.03) 48px,
-            rgba(212, 175, 55, 0.03) 49px
-          ),
-          repeating-linear-gradient(
-            -60deg,
-            transparent 0px,
-            transparent 48px,
-            rgba(212, 175, 55, 0.03) 48px,
-            rgba(212, 175, 55, 0.03) 49px
-          )
-        `,
-            }}
-          />
-        </div>
+        <IslamicPattern tone="green" opacity={0.045} className="absolute inset-0" />
 
         {/* Small decorative shapes */}
         <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-[12px] border-primary-dark/[0.03] lg:block" />

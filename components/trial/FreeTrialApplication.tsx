@@ -103,12 +103,13 @@ export default function FreeTrialApplication({
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[2rem] bg-primary-dark shadow-2xl shadow-primary-dark/20">
-          <div className="border-b border-white/10 px-6 py-6 sm:px-9">
+        <div className="relative overflow-hidden rounded-[2rem] bg-primary-dark shadow-2xl shadow-primary-dark/20">
+          <IslamicPattern tone="gold" opacity={0.08} />
+          <div className="relative border-b border-white/10 px-6 py-6 sm:px-9">
             <p className="text-xs font-bold uppercase tracking-[.25em] text-secondary">{t("eyebrow")}</p>
             <h2 className="mt-2 font-heading text-2xl font-bold text-white">{t("formTitle")}</h2>
           </div>
-          <form onSubmit={submit} className="grid gap-4 p-6 sm:grid-cols-2 sm:p-9">
+          <form onSubmit={submit} className="relative grid gap-4 p-6 sm:grid-cols-2 sm:p-9">
             <input required aria-label={t("studentName")} value={form.studentName} onChange={(e) => update("studentName", e.target.value)} placeholder={t("studentName")} className={fieldClass} />
             <input required aria-label={t("guardianName")} value={form.guardianName} onChange={(e) => update("guardianName", e.target.value)} placeholder={t("guardianName")} className={fieldClass} />
             <input aria-label={t("studentAge")} type="number" min={1} value={form.studentAge} onChange={(e) => update("studentAge", e.target.value)} placeholder={t("studentAge")} className={fieldClass} />

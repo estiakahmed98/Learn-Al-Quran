@@ -38,7 +38,13 @@
     "pageTitle": "Quran, Tajweed & Islamic Learning Courses",
     "pageSubtitle": "Choose the course that fits your learning goals — from beginner Maktab classes to complete Hifzul Quran memorization, taught by certified Huffaz and Qaris.",
     "empty": "No courses available right now. Please check back soon.",
-    "loading": "Loading courses"
+    "loading": "Loading courses",
+    "searchPlaceholder": "Search by course name, category or description...",
+    "showing": "Showing",
+    "of": "of",
+    "coursesLabel": "courses",
+    "clearSearch": "Clear search",
+    "noMatchingTitle": "No matching courses found"
   },
   "courseDetail": {
     "home": "Home",
@@ -239,6 +245,9 @@
   "sitePages": {
     "about": {
       "eyebrow": "About Us",
+      "breadcrumbHome": "Home",
+      "pageTitle": "Learn Al Quran Online BD",
+      "pageSubtitle": "Get to know our mission, our teaching methodology, and the certified teachers guiding your Quran learning journey.",
       "title": "Our Mission Is To Make Quran Learning Accessible To All",
       "p1": "Learn Al Quran Online BD was founded with a simple goal: to bring authentic, structured Quran education to every home, regardless of location. Whether you are a child taking your first steps in Arabic, or an adult learning to read the Quran for the first time, our certified teachers provide personalized, one-to-one classes built around your schedule.",
       "p2": "We combine traditional Islamic teaching methods with modern online learning tools—live video classes, structured curriculums, and continuous progress tracking—so every student, wherever they are in the world, gets the same quality of education as in a traditional madrasa.",
@@ -313,6 +322,7 @@
     },
     "blog": {
       "eyebrow": "Blog",
+      "breadcrumbHome": "Home",
       "title": "Quran Learning Tips & Islamic Articles",
       "empty": "We're preparing helpful articles for you. Please check back soon.",
       "notFound": "Article Not Found",

@@ -99,12 +99,13 @@ export default function EnrollmentForm({
     <section className="relative overflow-hidden bg-[#f5f7f5] py-14 lg:py-20">
       <div className="absolute -left-24 top-20 h-72 w-72 rounded-full border-[32px] border-primary/5" />
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
-        <aside className="rounded-[2rem] bg-primary-dark p-7 text-white shadow-xl sm:p-9">
-          <p className="text-xs font-bold uppercase tracking-[.25em] text-secondary">{t("eyebrow")}</p>
-          <h1 className="mt-4 font-heading text-3xl font-bold leading-tight sm:text-4xl">{t("title")}</h1>
-          <p className="mt-4 leading-7 text-white/65">{t("subtitle")}</p>
+        <aside className="relative overflow-hidden rounded-[2rem] bg-primary-dark p-7 text-white shadow-xl sm:p-9">
+          <IslamicPattern tone="gold" opacity={0.08} />
+          <p className="relative text-xs font-bold uppercase tracking-[.25em] text-secondary">{t("eyebrow")}</p>
+          <h1 className="relative mt-4 font-heading text-3xl font-bold leading-tight sm:text-4xl">{t("title")}</h1>
+          <p className="relative mt-4 leading-7 text-white/65">{t("subtitle")}</p>
 
-          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="relative mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
             <div className="flex items-center gap-3"><CreditCard className="h-5 w-5 text-secondary" /><h2 className="font-bold">{t("paymentDetails")}</h2></div>
             <dl className="mt-4 space-y-3 text-sm">
               {paymentInfo.bkashNumber && <div><dt className="text-white/45">bKash</dt><dd className="font-semibold">{paymentInfo.bkashNumber}</dd></div>}
