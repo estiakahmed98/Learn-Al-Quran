@@ -98,12 +98,15 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
             Clear filters
           </button>
         )}
-        {teacherFilter && (
-          <div className="ml-auto">
-            <MonthlyPdfDownload teacherId={teacherFilter} />
-          </div>
-        )}
+        <div className="ml-auto">
+          <MonthlyPdfDownload teacherId={teacherFilter || undefined} />
+        </div>
       </div>
+      <p className="mt-2 text-xs text-gray-400">
+        {teacherFilter
+          ? "Exports the selected teacher's monthly report."
+          : "Exports a combined monthly report across all teachers. Select a teacher above to export just theirs."}
+      </p>
 
       <p className="mt-3 text-xs text-gray-400">
         Showing {filtered.length} of {initialReports.length} reports

@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 });
 
 export interface MonthlyReportRow {
+  teacherName: string;
   courseTitle: string;
   classDate: Date;
   startTime: string;
@@ -27,6 +28,47 @@ export interface MonthlyReportRow {
   completed: boolean;
   attended: number | null;
   notes: string | null;
+}
+
+function CourseTable({ rows }: { rows: MonthlyReportRow[] }) {
+  const courseNames = Array.from(new Set(rows.map((row) => row.courseTitle)));
+  const byCourse = courseNames.map((courseTitle) => ({
+    courseTitle,
+    rows: rows
+      .filter((row) => row.courseTitle === courseTitle)
+      .sort((a, b) => a.classDate.getTime() - b.classDate.getTime())
+  }));
+
+  return (
+    <>
+      {byCourse.map((group) => (
+        <View key={group.courseTitle} style={styles.courseSection} wrap={false}>
+          <Text style={styles.courseTitle}>
+            {group.courseTitle} — {group.rows.length} class{group.rows.length === 1 ? "" : "es"}
+          </Text>
+          <View style={styles.tableHeader}>
+            <Text style={styles.colDate}>Date</Text>
+            <Text style={styles.colTime}>Time</Text>
+            <Text style={styles.colStatus}>Status</Text>
+            <Text style={styles.colAttended}>Attended</Text>
+            <Text style={styles.colNotes}>Notes</Text>
+          </View>
+          {group.rows.map((row, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.colDate}>{row.classDate.toLocaleDateString()}</Text>
+              <Text style={styles.colTime}>
+                {row.startTime}
+                {row.endTime ? ` - ${row.endTime}` : ""}
+              </Text>
+              <Text style={styles.colStatus}>{row.completed ? "Completed" : "Incomplete"}</Text>
+              <Text style={styles.colAttended}>{row.attended ?? "—"}</Text>
+              <Text style={styles.colNotes}>{row.notes || "—"}</Text>
+            </View>
+          ))}
+        </View>
+      ))}
+    </>
+  );
 }
 
 export function MonthlyClassReportDocument({
@@ -43,14 +85,7 @@ export function MonthlyClassReportDocument({
   const monthLabel = new Date(year, month - 1, 1).toLocaleString("en-US", { month: "long" });
   const totalClasses = rows.length;
   const completedClasses = rows.filter((row) => row.completed).length;
-  const courseNames = Array.from(new Set(rows.map((row) => row.courseTitle)));
-
-  const byCourse = courseNames.map((courseTitle) => ({
-    courseTitle,
-    rows: rows
-      .filter((row) => row.courseTitle === courseTitle)
-      .sort((a, b) => a.classDate.getTime() - b.classDate.getTime())
-  }));
+  const courseCount = new Set(rows.map((row) => row.courseTitle)).size;
 
   return (
     <Document>
@@ -71,36 +106,68 @@ export function MonthlyClassReportDocument({
           </View>
           <View style={styles.summaryBox}>
             <Text style={styles.summaryLabel}>Courses Covered</Text>
-            <Text style={styles.summaryValue}>{courseNames.length}</Text>
+            <Text style={styles.summaryValue}>{courseCount}</Text>
           </View>
         </View>
 
-        {byCourse.map((group) => (
-          <View key={group.courseTitle} style={styles.courseSection} wrap={false}>
-            <Text style={styles.courseTitle}>
-              {group.courseTitle} — {group.rows.length} class{group.rows.length === 1 ? "" : "es"}
-            </Text>
-            <View style={styles.tableHeader}>
-              <Text style={styles.colDate}>Date</Text>
-              <Text style={styles.colTime}>Time</Text>
-              <Text style={styles.colStatus}>Status</Text>
-              <Text style={styles.colAttended}>Attended</Text>
-              <Text style={styles.colNotes}>Notes</Text>
-            </View>
-            {group.rows.map((row, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.colDate}>{row.classDate.toLocaleDateString()}</Text>
-                <Text style={styles.colTime}>
-                  {row.startTime}
-                  {row.endTime ? ` - ${row.endTime}` : ""}
-                </Text>
-                <Text style={styles.colStatus}>{row.completed ? "Completed" : "Incomplete"}</Text>
-                <Text style={styles.colAttended}>{row.attended ?? "—"}</Text>
-                <Text style={styles.colNotes}>{row.notes || "—"}</Text>
-              </View>
-            ))}
+        <CourseTable rows={rows} />
+
+        {rows.length === 0 && <Text>No classes recorded for this month.</Text>}
+      </Page>
+    </Document>
+  );
+}
+
+export function AllTeachersClassReportDocument({
+  month,
+  year,
+  rows
+}: {
+  month: number;
+  year: number;
+  rows: MonthlyReportRow[];
+}) {
+  const monthLabel = new Date(year, month - 1, 1).toLocaleString("en-US", { month: "long" });
+  const totalClasses = rows.length;
+  const completedClasses = rows.filter((row) => row.completed).length;
+  const teacherNames = Array.from(new Set(rows.map((row) => row.teacherName))).sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.title}>Monthly Class Report — All Teachers</Text>
+        <Text style={styles.subtitle}>
+          {monthLabel} {year}
+        </Text>
+
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Total Classes</Text>
+            <Text style={styles.summaryValue}>{totalClasses}</Text>
           </View>
-        ))}
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Completed</Text>
+            <Text style={styles.summaryValue}>{completedClasses}</Text>
+          </View>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Teachers</Text>
+            <Text style={styles.summaryValue}>{teacherNames.length}</Text>
+          </View>
+        </View>
+
+        {teacherNames.map((teacherName) => {
+          const teacherRows = rows.filter((row) => row.teacherName === teacherName);
+          return (
+            <View key={teacherName} wrap={false} style={{ marginBottom: 10 }}>
+              <Text style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: "#0f4c3a" }}>
+                {teacherName} — {teacherRows.length} class{teacherRows.length === 1 ? "" : "es"}
+              </Text>
+              <CourseTable rows={teacherRows} />
+            </View>
+          );
+        })}
 
         {rows.length === 0 && <Text>No classes recorded for this month.</Text>}
       </Page>
@@ -115,4 +182,12 @@ export async function renderMonthlyClassReportPdf(props: {
   rows: MonthlyReportRow[];
 }) {
   return renderToBuffer(<MonthlyClassReportDocument {...props} />);
+}
+
+export async function renderAllTeachersClassReportPdf(props: {
+  month: number;
+  year: number;
+  rows: MonthlyReportRow[];
+}) {
+  return renderToBuffer(<AllTeachersClassReportDocument {...props} />);
 }

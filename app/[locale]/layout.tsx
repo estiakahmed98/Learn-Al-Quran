@@ -14,6 +14,7 @@ import "@fontsource/hind-siliguri/500.css";
 import "@fontsource/hind-siliguri/600.css";
 import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
+import GoogleTagManager, { GoogleTagManagerNoScript } from "@/components/shared/GoogleTagManager";
 import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
@@ -154,9 +155,15 @@ export default async function RootLayout({
     }
   };
 
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "";
+
   return (
     <html lang={locale}>
+      <head>
+        <GoogleTagManager gtmId={gtmId} />
+      </head>
       <body className="flex min-h-screen flex-col font-body">
+        <GoogleTagManagerNoScript gtmId={gtmId} />
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
         <Suspense fallback={null}>
           <AnalyticsTracker />

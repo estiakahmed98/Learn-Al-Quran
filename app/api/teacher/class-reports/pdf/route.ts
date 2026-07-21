@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { renderMonthlyClassReportPdf } from "@/lib/pdf/monthly-class-report";
+import { renderMonthlyClassReportPdf, renderAllTeachersClassReportPdf } from "@/lib/pdf/monthly-class-report";
 
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
@@ -19,20 +19,51 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "A valid month and year are required." }, { status: 400 });
   }
 
-  let teacherId = session.user.id;
-  if (session.user.role === "ADMIN" && requestedTeacherId) {
-    teacherId = requestedTeacherId;
-  } else if (session.user.role === "TEACHER" && requestedTeacherId && requestedTeacherId !== session.user.id) {
+  if (session.user.role === "TEACHER" && requestedTeacherId && requestedTeacherId !== session.user.id) {
     return NextResponse.json({ message: "You can only download your own report." }, { status: 403 });
   }
+
+  const rangeStart = new Date(year, month - 1, 1);
+  const rangeEnd = new Date(year, month, 1);
+
+  // Admins with no teacher selected get a combined report across every teacher.
+  if (session.user.role === "ADMIN" && !requestedTeacherId) {
+    const reports = await prisma.classReport.findMany({
+      where: { classDate: { gte: rangeStart, lt: rangeEnd } },
+      include: { course: { select: { title: true } }, teacher: { select: { name: true } } },
+      orderBy: { classDate: "asc" }
+    });
+
+    const pdfBuffer = await renderAllTeachersClassReportPdf({
+      month,
+      year,
+      rows: reports.map((report) => ({
+        teacherName: report.teacher.name,
+        courseTitle: report.course.title,
+        classDate: report.classDate,
+        startTime: report.startTime,
+        endTime: report.endTime,
+        completed: report.completed,
+        attended: report.attended,
+        notes: report.notes
+      }))
+    });
+
+    return new NextResponse(pdfBuffer as unknown as BodyInit, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="class-report-all-teachers-${year}-${String(month).padStart(2, "0")}.pdf"`
+      }
+    });
+  }
+
+  const teacherId = session.user.role === "ADMIN" ? requestedTeacherId! : session.user.id;
 
   const teacher = await prisma.user.findUnique({ where: { id: teacherId }, select: { name: true } });
   if (!teacher) {
     return NextResponse.json({ message: "Teacher not found." }, { status: 404 });
   }
-
-  const rangeStart = new Date(year, month - 1, 1);
-  const rangeEnd = new Date(year, month, 1);
 
   const reports = await prisma.classReport.findMany({
     where: { teacherId, classDate: { gte: rangeStart, lt: rangeEnd } },
@@ -45,6 +76,7 @@ export async function GET(request: Request) {
     month,
     year,
     rows: reports.map((report) => ({
+      teacherName: teacher.name,
       courseTitle: report.course.title,
       classDate: report.classDate,
       startTime: report.startTime,
