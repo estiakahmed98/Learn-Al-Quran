@@ -120,7 +120,7 @@ export default function AllBlogs() {
     () =>
       blogs.map((blog) => ({
         ...blog,
-        href: `blog/${blog.slug || generateSlug(blog.title)}`,
+        href: `/blog/${blog.slug || generateSlug(blog.title)}`,
         formattedDate: formatFacebookTime(blog.createdAt),
       })),
     [blogs]

@@ -25,6 +25,16 @@ function decodeSlug(slug: string) {
   }
 }
 
+// `unstable_cache` persists values as JSON, so Prisma Date instances can
+// return as ISO strings on cache hits. Normalize both shapes before using
+// them in metadata or passing them across the Server/Client boundary.
+function serializeDate(value: Date | string | null | undefined) {
+  if (!value) return null;
+
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = decodeSlug(params.slug);
   const [blog, t] = await Promise.all([
@@ -40,6 +50,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const publishedTime = serializeDate(blog.date);
+  const modifiedTime = serializeDate(blog.updatedAt);
+
   return {
     title: blog.title,
     description: blog.summary,
@@ -49,8 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: blog.title,
       description: blog.summary,
       images: blog.image ? [{ url: blog.image }] : undefined,
-      publishedTime: blog.date.toISOString(),
-      modifiedTime: blog.updatedAt.toISOString(),
+      publishedTime: publishedTime || undefined,
+      modifiedTime: modifiedTime || undefined,
       authors: [blog.author]
     }
   };
@@ -67,12 +80,27 @@ export default async function BlogDetailsPage({ params }: Props) {
     notFound();
   }
 
+  const publishedAt =
+    serializeDate(blog.date) ||
+    serializeDate(blog.createdAt) ||
+    new Date(0).toISOString();
+  const createdAt = serializeDate(blog.createdAt) || publishedAt;
+  const updatedAt = serializeDate(blog.updatedAt) || createdAt;
+
   const recentBlogs = await prisma.blog
     .findMany({
       where: { slug: { not: blog.slug } },
       orderBy: { createdAt: "desc" },
       take: 4,
-      select: { id: true, slug: true, title: true, summary: true, date: true, image: true }
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        summary: true,
+        date: true,
+        image: true,
+        createdAt: true
+      }
     })
     .catch(() => []);
 
@@ -88,8 +116,8 @@ export default async function BlogDetailsPage({ params }: Props) {
     headline: blog.title,
     description: blog.summary,
     image: blog.image ? [blog.image] : undefined,
-    datePublished: blog.date.toISOString(),
-    dateModified: blog.updatedAt.toISOString(),
+    datePublished: publishedAt,
+    dateModified: updatedAt,
     author: {
       "@type": "Person",
       name: blog.author
@@ -112,18 +140,21 @@ export default async function BlogDetailsPage({ params }: Props) {
             content: sanitizeRichHtml(blog.content),
             summary: blog.summary,
             author: blog.author,
-            date: blog.date.toISOString(),
+            date: publishedAt,
             image: blog.image || undefined,
             ads: blog.ads,
-            createdAt: blog.createdAt.toISOString(),
-            updatedAt: blog.updatedAt.toISOString()
+            createdAt,
+            updatedAt
           }}
           recentBlogs={recentBlogs.map((item) => ({
             id: item.id,
             slug: item.slug,
             title: item.title,
             summary: item.summary,
-            date: item.date.toISOString(),
+            date:
+              serializeDate(item.date) ||
+              serializeDate(item.createdAt) ||
+              publishedAt,
             image: item.image || undefined
           }))}
         />

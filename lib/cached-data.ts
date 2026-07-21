@@ -69,7 +69,7 @@ export const getCachedBlogBySlug = unstable_cache(
     return prisma.blog.findUnique({ where: { slug } });
   },
   ["blog-by-slug"],
-  { revalidate: 3600 }
+  { revalidate: 3600, tags: [CACHE_TAGS.blogs] }
 );
 
 export const getCachedTeachers = unstable_cache(
