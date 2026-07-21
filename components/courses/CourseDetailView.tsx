@@ -12,7 +12,7 @@ import {
   getFeatures,
   getLearnPoints,
   getWhyCards,
-  pickText
+  pickText,
 } from "@/lib/course-content";
 import { useState } from "react";
 
@@ -66,19 +66,21 @@ function formatDate(locale: string, iso: string | null) {
   return new Intl.DateTimeFormat(locale === "bn" ? "bn-BD" : "en-GB", {
     day: "numeric",
     month: "long",
-    year: "numeric"
+    year: "numeric",
   }).format(date);
 }
 
 function localizeDigits(locale: string, value: number) {
-  return locale === "bn" ? new Intl.NumberFormat("bn-BD").format(value) : String(value);
+  return locale === "bn"
+    ? new Intl.NumberFormat("bn-BD").format(value)
+    : String(value);
 }
 
 const whyIcons = ["🕌", "📿", "🤲", "💰", "🌙", "📖", "🕋", "⭐"];
 
 export default function CourseDetailView({
   course,
-  reviews
+  reviews,
 }: {
   course: SerializedCourse;
   reviews: SerializedReview[];
@@ -88,7 +90,11 @@ export default function CourseDetailView({
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const title = pickText(locale, course.title, course.titleBn);
-  const description = pickText(locale, course.description, course.descriptionBn);
+  const description = pickText(
+    locale,
+    course.description,
+    course.descriptionBn,
+  );
   const learnPoints = getLearnPoints(course);
   const features = getFeatures(course);
   const whyCards = getWhyCards(course);
@@ -97,43 +103,70 @@ export default function CourseDetailView({
   const discount = discountPercent(course);
   const startDateText = formatDate(locale, course.startDate);
   const deadlineText = formatDate(locale, course.enrollDeadline);
-  const totalCurriculumLessons = sections.reduce((sum, s) => sum + s.lessons.length, 0);
+  const totalCurriculumLessons = sections.reduce(
+    (sum, s) => sum + s.lessons.length,
+    0,
+  );
   const lessonTotal = course.totalLessons ?? (totalCurriculumLessons || null);
 
   const badges = [
     pickText(locale, course.category, course.categoryBn),
     pickText(locale, course.courseType, course.courseTypeBn),
-    pickText(locale, course.classType, course.classTypeBn)
+    pickText(locale, course.classType, course.classTypeBn),
   ].filter(Boolean);
 
   const metaItems = [
     course.totalHours
-      ? { icon: "🕐", label: t("hoursValue", { count: localizeDigits(locale, course.totalHours) }) }
+      ? {
+          icon: "🕐",
+          label: t("hoursValue", {
+            count: localizeDigits(locale, course.totalHours),
+          }),
+        }
       : course.duration
         ? { icon: "🕐", label: course.duration }
         : null,
     lessonTotal
-      ? { icon: "📚", label: t("lessonsValue", { count: localizeDigits(locale, lessonTotal) }) }
+      ? {
+          icon: "📚",
+          label: t("lessonsValue", {
+            count: localizeDigits(locale, lessonTotal),
+          }),
+        }
       : null,
     course.level || course.levelBn
       ? { icon: "📊", label: pickText(locale, course.level, course.levelBn) }
       : null,
-    startDateText ? { icon: "📅", label: `${t("classStart")}: ${startDateText}` } : null
+    startDateText
+      ? { icon: "📅", label: `${t("classStart")}: ${startDateText}` }
+      : null,
   ].filter(Boolean) as { icon: string; label: string }[];
 
   const glance = [
     lessonTotal
-      ? { value: localizeDigits(locale, lessonTotal), label: t("glanceLessons") }
+      ? {
+          value: localizeDigits(locale, lessonTotal),
+          label: t("glanceLessons"),
+        }
       : null,
     course.totalHours
-      ? { value: localizeDigits(locale, course.totalHours), label: t("glanceHours") }
+      ? {
+          value: localizeDigits(locale, course.totalHours),
+          label: t("glanceHours"),
+        }
       : null,
     course.classType || course.classTypeBn
-      ? { value: pickText(locale, course.classType, course.classTypeBn), label: t("glanceClassType") }
+      ? {
+          value: pickText(locale, course.classType, course.classTypeBn),
+          label: t("glanceClassType"),
+        }
       : null,
     course.level || course.levelBn
-      ? { value: pickText(locale, course.level, course.levelBn), label: t("glanceLevel") }
-      : null
+      ? {
+          value: pickText(locale, course.level, course.levelBn),
+          label: t("glanceLevel"),
+        }
+      : null,
   ].filter(Boolean) as { value: string; label: string }[];
 
   const enrollHref = `/enroll?course=${course.slug}`;
@@ -183,7 +216,10 @@ export default function CourseDetailView({
             {learnPoints.length > 0 && (
               <ul className="mt-6 grid gap-2 sm:grid-cols-2">
                 {learnPoints.slice(0, 4).map((p, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-white/90">
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-sm text-white/90"
+                  >
                     <span className="mt-0.5 text-secondary-light" aria-hidden>
                       ✔
                     </span>
@@ -198,14 +234,19 @@ export default function CourseDetailView({
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold font-bold text-primary-dark">
                   {course.instructorName.charAt(0)}
                 </span>
-                <span className="text-sm font-semibold text-white">{course.instructorName}</span>
+                <span className="text-sm font-semibold text-white">
+                  {course.instructorName}
+                </span>
               </div>
             )}
 
             {metaItems.length > 0 && (
               <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/75">
                 {metaItems.map((m) => (
-                  <span key={m.label} className="inline-flex items-center gap-1.5">
+                  <span
+                    key={m.label}
+                    className="inline-flex items-center gap-1.5"
+                  >
                     <span aria-hidden>{m.icon}</span> {m.label}
                   </span>
                 ))}
@@ -273,7 +314,9 @@ export default function CourseDetailView({
             <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
               {t("learnTitle")}
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-500">{t("learnSubtitle")}</p>
+            <p className="mt-2 text-center text-sm text-gray-500">
+              {t("learnSubtitle")}
+            </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {learnPoints.map((p, i) => (
                 <div
@@ -304,8 +347,13 @@ export default function CourseDetailView({
                 </h3>
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   {glance.map((g) => (
-                    <div key={g.label} className="rounded-xl bg-secondary/5 px-4 py-6 text-center">
-                      <p className="font-heading text-2xl font-bold text-primary">{g.value}</p>
+                    <div
+                      key={g.label}
+                      className="rounded-xl bg-secondary/5 px-4 py-6 text-center"
+                    >
+                      <p className="font-heading text-2xl font-bold text-primary">
+                        {g.value}
+                      </p>
                       <p className="mt-1 text-xs text-gray-500">{g.label}</p>
                     </div>
                   ))}
@@ -323,7 +371,9 @@ export default function CourseDetailView({
 
             {features.length > 0 && (
               <div className="rounded-2xl bg-primary-dark p-6 sm:p-8">
-                <h3 className="font-heading text-lg font-bold text-white">{t("featuresTitle")}</h3>
+                <h3 className="font-heading text-lg font-bold text-white">
+                  {t("featuresTitle")}
+                </h3>
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   {features.map((f, i) => (
                     <div
@@ -333,7 +383,9 @@ export default function CourseDetailView({
                       <span className="text-secondary-light" aria-hidden>
                         ✔
                       </span>
-                      <span className="text-sm text-white/90">{pickText(locale, f.en, f.bn)}</span>
+                      <span className="text-sm text-white/90">
+                        {pickText(locale, f.en, f.bn)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -354,52 +406,14 @@ export default function CourseDetailView({
               {t("curriculumStats", {
                 sections: localizeDigits(locale, sections.length),
                 lessons: localizeDigits(locale, totalCurriculumLessons),
-                hours: localizeDigits(locale, course.totalHours ?? totalCurriculumLessons)
+                hours: localizeDigits(
+                  locale,
+                  course.totalHours ?? totalCurriculumLessons,
+                ),
               })}
             </p>
             <div className="mt-8">
               <CurriculumAccordion sections={sections} />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ============ Testimonials ============ */}
-      {reviews.length > 0 && (
-        <section className="bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
-            <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
-              {t("reviewsTitle")}
-            </h2>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {reviews.map((r) => {
-                const rating = (r.data as { rating?: number } | null)?.rating || 5;
-                return (
-                  <div
-                    key={r.id}
-                    className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
-                  >
-                    <p className="tracking-wider text-gold" aria-label={`${rating}/5`}>
-                      {"★".repeat(rating)}
-                      <span className="text-gray-300">{"★".repeat(5 - rating)}</span>
-                    </p>
-                    <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                      &ldquo;{r.description}&rdquo;
-                    </p>
-                    <div className="mt-5 flex items-center gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold font-bold text-primary-dark">
-                        {r.title.charAt(0)}
-                      </span>
-                      <span>
-                        <span className="block text-sm font-bold text-primary-dark">{r.title}</span>
-                        {r.subtitle && (
-                          <span className="block text-xs text-gray-400">{r.subtitle}</span>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </section>
@@ -426,7 +440,9 @@ export default function CourseDetailView({
                       onClick={() => setOpenFaqIndex(isOpen ? null : i)}
                       aria-expanded={isOpen}
                     >
-                      <span className="flex-1">{pickText(locale, faq.questionEn, faq.questionBn)}</span>
+                      <span className="flex-1">
+                        {pickText(locale, faq.questionEn, faq.questionBn)}
+                      </span>
                       <span
                         className={`shrink-0 text-gold transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                         aria-hidden
@@ -439,6 +455,57 @@ export default function CourseDetailView({
                         {pickText(locale, faq.answerEn, faq.answerBn)}
                       </div>
                     )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============ Testimonials ============ */}
+      {reviews.length > 0 && (
+        <section className="bg-white">
+          <div className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
+            <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
+              {t("reviewsTitle")}
+            </h2>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {reviews.map((r) => {
+                const rating =
+                  (r.data as { rating?: number } | null)?.rating || 5;
+                return (
+                  <div
+                    key={r.id}
+                    className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+                  >
+                    <p
+                      className="tracking-wider text-gold"
+                      aria-label={`${rating}/5`}
+                    >
+                      {"★".repeat(rating)}
+                      <span className="text-gray-300">
+                        {"★".repeat(5 - rating)}
+                      </span>
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                      &ldquo;{r.description}&rdquo;
+                    </p>
+                    <div className="mt-5 flex items-center gap-3">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold font-bold text-primary-dark">
+                        {r.title.charAt(0)}
+                      </span>
+                      <span>
+                        <span className="block text-sm font-bold text-primary-dark">
+                          {r.title}
+                        </span>
+                        {r.subtitle && (
+                          <span className="block text-xs text-gray-400">
+                            {r.subtitle}
+                          </span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
@@ -460,7 +527,9 @@ export default function CourseDetailView({
           <h2 className="font-heading text-2xl font-bold text-white lg:text-3xl">
             {t("bottomTitle")}
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-white/75">{t("bottomSubtitle")}</p>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-white/75">
+            {t("bottomSubtitle")}
+          </p>
           <Link
             href={enrollHref}
             className="mt-7 inline-block rounded-xl bg-gold px-12 py-4 font-heading text-base font-bold text-primary-dark shadow-xl transition hover:bg-gold-light"
