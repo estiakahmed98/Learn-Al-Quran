@@ -57,13 +57,17 @@ function serializeCourse(course: NonNullable<Awaited<ReturnType<typeof getCached
     curriculum: course.curriculum,
     learnPoints: course.learnPoints,
     features: course.features,
-    whyCards: course.whyCards
+    whyCards: course.whyCards,
+    faqs: course.faqs
   };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = decodeSlug(params.slug);
-  const [course, locale] = await Promise.all([getCachedCourseBySlug(slug), getLocale()]);
+  const [course, locale] = await Promise.all([
+    getCachedCourseBySlug(slug).catch(() => null),
+    getLocale()
+  ]);
 
   if (!course) {
     return {
@@ -101,7 +105,7 @@ export default async function CourseDetailPage({ params }: Props) {
         take: 6
       })
       .catch(() => []),
-    getCachedCourseBySlug(slug)
+    getCachedCourseBySlug(slug).catch(() => null)
   ]);
 
   if (!course) {

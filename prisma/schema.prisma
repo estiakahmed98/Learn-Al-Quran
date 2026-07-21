@@ -140,6 +140,7 @@ model Course {
   learnPoints Json? // [{ en, bn }]
   features    Json? // [{ en, bn }] — "What you get"
   whyCards    Json? // [{ titleEn, titleBn, bodyEn, bodyBn }]
+  faqs        Json? // [{ questionEn, questionBn, answerEn, answerBn }]
 
   isActive   Boolean @default(true)
   isFeatured Boolean @default(false)

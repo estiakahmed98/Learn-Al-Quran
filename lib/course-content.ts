@@ -24,6 +24,13 @@ export interface CurriculumSection {
   lessons: CurriculumLesson[];
 }
 
+export interface FaqItem {
+  questionEn: string;
+  questionBn: string;
+  answerEn: string;
+  answerBn: string;
+}
+
 export function pickText(locale: string, en?: string | null, bn?: string | null) {
   if (locale === "bn") return bn || en || "";
   return en || bn || "";
@@ -43,6 +50,10 @@ export function getFeatures(course: { features: unknown }): BiText[] {
 
 export function getWhyCards(course: { whyCards: unknown }): WhyCard[] {
   return Array.isArray(course.whyCards) ? (course.whyCards as unknown as WhyCard[]) : [];
+}
+
+export function getFaqs(course: { faqs: unknown }): FaqItem[] {
+  return Array.isArray(course.faqs) ? (course.faqs as unknown as FaqItem[]) : [];
 }
 
 export function getCurriculumSections(course: { curriculum: unknown }): CurriculumSection[] {

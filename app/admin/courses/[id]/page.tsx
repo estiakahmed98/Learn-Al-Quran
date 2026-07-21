@@ -7,6 +7,7 @@ import ClassScheduleManager from "@/components/admin/ClassScheduleManager";
 import NotesManager from "@/components/admin/NotesManager";
 import {
   getCurriculumSections,
+  getFaqs,
   getFeatures,
   getLearnPoints,
   getWhyCards
@@ -132,7 +133,8 @@ export default async function AdminCourseDetailPage({ params }: { params: { id: 
             learnPoints: getLearnPoints(course),
             features: getFeatures(course),
             whyCards: getWhyCards(course),
-            curriculumSections: getCurriculumSections(course)
+            curriculumSections: getCurriculumSections(course),
+            faqs: getFaqs(course)
           }}
         />
       </div>

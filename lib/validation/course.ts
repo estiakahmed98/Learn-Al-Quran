@@ -50,6 +50,7 @@ export const courseCreateSchema = z.object({
   learnPoints: jsonValueSchema.optional(),
   features: jsonValueSchema.optional(),
   whyCards: jsonValueSchema.optional(),
+  faqs: jsonValueSchema.optional(),
 
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),

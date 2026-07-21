@@ -1,6 +1,6 @@
 "use client";
 
-import type { BiText, CurriculumSection, WhyCard } from "@/lib/course-content";
+import type { BiText, CurriculumSection, FaqItem, WhyCard } from "@/lib/course-content";
 
 const inputClass =
   "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none";
@@ -131,6 +131,76 @@ export function WhyCardsEditor({
         className={addBtnClass}
       >
         + Add card
+      </button>
+    </div>
+  );
+}
+
+/* ---------- FAQs ---------- */
+
+export function FaqEditor({
+  faqs,
+  onChange
+}: {
+  faqs: FaqItem[];
+  onChange: (faqs: FaqItem[]) => void;
+}) {
+  function update(i: number, key: keyof FaqItem, value: string) {
+    onChange(faqs.map((faq, idx) => (idx === i ? { ...faq, [key]: value } : faq)));
+  }
+
+  return (
+    <div className="space-y-3">
+      {faqs.map((faq, i) => (
+        <div key={i} className="rounded-xl border border-gray-200 p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-gray-500">Question {i + 1}</span>
+            <button
+              type="button"
+              onClick={() => onChange(faqs.filter((_, idx) => idx !== i))}
+              className={removeBtnClass}
+            >
+              Remove
+            </button>
+          </div>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <input
+              value={faq.questionEn}
+              onChange={(e) => update(i, "questionEn", e.target.value)}
+              className={inputClass}
+              placeholder="Question (English)"
+            />
+            <input
+              value={faq.questionBn}
+              onChange={(e) => update(i, "questionBn", e.target.value)}
+              className={inputClass}
+              placeholder="প্রশ্ন (বাংলা)"
+            />
+            <textarea
+              rows={2}
+              value={faq.answerEn}
+              onChange={(e) => update(i, "answerEn", e.target.value)}
+              className={inputClass}
+              placeholder="Answer (English)"
+            />
+            <textarea
+              rows={2}
+              value={faq.answerBn}
+              onChange={(e) => update(i, "answerBn", e.target.value)}
+              className={inputClass}
+              placeholder="উত্তর (বাংলা)"
+            />
+          </div>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() =>
+          onChange([...faqs, { questionEn: "", questionBn: "", answerEn: "", answerBn: "" }])
+        }
+        className={addBtnClass}
+      >
+        + Add question
       </button>
     </div>
   );

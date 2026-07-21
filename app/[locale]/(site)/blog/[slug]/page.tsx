@@ -28,7 +28,7 @@ function decodeSlug(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = decodeSlug(params.slug);
   const [blog, t] = await Promise.all([
-    getCachedBlogBySlug(slug),
+    getCachedBlogBySlug(slug).catch(() => null),
     getTranslations("sitePages.blog")
   ]);
 
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogDetailsPage({ params }: Props) {
   const slug = decodeSlug(params.slug);
   const [blog, t] = await Promise.all([
-    getCachedBlogBySlug(slug),
+    getCachedBlogBySlug(slug).catch(() => null),
     getTranslations("sitePages.blog")
   ]);
 

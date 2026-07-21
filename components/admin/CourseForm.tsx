@@ -3,8 +3,8 @@
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
-import type { BiText, CurriculumSection, WhyCard } from "@/lib/course-content";
-import { BiListEditor, CurriculumEditor, WhyCardsEditor } from "@/components/admin/course-editors";
+import type { BiText, CurriculumSection, FaqItem, WhyCard } from "@/lib/course-content";
+import { BiListEditor, CurriculumEditor, FaqEditor, WhyCardsEditor } from "@/components/admin/course-editors";
 
 export interface CourseFormValues {
   title: string;
@@ -43,6 +43,7 @@ export interface CourseFormValues {
   features: BiText[];
   whyCards: WhyCard[];
   curriculumSections: CurriculumSection[];
+  faqs: FaqItem[];
 }
 
 const emptyValues: CourseFormValues = {
@@ -81,7 +82,8 @@ const emptyValues: CourseFormValues = {
   learnPoints: [],
   features: [],
   whyCards: [],
-  curriculumSections: []
+  curriculumSections: [],
+  faqs: []
 };
 
 function slugify(text: string) {
@@ -168,6 +170,9 @@ export default function CourseForm({
         lessons: s.lessons.filter((l) => l.titleEn.trim() || l.titleBn.trim())
       }))
       .filter((s) => s.titleEn.trim() || s.titleBn.trim() || s.lessons.length);
+    const faqs = values.faqs.filter(
+      (f) => f.questionEn.trim() || f.questionBn.trim() || f.answerEn.trim() || f.answerBn.trim()
+    );
 
     const payload = {
       title: values.title.trim(),
@@ -205,7 +210,8 @@ export default function CourseForm({
       learnPoints: learnPoints.length ? learnPoints : null,
       features: features.length ? features : null,
       whyCards: whyCards.length ? whyCards : null,
-      curriculum: sections.length ? { sections } : null
+      curriculum: sections.length ? { sections } : null,
+      faqs: faqs.length ? faqs : null
     };
 
     const res = await fetch(courseId ? `/api/admin/courses/${courseId}` : "/api/admin/courses", {
@@ -451,6 +457,12 @@ export default function CourseForm({
           sections={values.curriculumSections}
           onChange={(sections) => set("curriculumSections", sections)}
         />
+      </div>
+
+      {/* ---------- FAQ ---------- */}
+      <div className={sectionClass}>
+        <h3 className={sectionTitleClass}>FAQ (shown at the bottom of the course page)</h3>
+        <FaqEditor faqs={values.faqs} onChange={(faqs) => set("faqs", faqs)} />
       </div>
 
       {/* ---------- Media & misc ---------- */}

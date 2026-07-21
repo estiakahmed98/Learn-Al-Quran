@@ -8,11 +8,13 @@ import ReviewForm from "@/components/home/ReviewForm";
 import {
   discountPercent,
   getCurriculumSections,
+  getFaqs,
   getFeatures,
   getLearnPoints,
   getWhyCards,
   pickText
 } from "@/lib/course-content";
+import { useState } from "react";
 
 export interface SerializedCourse {
   id: string;
@@ -46,6 +48,7 @@ export interface SerializedCourse {
   learnPoints: unknown;
   features: unknown;
   whyCards: unknown;
+  faqs: unknown;
 }
 
 export interface SerializedReview {
@@ -82,6 +85,7 @@ export default function CourseDetailView({
 }) {
   const t = useTranslations("courseDetail");
   const locale = useLocale();
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const title = pickText(locale, course.title, course.titleBn);
   const description = pickText(locale, course.description, course.descriptionBn);
@@ -89,6 +93,7 @@ export default function CourseDetailView({
   const features = getFeatures(course);
   const whyCards = getWhyCards(course);
   const sections = getCurriculumSections(course);
+  const faqs = getFaqs(course);
   const discount = discountPercent(course);
   const startDateText = formatDate(locale, course.startDate);
   const deadlineText = formatDate(locale, course.enrollDeadline);
@@ -392,6 +397,48 @@ export default function CourseDetailView({
                         )}
                       </span>
                     </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============ FAQ ============ */}
+      {faqs.length > 0 && (
+        <section className="bg-cream">
+          <div className="mx-auto max-w-4xl px-4 py-14 lg:px-8">
+            <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
+              {t("faqTitle")}
+            </h2>
+            <div className="mt-8 space-y-3">
+              {faqs.map((faq, i) => {
+                const isOpen = openFaqIndex === i;
+                return (
+                  <div
+                    key={i}
+                    className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+                  >
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold text-primary-dark"
+                      onClick={() => setOpenFaqIndex(isOpen ? null : i)}
+                      aria-expanded={isOpen}
+                    >
+                      <span className="flex-1">{pickText(locale, faq.questionEn, faq.questionBn)}</span>
+                      <span
+                        className={`shrink-0 text-gold transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                        aria-hidden
+                      >
+                        ▼
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div className="border-t border-gray-100 px-5 py-4 text-sm leading-relaxed text-gray-600">
+                        {pickText(locale, faq.answerEn, faq.answerBn)}
+                      </div>
+                    )}
                   </div>
                 );
               })}
