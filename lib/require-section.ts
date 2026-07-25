@@ -1,7 +1,6 @@
-import type { AdminSection } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { canAccessSection } from "@/lib/permissions";
+import { canAccessSection, type AdminSection } from "@/lib/permissions";
 
 /** For API routes: returns the session if it belongs to an admin, or a teacher with access to `section`. */
 export async function requireSectionAccess(section: AdminSection) {

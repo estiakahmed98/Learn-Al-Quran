@@ -9,6 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Send, Pencil, Trash2, Eye } from "lucide-react";
+import {
+  listNewsletters,
+  createNewsletter,
+  updateNewsletter,
+  deleteNewsletter,
+  sendNewsletter
+} from "@/app/admin/newsletter/actions";
 
 const TinyMCEEditor = dynamic(() => import("@/components/admin/blog/TinyMCEEditor"), {
   ssr: false,
@@ -29,7 +36,6 @@ interface Newsletter {
   createdAt: string;
 }
 
-const API_BASE = "/api/newsletter";
 const EMPTY_FORM = { title: "", subject: "", content: "" };
 
 export default function NewsletterManagement() {
@@ -49,9 +55,7 @@ export default function NewsletterManagement() {
   const fetchNewsletters = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_BASE);
-      if (!response.ok) throw new Error("Failed to fetch newsletters");
-      const data = await response.json();
+      const data = await listNewsletters();
       setNewsletters(data);
     } catch (error) {
       console.error("Failed to fetch newsletters:", error);
@@ -69,18 +73,10 @@ export default function NewsletterManagement() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const url = editingNewsletter ? `${API_BASE}/${editingNewsletter.id}` : API_BASE;
-      const method = editingNewsletter ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || "Failed to save newsletter");
+      if (editingNewsletter) {
+        await updateNewsletter(editingNewsletter.id, formData);
+      } else {
+        await createNewsletter(formData);
       }
 
       toast.success(`Newsletter ${editingNewsletter ? "updated" : "created"} successfully`);
@@ -100,10 +96,7 @@ export default function NewsletterManagement() {
   const handleSend = async (id: string) => {
     try {
       setSendingId(id);
-      const response = await fetch(`${API_BASE}/${id}/send`, { method: "POST" });
-      const result = await response.json();
-
-      if (!response.ok) throw new Error(result.error || "Failed to send newsletter");
+      const result: any = await sendNewsletter(id);
 
       toast.success(
         result.failed > 0
@@ -123,11 +116,7 @@ export default function NewsletterManagement() {
     if (!deletingId) return;
 
     try {
-      const response = await fetch(`${API_BASE}/${deletingId}`, { method: "DELETE" });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || "Failed to delete newsletter");
-      }
+      await deleteNewsletter(deletingId);
       toast.success("Newsletter deleted successfully");
       fetchNewsletters();
     } catch (error) {

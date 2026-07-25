@@ -1,7 +1,6 @@
 import { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import { api, ApiError } from "@/lib/api-client";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -18,23 +17,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
+        try {
+          const { user, token } = await api.auth.login(credentials.email, credentials.password);
+          if (!user.isActive) return null;
 
-        if (!user || !user.isActive) return null;
-
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!isValid) return null;
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.imageURL,
-          role: user.role,
-          permissions: user.permissions
-        };
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.imageUrl ?? null,
+            role: user.role,
+            permissions: user.permissions ?? [],
+            accessToken: token
+          };
+        } catch (error) {
+          if (error instanceof ApiError) return null;
+          throw error;
+        }
       }
     })
   ],
@@ -45,6 +44,7 @@ export const authOptions: NextAuthOptions = {
         token.id = (user as any).id;
         token.picture = (user as any).image || null;
         token.permissions = (user as any).permissions || [];
+        token.accessToken = (user as any).accessToken;
       }
       return token;
     },
@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).image = token.picture || null;
         (session.user as any).permissions = token.permissions || [];
       }
+      (session as any).accessToken = token.accessToken;
       return session;
     }
   }

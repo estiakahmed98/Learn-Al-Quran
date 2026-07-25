@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
+import { addNote, updateNote, deleteNote } from "@/app/admin/courses/actions";
 
 interface NoteRow {
   id: string;
@@ -25,39 +26,37 @@ export default function NotesManager({
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
 
-  async function addNote(e: React.FormEvent) {
+  async function handleAddNote(e: React.FormEvent) {
     e.preventDefault();
     if (!form.title.trim()) return;
     setSaving(true);
-    const res = await fetch("/api/admin/notes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ courseId, ...form })
-    });
-    if (res.ok) {
-      const created = await res.json();
+    try {
+      const created = await addNote({ courseId, ...form });
       setNotes((prev) => [created, ...prev]);
       setForm(emptyForm);
+    } catch {
+      // no-op
     }
     setSaving(false);
   }
 
   async function togglePublish(note: NoteRow) {
-    const res = await fetch(`/api/admin/notes/${note.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isPublished: !note.isPublished })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateNote(note.id, { isPublished: !note.isPublished }, courseId);
       setNotes((prev) => prev.map((n) => (n.id === note.id ? updated : n)));
+    } catch {
+      // no-op
     }
   }
 
   async function remove(id: string) {
     if (!confirm("Delete this note?")) return;
-    const res = await fetch(`/api/admin/notes/${id}`, { method: "DELETE" });
-    if (res.ok) setNotes((prev) => prev.filter((n) => n.id !== id));
+    try {
+      await deleteNote(id, courseId);
+      setNotes((prev) => prev.filter((n) => n.id !== id));
+    } catch {
+      // no-op
+    }
   }
 
   return (
@@ -103,7 +102,7 @@ export default function NotesManager({
         {notes.length === 0 && <p className="text-sm text-gray-400">No notes added yet.</p>}
       </div>
 
-      <form onSubmit={addNote} className="mt-4 space-y-2 rounded-xl border border-gray-200 p-4">
+      <form onSubmit={handleAddNote} className="mt-4 space-y-2 rounded-xl border border-gray-200 p-4">
         <input
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}

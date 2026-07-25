@@ -8,9 +8,9 @@ import IslamicPattern from "@/components/shared/IslamicPattern";
 export interface TeacherCard {
   id: string;
   name: string;
-  designation: string | null;
-  description: string | null;
-  imageURL: string | null;
+  designation?: string | null;
+  description?: string | null;
+  imageUrl?: string | null;
 }
 
 function TeacherCardItem({
@@ -29,7 +29,7 @@ function TeacherCardItem({
       <div className="relative isolate h-56 w-full shrink-0 overflow-hidden bg-primary-dark sm:h-64">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={teacher.imageURL || "/images/teacher-placeholder.jpg"}
+          src={teacher.imageUrl || "/images/teacher-placeholder.jpg"}
           alt={teacher.name}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />

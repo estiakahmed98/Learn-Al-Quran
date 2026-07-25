@@ -3,12 +3,22 @@
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
-import type { SiteSetting } from "@prisma/client";
 import { SOCIAL_PLATFORMS, parseSocialLinks, type SocialLink } from "@/lib/social-platforms";
+import { updateSiteSettings, uploadSettingsImage } from "@/app/admin/settings/actions";
 
-type FormState = {
-  [K in keyof Omit<SiteSetting, "id" | "createdAt" | "updatedAt" | "socialLinks">]: string;
-};
+type SiteSetting = Record<string, unknown>;
+
+type FormState = Record<
+  | "siteName" | "logo" | "favicon"
+  | "phone" | "whatsapp" | "email" | "address"
+  | "bkashNumber" | "nagadNumber" | "rocketNumber" | "bankAccount" | "westernUnionInfo"
+  | "googleMapUrl" | "ga4Id"
+  | "copyrightText" | "privacyPolicy" | "terms" | "returnPolicy"
+  | "heroBadgeEn" | "heroBadgeBn" | "heroTitleEn" | "heroTitleBn"
+  | "heroSubtitleEn" | "heroSubtitleBn" | "heroImage"
+  | "aboutTitleEn" | "aboutTitleBn" | "aboutDescriptionEn" | "aboutDescriptionBn" | "aboutImage",
+  string
+>;
 
 function toFormState(settings: SiteSetting | null): FormState {
   const fields: (keyof FormState)[] = [
@@ -149,9 +159,7 @@ export default function SettingsForm({
       setUploadingField(key);
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/upload/content", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Image upload failed");
-      const data = await res.json();
+      const data = await uploadSettingsImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
       update(key, data.url);
     } catch (err) {
@@ -168,15 +176,10 @@ export default function SettingsForm({
     setMessage(null);
 
     try {
-      const res = await fetch("/api/admin/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          socialLinks: socialLinks.filter((link) => link.url.trim())
-        })
+      await updateSiteSettings({
+        ...form,
+        socialLinks: socialLinks.filter((link) => link.url.trim())
       });
-      if (!res.ok) throw new Error("Failed to save settings");
       setMessage({ type: "success", text: "Settings saved successfully." });
       router.refresh();
     } catch (err) {

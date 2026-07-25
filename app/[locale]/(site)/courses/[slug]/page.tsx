@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api-client";
 import { getCachedCourseBySlug } from "@/lib/cached-data";
 import CourseDetailView, {
   type SerializedCourse,
@@ -118,16 +118,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CourseDetailPage(props: Props) {
   const params = await props.params;
   const slug = decodeSlug(params.slug);
-  const [reviews, course] = await Promise.all([
-    prisma.content
-      .findMany({
-        where: { type: "REVIEW", isPublished: true },
-        orderBy: { sortOrder: "asc" },
-        take: 6,
-      })
-      .catch(() => []),
+  const [reviewsResult, course] = await Promise.all([
+    api.content.list("REVIEW").catch(() => ({ data: [] as any[] })),
     getCachedCourseBySlug(slug).catch(() => null),
   ]);
+  const reviews = reviewsResult.data.filter((item: any) => item.isPublished).slice(0, 6);
 
   if (!course) {
     notFound();

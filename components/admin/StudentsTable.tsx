@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 import UserForm from "./UserForm";
+import { updateUser, deleteUser } from "@/app/admin/users/actions";
 
 export interface StudentRow {
   id: string;
@@ -75,14 +76,11 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
 
   async function toggleActive(student: StudentRow) {
     setSavingId(student.id);
-    const res = await fetch(`/api/admin/users/${student.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !student.isActive })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateUser(student.id, { isActive: !student.isActive });
       setStudents((prev) => prev.map((s) => (s.id === student.id ? { ...s, ...updated } : s)));
+    } catch {
+      // ignore; button state will simply not change
     }
     setSavingId(null);
   }
@@ -90,12 +88,11 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
   async function remove(student: StudentRow) {
     if (!confirm(`Delete student "${student.name}" (${student.email})? This cannot be undone.`)) return;
     setSavingId(student.id);
-    const res = await fetch(`/api/admin/users/${student.id}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await deleteUser(student.id);
       setStudents((prev) => prev.filter((s) => s.id !== student.id));
-    } else {
-      const data = await res.json().catch(() => null);
-      alert(data?.message || "Failed to delete student.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete student.");
     }
     setSavingId(null);
   }

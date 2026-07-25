@@ -1,10 +1,12 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 
 export const dynamic = "force-dynamic";
 
-function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+function formatDate(date: Date | string) {
+  return new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 }
 
 const paymentStatusStyles: Record<string, string> = {
@@ -22,67 +24,29 @@ const trialStatusStyles: Record<string, string> = {
 };
 
 export default async function AdminDashboardPage() {
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/admin");
 
-  const [
-    courseCount,
-    activeCourseCount,
-    enrollmentCount,
-    enrollmentsThisMonth,
-    enrollmentsLastMonth,
-    pendingPayments,
-    paidPayments,
-    verifiedPayments,
-    rejectedPayments,
-    studentCount,
-    teacherCount,
-    activeTeacherCount,
-    trialPending,
-    trialTotal,
-    blogCount,
-    subscriberCount,
-    recentEnrollments,
-    recentTrials,
-    upcomingClasses
-  ] = await Promise.all([
-    prisma.course.count().catch(() => 0),
-    prisma.course.count({ where: { isActive: true } }).catch(() => 0),
-    prisma.enrollment.count().catch(() => 0),
-    prisma.enrollment.count({ where: { createdAt: { gte: startOfMonth } } }).catch(() => 0),
-    prisma.enrollment
-      .count({ where: { createdAt: { gte: startOfLastMonth, lt: startOfMonth } } })
-      .catch(() => 0),
-    prisma.enrollment.count({ where: { paymentStatus: "PENDING" } }).catch(() => 0),
-    prisma.enrollment.count({ where: { paymentStatus: "PAID" } }).catch(() => 0),
-    prisma.enrollment.count({ where: { paymentStatus: "VERIFIED" } }).catch(() => 0),
-    prisma.enrollment.count({ where: { paymentStatus: "REJECTED" } }).catch(() => 0),
-    prisma.user.count({ where: { role: "STUDENT" } }).catch(() => 0),
-    prisma.user.count({ where: { role: "TEACHER" } }).catch(() => 0),
-    prisma.user.count({ where: { role: "TEACHER", isActive: true } }).catch(() => 0),
-    prisma.trialApplication.count({ where: { status: "PENDING" } }).catch(() => 0),
-    prisma.trialApplication.count().catch(() => 0),
-    prisma.blog.count().catch(() => 0),
-    prisma.newsletterSubscriber.count({ where: { status: "subscribed" } }).catch(() => 0),
-    prisma.enrollment
-      .findMany({
-        take: 6,
-        orderBy: { createdAt: "desc" },
-        include: { course: { select: { title: true } } }
-      })
-      .catch(() => []),
-    prisma.trialApplication
-      .findMany({
-        take: 5,
-        orderBy: { createdAt: "desc" },
-        include: { course: { select: { title: true } } }
-      })
-      .catch(() => []),
-    prisma.classReport
-      .count({ where: { classDate: { gte: now }, completed: false } })
-      .catch(() => 0)
-  ]);
+  const summary = await api.dashboard.summary(auth.token);
+
+  const courseCount = summary.courses.total;
+  const activeCourseCount = summary.courses.active;
+  const enrollmentCount = summary.enrollments.total;
+  const enrollmentsThisMonth = summary.enrollments.thisMonth;
+  const enrollmentsLastMonth = summary.enrollments.lastMonth;
+  const pendingPayments = summary.enrollments.byPaymentStatus.PENDING ?? 0;
+  const paidPayments = summary.enrollments.byPaymentStatus.PAID ?? 0;
+  const verifiedPayments = summary.enrollments.byPaymentStatus.VERIFIED ?? 0;
+  const rejectedPayments = summary.enrollments.byPaymentStatus.REJECTED ?? 0;
+  const studentCount = summary.users.students;
+  const teacherCount = summary.users.teachers;
+  const activeTeacherCount = summary.users.activeTeachers;
+  const trialPending = summary.trialApplications.pending;
+  const trialTotal = summary.trialApplications.total;
+  const blogCount = summary.blogs.total;
+  const subscriberCount = summary.newsletterSubscribers.total;
+  const recentEnrollments = summary.recentEnrollments;
+  const recentTrials = summary.recentTrialApplications;
 
   const enrollmentTrend =
     enrollmentsLastMonth === 0
@@ -214,11 +178,6 @@ export default async function AdminDashboardPage() {
               </div>
             ))}
           </div>
-
-          <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 text-sm text-gray-500">
-            <span>Upcoming classes not yet marked complete</span>
-            <span className="font-bold text-primary-dark">{upcomingClasses}</span>
-          </div>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -251,7 +210,7 @@ export default async function AdminDashboardPage() {
             {recentEnrollments.length === 0 ? (
               <p className="px-6 py-8 text-center text-sm text-gray-400">No enrollments yet.</p>
             ) : (
-              recentEnrollments.map((enrollment) => (
+              recentEnrollments.map((enrollment: any) => (
                 <div key={enrollment.id} className="flex items-center justify-between gap-3 px-6 py-3.5">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-gray-800">{enrollment.studentName}</p>
@@ -281,7 +240,7 @@ export default async function AdminDashboardPage() {
             {recentTrials.length === 0 ? (
               <p className="px-6 py-8 text-center text-sm text-gray-400">No trial applications yet.</p>
             ) : (
-              recentTrials.map((trial) => (
+              recentTrials.map((trial: any) => (
                 <div key={trial.id} className="flex items-center justify-between gap-3 px-6 py-3.5">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-gray-800">

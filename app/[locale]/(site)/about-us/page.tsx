@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Heart } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { getCachedTeachers } from "@/lib/cached-data";
 import Teachers from "@/components/home/Teachers";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { buildAlternates } from "@/lib/seo";
@@ -18,13 +18,7 @@ export const revalidate = 3600;
 export default async function AboutUsPage() {
   const [t, teachers] = await Promise.all([
     getTranslations("sitePages.about"),
-    prisma.user
-      .findMany({
-        where: { role: "TEACHER", isActive: true },
-        select: { id: true, name: true, designation: true, description: true, imageURL: true },
-        orderBy: { name: "asc" }
-      })
-      .catch(() => [])
+    getCachedTeachers().catch(() => [])
   ]);
 
   const objectives = [t("objective1"), t("objective2"), t("objective3"), t("objective4")];

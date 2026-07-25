@@ -1,8 +1,21 @@
 "use client";
 
 import { useState, ChangeEvent } from "react";
-import type { Content, ContentType } from "@prisma/client";
 import { Upload } from "lucide-react";
+import { createContentItem, updateContentItem, deleteContentItem, uploadSettingsImage } from "@/app/admin/settings/actions";
+
+type ContentType = "PAGE" | "HOME_SECTION" | "TEACHER" | "REVIEW" | "FAQ" | "BLOG" | "BOOK";
+
+export interface ContentItem {
+  id: string;
+  type: ContentType;
+  title: string;
+  subtitle: string | null;
+  description: string | null;
+  image: string | null;
+  isPublished: boolean;
+  sortOrder: number;
+}
 
 const LABELS: Record<ContentType, string> = {
   PAGE: "Page",
@@ -21,7 +34,7 @@ export default function ContentManager({
   initialContent
 }: {
   type: ContentType;
-  initialContent: Content[];
+  initialContent: ContentItem[];
 }) {
   const [items, setItems] = useState(initialContent);
   const [showForm, setShowForm] = useState(false);
@@ -38,7 +51,7 @@ export default function ContentManager({
     setShowForm(true);
   }
 
-  function openEditForm(item: Content) {
+  function openEditForm(item: ContentItem) {
     setEditingId(item.id);
     setForm({
       title: item.title,
@@ -58,14 +71,7 @@ export default function ContentManager({
       const fd = new FormData();
       fd.append("file", file);
 
-      const res = await fetch("/api/upload/content", {
-        method: "POST",
-        body: fd
-      });
-
-      if (!res.ok) throw new Error("Image upload failed");
-
-      const data = await res.json();
+      const data = await uploadSettingsImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
 
       setForm((prev) => ({ ...prev, image: data.url }));
@@ -81,53 +87,44 @@ export default function ContentManager({
     e.preventDefault();
     setSaving(true);
 
-    if (editingId) {
-      const res = await fetch(`/api/admin/content/${editingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
-      });
-      if (res.ok) {
-        const updated = await res.json();
+    try {
+      if (editingId) {
+        const updated = await updateContentItem(editingId, form);
         setItems((prev) => prev.map((i) => (i.id === editingId ? updated : i)));
         setForm(emptyForm);
         setEditingId(null);
         setShowForm(false);
-      }
-    } else {
-      const slug = `${type.toLowerCase()}-${form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
-      const res = await fetch("/api/admin/content", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, type, slug })
-      });
-      if (res.ok) {
-        const created = await res.json();
+      } else {
+        const slug = `${type.toLowerCase()}-${form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
+        const created = await createContentItem({ ...form, type, slug });
         setItems((prev) => [...prev, created]);
         setForm(emptyForm);
         setShowForm(false);
       }
+    } catch {
+      // no-op: keep the form open so the admin can retry
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   }
 
-  async function togglePublish(item: Content) {
-    const res = await fetch(`/api/admin/content/${item.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isPublished: !item.isPublished })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+  async function togglePublish(item: ContentItem) {
+    try {
+      const updated = await updateContentItem(item.id, { isPublished: !item.isPublished });
       setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
+    } catch {
+      // no-op
     }
   }
 
-  async function remove(item: Content) {
+  async function remove(item: ContentItem) {
     if (!confirm(`Delete "${item.title}"?`)) return;
-    const res = await fetch(`/api/admin/content/${item.id}`, { method: "DELETE" });
-    if (res.ok) setItems((prev) => prev.filter((i) => i.id !== item.id));
+    try {
+      await deleteContentItem(item.id, item.type);
+      setItems((prev) => prev.filter((i) => i.id !== item.id));
+    } catch {
+      // no-op
+    }
   }
 
   return (

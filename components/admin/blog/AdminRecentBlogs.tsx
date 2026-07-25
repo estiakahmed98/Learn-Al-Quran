@@ -7,6 +7,7 @@ import { Calendar, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { processBlogSummary } from "./summaryUtils";
+import { listBlogsForAdmin } from "@/app/admin/blog/actions";
 
 interface RecentBlog {
   id: number;
@@ -32,11 +33,8 @@ export default function AdminRecentBlogs() {
   useEffect(() => {
     const fetchRecentBlogs = async () => {
       try {
-        const response = await fetch("/api/blog?limit=4&sort=latest");
-        if (!response.ok) throw new Error("Failed to fetch recent blogs");
-
-        const data = await response.json();
-        setRecentBlogs(data.blogs || data);
+        const { data } = await listBlogsForAdmin({ page: 1, perPage: 4 });
+        setRecentBlogs(data);
       } catch (error) {
         console.error("Error fetching recent blogs:", error);
       } finally {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
 import UserForm from "@/components/admin/UserForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
@@ -10,29 +11,26 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminStudentDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const [student, courses] = await Promise.all([
-    prisma.user
-      .findUnique({
-        where: { id: params.id, role: "STUDENT" },
-        include: {
-          enrollments: {
-            include: {
-              course: { select: { id: true, title: true } },
-              results: { orderBy: { examDate: "desc" } }
-            },
-            orderBy: { createdAt: "desc" }
-          }
-        }
-      })
-      .catch(() => null),
-    prisma.course
-      .findMany({ select: { id: true, title: true, fee: true }, orderBy: { sortOrder: "asc" } })
+  const auth = await getAuthSession();
+  if (!auth) notFound();
+
+  const [student, courses, allEnrollments] = await Promise.all([
+    api.users.adminGet(params.id, auth.token).catch(() => null),
+    api.courses
+      .list({ perPage: 100 }, auth.token)
+      .then((res) => res.data.map((c: any) => ({ id: c.id, title: c.title, fee: c.fee })))
+      .catch(() => []),
+    api.enrollments
+      .adminList(auth.token, { perPage: 500 })
+      .then((res) => res.data)
       .catch(() => [])
   ]);
 
-  if (!student) notFound();
+  if (!student || student.role !== "STUDENT") notFound();
 
-  const enrollments = student.enrollments;
+  const enrollments = (allEnrollments as any[])
+    .filter((e) => e.user?.id === student.id || e.userId === student.id)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   const stats = {
     total: enrollments.length,
     active: enrollments.filter((e) => ["APPROVED", "ACTIVE"].includes(e.enrollmentStatus)).length,
@@ -75,7 +73,7 @@ export default async function AdminStudentDetailPage(props: { params: Promise<{ 
         </span>
       </div>
       <p className="mt-1 text-sm text-gray-500">
-        {student.email} · Joined {formatDate(student.createdAt)}
+        {student.email} · Joined {formatDate(student.createdAt ?? new Date())}
       </p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -100,7 +98,7 @@ export default async function AdminStudentDetailPage(props: { params: Promise<{ 
             address: student.address ?? "",
             description: student.description ?? "",
             designation: student.designation ?? "",
-            imageURL: student.imageURL ?? "",
+            imageUrl: student.imageUrl ?? "",
             role: student.role,
             isActive: student.isActive,
             permissions: student.permissions

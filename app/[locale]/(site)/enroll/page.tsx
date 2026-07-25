@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import EnrollmentForm from "@/components/enrollment/EnrollmentForm";
-import { prisma } from "@/lib/prisma";
+import { getCachedActiveCourses } from "@/lib/cached-data";
 import { getSiteSettings } from "@/lib/site-config";
 import { buildAlternates } from "@/lib/seo";
 
@@ -17,11 +17,7 @@ export default async function EnrollPage(props: { searchParams: Promise<{ course
   const searchParams = await props.searchParams;
   const [locale, courses, settings] = await Promise.all([
     getLocale(),
-    prisma.course.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      select: { id: true, slug: true, title: true, titleBn: true, fee: true }
-    }),
+    getCachedActiveCourses(),
     getSiteSettings()
   ]);
 

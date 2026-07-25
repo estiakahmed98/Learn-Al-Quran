@@ -1,8 +1,16 @@
-import type { Content } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
-function ReviewCard({ review, index }: { review: Content; index: number }) {
+interface ReviewItem {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  description: string | null;
+  image?: string | null;
+  data: unknown;
+}
+
+function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
   const rating = (review.data as { rating?: number })?.rating || 5;
 
   return (
@@ -88,7 +96,7 @@ function ReviewCard({ review, index }: { review: Content; index: number }) {
   );
 }
 
-export default async function Reviews({ reviews }: { reviews: Content[] }) {
+export default async function Reviews({ reviews }: { reviews: ReviewItem[] }) {
   if (!reviews.length) return null;
 
   const t = await getTranslations("sitePages.reviews");

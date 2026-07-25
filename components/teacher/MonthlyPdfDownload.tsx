@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { downloadMonthlyClassReportPdf } from "@/app/teacher/reports/actions";
 
 export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }) {
   const now = new Date();
@@ -12,11 +13,11 @@ export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }
   async function download() {
     setDownloading(true);
     try {
-      const params = new URLSearchParams({ month: String(month), year: String(year) });
-      if (teacherId) params.set("teacherId", teacherId);
-      const response = await fetch(`/api/teacher/class-reports/pdf?${params.toString()}`);
-      if (!response.ok) throw new Error("Failed to generate PDF");
-      const blob = await response.blob();
+      const base64 = await downloadMonthlyClassReportPdf(month, year);
+      const byteChars = atob(base64);
+      const byteNumbers = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+      const blob = new Blob([new Uint8Array(byteNumbers)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;

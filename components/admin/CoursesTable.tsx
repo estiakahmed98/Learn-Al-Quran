@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CourseForm from "./CourseForm";
+import { deleteCourse } from "@/app/admin/courses/actions";
 
 export interface CourseRow {
   id: string;
@@ -39,11 +40,11 @@ export default function CoursesTable({
     )
       return;
     setSavingId(course.id);
-    const res = await fetch(`/api/admin/courses/${course.id}`, {
-      method: "DELETE",
-    });
-    if (res.ok) {
+    try {
+      await deleteCourse(course.id);
       setCourses((prev) => prev.filter((c) => c.id !== course.id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete course");
     }
     setSavingId(null);
   }

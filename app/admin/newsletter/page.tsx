@@ -15,16 +15,7 @@ import {
   FileText,
   CheckCircle2,
 } from "lucide-react";
-
-interface Newsletter {
-  status: string;
-}
-
-interface SubscribersResponse {
-  success: boolean;
-  count: number;
-  data: Array<{ status: string }>;
-}
+import { listNewsletters, listSubscribers } from "@/app/admin/newsletter/actions";
 
 interface DashboardStats {
   newsletters: number;
@@ -53,30 +44,16 @@ export default function NewsletterPage() {
     setStatsError(null);
 
     try {
-      const [newslettersResponse, subscribersResponse] = await Promise.all([
-        fetch("/api/newsletter", { cache: "no-store" }),
-        fetch("/api/newsletter/subscribers", { cache: "no-store" }),
-      ]);
+      const [newsletters, subscribers] = await Promise.all([listNewsletters(), listSubscribers()]);
 
-      if (!newslettersResponse.ok || !subscribersResponse.ok) {
-        throw new Error("Failed to load newsletter statistics");
-      }
-
-      const newsletters: Newsletter[] = await newslettersResponse.json();
-      const subscribers: SubscribersResponse = await subscribersResponse.json();
-
-      if (!Array.isArray(newsletters) || !subscribers.success) {
-        throw new Error("Invalid newsletter API response");
-      }
-
-      const sent = newsletters.filter((newsletter) => newsletter.status === "sent").length;
+      const sent = newsletters.filter((newsletter: any) => newsletter.status === "sent").length;
 
       setDashboardStats({
         newsletters: newsletters.length,
         sent,
         drafts: newsletters.length - sent,
-        subscribers: subscribers.data.filter(
-          (subscriber) => subscriber.status === "subscribed",
+        subscribers: subscribers.filter(
+          (subscriber: any) => subscriber.status === "subscribed",
         ).length,
       });
     } catch (error) {

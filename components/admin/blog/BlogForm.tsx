@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { generateSlug } from "@/lib/utils";
+import { createBlog, updateBlog, uploadBlogImage, uploadBlogAd } from "@/app/admin/blog/actions";
 
 interface Blog {
   id: number;
@@ -81,44 +82,23 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
     setLoading(true);
 
     try {
-      const url = blog ? `/api/blog/${blog.id}` : "/api/blog";
-      const method = blog ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        toast.success(
-          blog ? "Blog updated successfully" : "Blog created successfully",
-        );
-
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          router.push("/admin/blog");
-          router.refresh();
-        }
+      if (blog) {
+        await updateBlog(blog.id, formData);
+        toast.success("Blog updated successfully");
       } else {
-        const isJson = response.headers
-          .get("content-type")
-          ?.includes("application/json");
-        if (isJson) {
-          const error = await response.json();
-          toast.error(error.error || "Something went wrong");
-        } else {
-          const text = await response.text();
-          console.error("Non-JSON error response:", text);
-          toast.error("Request failed. Please try again.");
-        }
+        await createBlog(formData);
+        toast.success("Blog created successfully");
+      }
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push("/admin/blog");
+        router.refresh();
       }
     } catch (error) {
       console.error("Error saving blog:", error);
-      toast.error("Error saving blog");
+      toast.error(error instanceof Error ? error.message : "Error saving blog");
     } finally {
       setLoading(false);
     }
@@ -141,15 +121,10 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
     }));
   };
 
-  // ✅ Main image upload → POST /api/upload (no folder param)
-  // /api/upload/${folder} → /api/upload/blogImages
-
-  // 🔹 Main image upload → /api/upload/${folder}
+  // Main image upload → uploadBlogImage Server Action (folder: blogImages)
   const handleImageFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const folder = "blogImages"; // public/upload/blogImages এর জন্য
 
     try {
       setUploadingImage(true);
@@ -157,26 +132,13 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
       const fd = new FormData();
       fd.append("file", file);
 
-      const res = await fetch(`/api/upload/${folder}`, {
-        method: "POST",
-        body: fd,
-      });
+      const data = await uploadBlogImage(fd);
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        console.error("Image upload failed:", data || res.statusText);
-        throw new Error("Image upload failed");
-      }
-
-      const data = await res.json();
-
-      // ✅ এখানে এখন data.url চেক করবে, fileUrl না
       if (!data.url) {
         console.error("Invalid upload response:", data);
         throw new Error("Invalid upload response: url missing");
       }
 
-      // এই URL টা সরাসরি image field এ বসবে (DB-তে যাবে)
       setFormData((prev) => ({
         ...prev,
         image: data.url,
@@ -197,26 +159,13 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const folder = "blogAds";
-
     try {
       setUploadingAdImage(true);
 
       const fd = new FormData();
       fd.append("file", file);
 
-      const res = await fetch(`/api/upload/${folder}`, {
-        method: "POST",
-        body: fd,
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        console.error("Ad image upload failed:", data || res.statusText);
-        throw new Error("Ad image upload failed");
-      }
-
-      const data = await res.json();
+      const data = await uploadBlogAd(fd);
 
       if (!data.url) {
         console.error("Invalid upload response:", data);

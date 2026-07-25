@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
 import type { BiText, CurriculumSection, FaqItem, WhyCard } from "@/lib/course-content";
 import { BiListEditor, CurriculumEditor, FaqEditor, WhyCardsEditor } from "@/components/admin/course-editors";
+import { createCourse, updateCourse, uploadCourseImage } from "@/app/admin/courses/actions";
 
 export interface CourseFormValues {
   title: string;
@@ -134,14 +135,7 @@ export default function CourseForm({
       const fd = new FormData();
       fd.append("file", file);
 
-      const res = await fetch("/api/upload/courses", {
-        method: "POST",
-        body: fd,
-      });
-
-      if (!res.ok) throw new Error("Image upload failed");
-
-      const data = await res.json();
+      const data = await uploadCourseImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
 
       set(field, data.url);
@@ -214,24 +208,16 @@ export default function CourseForm({
       faqs: faqs.length ? faqs : null
     };
 
-    const res = await fetch(courseId ? `/api/admin/courses/${courseId}` : "/api/admin/courses", {
-      method: courseId ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    setSaving(false);
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setError(data?.message || "Failed to save. The slug may already be in use.");
-      return;
+    try {
+      const course = courseId ? await updateCourse(courseId, payload) : await createCourse(payload);
+      setSaving(false);
+      setSaved(true);
+      onSaved?.(course);
+      router.refresh();
+    } catch (err) {
+      setSaving(false);
+      setError(err instanceof Error ? err.message : "Failed to save. The slug may already be in use.");
     }
-
-    const course = await res.json();
-    setSaved(true);
-    onSaved?.(course);
-    router.refresh();
   }
 
   const inputClass =

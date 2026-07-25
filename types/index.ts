@@ -1,6 +1,4 @@
-import type { Course, Content, Enrollment, PaymentMethod } from "@prisma/client";
-
-export type { Course, Content, Enrollment };
+export type PaymentMethod = "BKASH" | "NAGAD" | "ROCKET" | "WESTERN_UNION" | "BANK_TRANSFER";
 
 export interface EnrollFormData {
   courseId: string;

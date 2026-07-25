@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import StudentCourseCard from "@/components/dashboard/StudentCourseCard";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
@@ -10,22 +9,10 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "My Courses", robots: { index: false, follow: false } };
 
 export default async function StudentCoursesPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/auth/login?callbackUrl=/student/courses");
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/student/courses");
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!user) redirect("/auth/login");
-
-  const enrollments = await prisma.enrollment.findMany({
-    where: {
-      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])]
-    },
-    include: {
-      course: true,
-      _count: { select: { results: true } }
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  const enrollments = await api.enrollments.my(auth.token);
 
   return (
     <div>
@@ -48,7 +35,7 @@ export default async function StudentCoursesPage() {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {enrollments.map((e) => (
+          {enrollments.map((e: any) => (
             <StudentCourseCard
               key={e.id}
               labels={{ enrolled: "Enrolled", results: "results", manage: "Manage this course" }}
@@ -56,8 +43,8 @@ export default async function StudentCoursesPage() {
                 id: e.id,
                 paymentStatus: e.paymentStatus,
                 enrollmentStatus: e.enrollmentStatus,
-                createdAt: e.createdAt.toISOString(),
-                resultCount: e._count.results,
+                createdAt: e.createdAt,
+                resultCount: e.results?.length ?? 0,
                 course: {
                   id: e.course.id,
                   title: e.course.title,

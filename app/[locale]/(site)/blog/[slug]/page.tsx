@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import BlogDetails from "@/components/admin/blog/BlogDetails";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api-client";
 import { getCachedBlogBySlug } from "@/lib/cached-data";
 import { sanitizeRichHtml } from "@/lib/sanitize-html";
 import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
@@ -89,22 +89,10 @@ export default async function BlogDetailsPage(props: Props) {
   const createdAt = serializeDate(blog.createdAt) || publishedAt;
   const updatedAt = serializeDate(blog.updatedAt) || createdAt;
 
-  const recentBlogs = await prisma.blog
-    .findMany({
-      where: { slug: { not: blog.slug } },
-      orderBy: { createdAt: "desc" },
-      take: 4,
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        summary: true,
-        date: true,
-        image: true,
-        createdAt: true
-      }
-    })
-    .catch(() => []);
+  const recentBlogs = await api.blogs
+    .list({ perPage: 5 })
+    .then((res) => res.data.filter((item: any) => item.slug !== blog.slug).slice(0, 4))
+    .catch(() => [] as any[]);
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: siteUrl },

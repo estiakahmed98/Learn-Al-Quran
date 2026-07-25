@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { submitClassReport } from "@/app/teacher/classes/actions";
 
 type Course = { id: string; title: string; titleBn: string | null };
 
@@ -33,19 +34,14 @@ export default function ClassReportForm({
     event.preventDefault();
     setStatus("submitting");
     setError("");
-    const response = await fetch("/api/teacher/class-reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
-    const body = await response.json().catch(() => null);
-    if (!response.ok) {
-      setError(body?.message || "Unable to submit report.");
+    try {
+      await submitClassReport(form);
+      setStatus("success");
+      setForm((current) => ({ ...current, startTime: "", endTime: "", attended: "", notes: "" }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to submit report.");
       setStatus("idle");
-      return;
     }
-    setStatus("success");
-    setForm((current) => ({ ...current, startTime: "", endTime: "", attended: "", notes: "" }));
   }
 
   const inputClass =

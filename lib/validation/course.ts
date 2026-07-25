@@ -1,7 +1,6 @@
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
 
-const jsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any();
+const jsonValueSchema: z.ZodType<unknown> = z.any();
 
 // Explicit allowlist of writable Course fields. Deliberately excludes id,
 // createdAt, updatedAt and relation fields so a client can never smuggle in

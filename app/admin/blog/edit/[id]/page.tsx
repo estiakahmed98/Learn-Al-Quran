@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { api } from '@/lib/api-client';
 import BlogForm from '@/components/admin/blog/BlogForm';
 
 interface EditBlogPageProps {
@@ -24,9 +24,7 @@ interface BlogData {
 
 export default async function EditBlogPage({ params }: EditBlogPageProps) {
   const awaited = await params;
-  const blog = await prisma.blog.findUnique({
-    where: { id: parseInt(awaited.id) }
-  }) as unknown as BlogData | null;
+  const blog = await api.blogs.get(awaited.id).catch(() => null) as unknown as BlogData | null;
 
   if (!blog) {
     notFound();

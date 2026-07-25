@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import CourseForm from "@/components/admin/CourseForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
 import ClassScheduleManager from "@/components/admin/ClassScheduleManager";
@@ -17,41 +18,41 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminCourseDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const [course, teachers] = await Promise.all([
-    prisma.course
-      .findUnique({
-        where: { id: params.id },
-        include: {
-          enrollments: {
-            include: {
-              course: { select: { title: true } },
-              results: { orderBy: { examDate: "desc" } }
-            },
-            orderBy: { createdAt: "desc" }
-          },
-          classSchedules: { orderBy: { dayOfWeek: "asc" } },
-          notes: { orderBy: { createdAt: "desc" } }
-        }
-      })
-      .catch(() => null),
-    prisma.user.findMany({
-      where: { role: "TEACHER", isActive: true },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" }
-    })
+  const auth = await getAuthSession();
+  const token = auth?.token;
+
+  const [course, teachersResult, enrollmentsResult] = await Promise.all([
+    api.courses.get(params.id, token).catch(() => null),
+    token
+      ? api.users.adminList(token, { perPage: 200 }).catch(() => ({ data: [] as any[] }))
+      : Promise.resolve({ data: [] as any[] }),
+    // The Laravel admin/enrollments index has no course_id filter param, so we
+    // fetch a broader page and filter client-side. Pragmatic at current data
+    // volumes, but not ideal at scale — a course_id filter would be a good
+    // backend follow-up.
+    token
+      ? api.enrollments.adminList(token, { perPage: 500 }).catch(() => ({ data: [] as any[] }))
+      : Promise.resolve({ data: [] as any[] })
   ]);
 
   if (!course) notFound();
 
-  const enrollments = course.enrollments;
+  const teachers = teachersResult.data
+    .filter((user: any) => user.role === "TEACHER" && user.isActive)
+    .map((user: any) => ({ id: user.id, name: user.name }));
+
+  const enrollments = enrollmentsResult.data.filter(
+    (enrollment: any) => (enrollment.course?.id ?? enrollment.courseId) === course.id
+  );
+
   const stats = {
     total: enrollments.length,
-    pending: enrollments.filter((e) => e.enrollmentStatus === "PENDING").length,
-    active: enrollments.filter((e) => ["APPROVED", "ACTIVE"].includes(e.enrollmentStatus)).length,
-    completed: enrollments.filter((e) => e.enrollmentStatus === "COMPLETED").length,
+    pending: enrollments.filter((e: any) => e.enrollmentStatus === "PENDING").length,
+    active: enrollments.filter((e: any) => ["APPROVED", "ACTIVE"].includes(e.enrollmentStatus)).length,
+    completed: enrollments.filter((e: any) => e.enrollmentStatus === "COMPLETED").length,
     verifiedRevenue: enrollments
-      .filter((e) => e.paymentStatus === "VERIFIED")
-      .reduce((sum, e) => sum + e.paymentAmount, 0)
+      .filter((e: any) => e.paymentStatus === "VERIFIED")
+      .reduce((sum: number, e: any) => sum + e.paymentAmount, 0)
   };
 
   const statCards = [
@@ -114,9 +115,9 @@ export default async function AdminCourseDetailPage(props: { params: Promise<{ i
             instructorId: course.instructorId ?? "",
             totalLessons: course.totalLessons?.toString() ?? "",
             totalHours: course.totalHours?.toString() ?? "",
-            startDate: course.startDate ? course.startDate.toISOString().slice(0, 10) : "",
+            startDate: course.startDate ? new Date(course.startDate).toISOString().slice(0, 10) : "",
             enrollDeadline: course.enrollDeadline
-              ? course.enrollDeadline.toISOString().slice(0, 10)
+              ? new Date(course.enrollDeadline).toISOString().slice(0, 10)
               : "",
             fee: course.fee,
             originalFee: course.originalFee?.toString() ?? "",
@@ -144,13 +145,13 @@ export default async function AdminCourseDetailPage(props: { params: Promise<{ i
         <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Class Routine</h2>
         <ClassScheduleManager
           courseId={course.id}
-          initialSchedules={JSON.parse(JSON.stringify(course.classSchedules))}
+          initialSchedules={course.classSchedules ?? []}
         />
       </div>
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 font-heading text-lg font-bold text-primary-dark">Notes</h2>
-        <NotesManager courseId={course.id} initialNotes={JSON.parse(JSON.stringify(course.notes))} />
+        <NotesManager courseId={course.id} initialNotes={course.notes ?? []} />
       </div>
 
       <div className="mt-8">
@@ -161,7 +162,7 @@ export default async function AdminCourseDetailPage(props: { params: Promise<{ i
           Enrollments for this course. Update payment and enrollment status directly.
         </p>
         <div className="mt-4">
-          <EnrollmentsTable initialEnrollments={JSON.parse(JSON.stringify(enrollments))} />
+          <EnrollmentsTable initialEnrollments={enrollments} />
         </div>
       </div>
     </div>

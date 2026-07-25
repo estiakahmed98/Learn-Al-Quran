@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -16,23 +15,14 @@ const paymentStatusStyles: Record<string, string> = {
 };
 
 export default async function StudentPaymentsPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/auth/login?callbackUrl=/student/payments");
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/student/payments");
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!user) redirect("/auth/login");
-
-  const enrollments = await prisma.enrollment.findMany({
-    where: {
-      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])]
-    },
-    include: { course: { select: { id: true, title: true } } },
-    orderBy: { createdAt: "desc" }
-  });
+  const enrollments = await api.enrollments.my(auth.token);
 
   const totalPaid = enrollments
-    .filter((e) => e.paymentStatus === "VERIFIED" || e.paymentStatus === "PAID")
-    .reduce((sum, e) => sum + e.paymentAmount, 0);
+    .filter((e: any) => e.paymentStatus === "VERIFIED" || e.paymentStatus === "PAID")
+    .reduce((sum: number, e: any) => sum + e.paymentAmount, 0);
 
   return (
     <div>

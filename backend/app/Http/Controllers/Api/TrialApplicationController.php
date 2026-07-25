@@ -18,6 +18,21 @@ class TrialApplicationController extends Controller
         );
     }
 
+    public function mine(Request $request): ?TrialApplicationResource
+    {
+        $user = $request->user();
+
+        $application = TrialApplication::with('course')
+            ->where(function ($query) use ($user): void {
+                $query->where('user_id', $user->id)->orWhere('email', $user->email);
+            })
+            ->where('status', '!=', 'CANCELLED')
+            ->latest()
+            ->first();
+
+        return $application ? new TrialApplicationResource($application) : null;
+    }
+
     public function store(StoreTrialApplicationRequest $request): TrialApplicationResource
     {
         $data = $request->validated();

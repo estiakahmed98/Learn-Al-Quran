@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import type { AdminSection, UserRole } from "@prisma/client";
+import type { AdminSection, UserRole } from "@/lib/permissions";
 import SignOutButton from "./SignOutButton";
 
 const navLinks: {

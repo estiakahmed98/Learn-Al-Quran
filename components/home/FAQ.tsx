@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import type { Content } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
-export default function FAQ({ faqs }: { faqs: Content[] }) {
+interface FaqItem {
+  id: string;
+  title: string;
+  description: string | null;
+}
+
+export default function FAQ({ faqs }: { faqs: FaqItem[] }) {
   const t = useTranslations("sitePages.faq");
   const [openId, setOpenId] = useState<string | null>(faqs[0]?.id ?? null);
 

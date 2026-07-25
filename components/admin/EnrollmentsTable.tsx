@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
+import {
+  updateEnrollment,
+  deleteEnrollment,
+  addEnrollmentResult,
+  deleteEnrollmentResult
+} from "@/components/admin/enrollments-actions";
 
 interface ResultRow {
   id: string;
@@ -45,16 +51,14 @@ export default function EnrollmentsTable({
 
   async function update(id: string, patch: Partial<EnrollmentRow>) {
     setSavingId(id);
-    const res = await fetch(`/api/admin/enrollments/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch)
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateEnrollment(id, patch);
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...updated } : r)));
+    } catch {
+      // no-op: leave the row as-is, admin can retry
+    } finally {
+      setSavingId(null);
     }
-    setSavingId(null);
   }
 
   function toggleExpand(id: string) {
@@ -70,44 +74,45 @@ export default function EnrollmentsTable({
     )
       return;
     setSavingId(row.id);
-    const res = await fetch(`/api/admin/enrollments/${row.id}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await deleteEnrollment(row.id);
       setRows((prev) => prev.filter((r) => r.id !== row.id));
+    } catch {
+      // no-op
+    } finally {
+      setSavingId(null);
     }
-    setSavingId(null);
   }
 
   async function addResult(enrollmentId: string) {
     if (!resultForm.examName.trim()) return;
     setSavingResult(true);
-    const res = await fetch("/api/admin/results", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      const created = await addEnrollmentResult({
         enrollmentId,
         examName: resultForm.examName.trim(),
         marks: resultForm.marks,
         grade: resultForm.grade.trim(),
         remarks: resultForm.remarks.trim(),
         examDate: resultForm.examDate || undefined
-      })
-    });
-    if (res.ok) {
-      const created = await res.json();
+      });
       setRows((prev) =>
         prev.map((r) =>
           r.id === enrollmentId ? { ...r, results: [...(r.results || []), created] } : r
         )
       );
       setResultForm(emptyResultForm);
+    } catch {
+      // no-op
+    } finally {
+      setSavingResult(false);
     }
-    setSavingResult(false);
   }
 
   async function removeResult(enrollmentId: string, resultId: string) {
     if (!confirm("Delete this result entry?")) return;
-    const res = await fetch(`/api/admin/results/${resultId}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await deleteEnrollmentResult(resultId);
       setRows((prev) =>
         prev.map((r) =>
           r.id === enrollmentId
@@ -115,6 +120,8 @@ export default function EnrollmentsTable({
             : r
         )
       );
+    } catch {
+      // no-op
     }
   }
 

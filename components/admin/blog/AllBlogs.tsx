@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { generateSlug } from "@/lib/utils";
+import { listBlogsForAdmin } from "@/app/admin/blog/actions";
 
 interface Blog {
   id: number;
@@ -88,23 +89,15 @@ export default function AllBlogs() {
 
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: pageNum.toString(),
-        limit: "10",
+      const { data, lastPage } = await listBlogsForAdmin({ page: pageNum, perPage: 10 });
+
+      cache.set(pageNum, {
+        blogs: data,
+        totalPages: lastPage || 1,
       });
 
-      const res = await fetch(`/api/blog?${params}`);
-      const data = await res.json();
-
-      if (res.ok && data?.blogs) {
-        cache.set(pageNum, {
-          blogs: data.blogs,
-          totalPages: data.pagination?.pages || 1,
-        });
-
-        setBlogs(data.blogs);
-        setTotalPages(data.pagination?.pages || 1);
-      }
+      setBlogs(data);
+      setTotalPages(lastPage || 1);
     } catch (e) {
       console.error("Failed to fetch blogs", e);
     } finally {

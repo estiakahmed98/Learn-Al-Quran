@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import { setEnrollmentPaymentStatus } from "@/app/admin/payments/actions";
 
 interface PaymentRow {
   id: string;
@@ -41,16 +42,14 @@ export default function PaymentApprovals({ initialRows }: { initialRows: Payment
 
   async function act(id: string, reject: boolean) {
     setBusyId(id);
-    const res = await fetch(`/api/admin/enrollments/${id}/approve`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reject })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await setEnrollmentPaymentStatus(id, reject);
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...updated } : r)));
+    } catch {
+      // no-op: leave the row as-is, admin can retry
+    } finally {
+      setBusyId(null);
     }
-    setBusyId(null);
   }
 
   return (

@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { api, ApiError } from "@/lib/api-client";
 
 export const SITE_SETTINGS_CACHE_TAG = "site-settings";
 
@@ -43,13 +43,20 @@ export const fallbackSettings = {
 };
 
 const getCachedSiteSettingsRow = unstable_cache(
-  async () => prisma.siteSetting.findFirst(),
+  async () => {
+    try {
+      return await api.settings.get();
+    } catch (error) {
+      if (error instanceof ApiError) return null;
+      throw error;
+    }
+  },
   ["site-settings"],
   { revalidate: 3600, tags: [SITE_SETTINGS_CACHE_TAG] }
 );
 
-// Cached fetch of site settings from the DB, gracefully falling back so the
-// site still renders even before a database is connected. Cached across
+// Cached fetch of site settings from the API, gracefully falling back so the
+// site still renders even before the backend is reachable. Cached across
 // requests/deployments and invalidated via revalidateTag("site-settings")
 // whenever admin settings are saved.
 export async function getSiteSettings() {
@@ -57,7 +64,7 @@ export async function getSiteSettings() {
     const settings = await getCachedSiteSettingsRow();
     if (!settings) return fallbackSettings;
 
-    // Only override fallback values with DB values that are actually set (not null/empty).
+    // Only override fallback values with API values that are actually set (not null/empty).
     const merged: Record<string, unknown> = { ...fallbackSettings };
     for (const [key, value] of Object.entries(settings)) {
       if (value !== null && value !== undefined && value !== "") {

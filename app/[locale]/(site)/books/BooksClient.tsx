@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { listBooks } from "@/app/public-actions";
 
 type Book = {
   id: string;
@@ -94,25 +95,7 @@ export default function BooksClient() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const response = await fetch("/api/books", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-        cache: "no-store",
-      });
-
-      const result = (await response.json()) as BooksApiResponse;
-
-      if (!response.ok) {
-        throw new Error(
-          result.message || `Unable to load books. Status: ${response.status}`,
-        );
-      }
-
-      if (!result.success) {
-        throw new Error(result.message || "Unable to load books.");
-      }
+      const result = (await listBooks()) as unknown as { data: Book[] };
 
       if (!Array.isArray(result.data)) {
         throw new Error("Invalid books API response.");

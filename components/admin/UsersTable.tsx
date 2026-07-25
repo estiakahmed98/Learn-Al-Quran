@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 import UserForm from "./UserForm";
+import { updateUser, deleteUser } from "@/app/admin/users/actions";
 
 export interface UserRow {
   id: string;
@@ -75,14 +76,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
 
   async function toggleActive(user: UserRow) {
     setSavingId(user.id);
-    const res = await fetch(`/api/admin/users/${user.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !user.isActive })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateUser(user.id, { isActive: !user.isActive });
       setUsers((prev) => prev.map((u) => (u.id === user.id ? { ...u, ...updated } : u)));
+    } catch {
+      // ignore; button state will simply not change
     }
     setSavingId(null);
   }
@@ -90,12 +88,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
   async function remove(user: UserRow) {
     if (!confirm(`Delete user "${user.name}" (${user.email})? This cannot be undone.`)) return;
     setSavingId(user.id);
-    const res = await fetch(`/api/admin/users/${user.id}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await deleteUser(user.id);
       setUsers((prev) => prev.filter((u) => u.id !== user.id));
-    } else {
-      const data = await res.json().catch(() => null);
-      alert(data?.message || "Failed to delete user.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete user.");
     }
     setSavingId(null);
   }

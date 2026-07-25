@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
 import { getTranslations } from "next-intl/server";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import StudentCourseCard from "@/components/dashboard/StudentCourseCard";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
@@ -13,26 +12,19 @@ export const metadata = {
 };
 
 export default async function StudentDashboardPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/auth/login?callbackUrl=/student/dashboard");
-  if (session.user.role === "ADMIN") redirect("/admin");
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/student/dashboard");
+  if (auth.session.user.role === "ADMIN") redirect("/admin");
 
   const t = await getTranslations("dashboard");
+  const { token } = auth;
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  const user = await api.auth.me(token).catch(() => null);
   if (!user) redirect("/auth/login");
 
   const [enrollments, trialApplication] = await Promise.all([
-    prisma.enrollment.findMany({
-      where: { OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])] },
-      include: { course: true, _count: { select: { results: true } } },
-      orderBy: { createdAt: "desc" }
-    }),
-    prisma.trialApplication.findFirst({
-      where: { userId: user.id, status: { not: "CANCELLED" } },
-      include: { course: { select: { title: true } } },
-      orderBy: { createdAt: "desc" }
-    })
+    api.enrollments.my(token),
+    api.trialApplications.my(token)
   ]);
 
   const activeCount = enrollments.filter((e) => e.enrollmentStatus === "ACTIVE").length;
@@ -108,7 +100,7 @@ export default async function StudentDashboardPage() {
           </div>
         ) : (
           <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {enrollments.map((e) => (
+            {enrollments.map((e: any) => (
               <StudentCourseCard
                 key={e.id}
                 labels={{ enrolled: t("enrolled"), results: t("results"), manage: t("manage") }}
@@ -116,8 +108,8 @@ export default async function StudentDashboardPage() {
                   id: e.id,
                   paymentStatus: e.paymentStatus,
                   enrollmentStatus: e.enrollmentStatus,
-                  createdAt: e.createdAt.toISOString(),
-                  resultCount: e._count.results,
+                  createdAt: e.createdAt,
+                  resultCount: e.results?.length ?? 0,
                   course: {
                     id: e.course.id,
                     title: e.course.title,

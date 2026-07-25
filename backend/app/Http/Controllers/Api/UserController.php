@@ -21,6 +21,18 @@ class UserController extends Controller
         );
     }
 
+    public function teachers(): AnonymousResourceCollection
+    {
+        return UserResource::collection(
+            User::query()
+                ->select(['id', 'name', 'designation', 'description', 'image_url'])
+                ->where('role', 'TEACHER')
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get()
+        );
+    }
+
     public function store(UserRequest $request): UserResource
     {
         $data = $request->validated();

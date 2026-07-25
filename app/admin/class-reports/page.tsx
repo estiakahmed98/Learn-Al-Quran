@@ -1,15 +1,13 @@
-import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import ClassReportsTable from "@/components/admin/ClassReportsTable";
 
 export default async function AdminClassReportsPage() {
-  const reports = await prisma.classReport.findMany({
-    include: {
-      teacher: { select: { id: true, name: true } },
-      course: { select: { id: true, title: true } }
-    },
-    orderBy: { classDate: "desc" },
-    take: 200
-  });
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/admin/class-reports");
+
+  const reports = await api.classReports.list(auth.token, { perPage: 200 });
 
   return (
     <div>
@@ -21,9 +19,9 @@ export default async function AdminClassReportsPage() {
 
       <div className="mt-6">
         <ClassReportsTable
-          initialReports={reports.map((report) => ({
+          initialReports={reports.map((report: any) => ({
             id: report.id,
-            classDate: report.classDate.toISOString(),
+            classDate: report.classDate,
             startTime: report.startTime,
             endTime: report.endTime,
             completed: report.completed,

@@ -3,7 +3,7 @@
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
-import type { AdminSection } from "@prisma/client";
+import { createUser, updateUser, uploadUserImage } from "@/app/admin/users/actions";
 
 export interface UserFormValues {
   name: string;
@@ -13,11 +13,11 @@ export interface UserFormValues {
   address: string;
   description: string;
   designation: string;
-  imageURL: string;
+  imageUrl: string;
   role: "ADMIN" | "TEACHER" | "STUDENT";
   isActive: boolean;
   password: string;
-  permissions: AdminSection[];
+  permissions: string[];
 }
 
 const emptyValues: UserFormValues = {
@@ -28,7 +28,7 @@ const emptyValues: UserFormValues = {
   address: "",
   description: "",
   designation: "",
-  imageURL: "",
+  imageUrl: "",
   role: "STUDENT",
   isActive: true,
   password: "",
@@ -72,17 +72,10 @@ export default function UserForm({
       const fd = new FormData();
       fd.append("file", file);
 
-      const res = await fetch("/api/upload/users", {
-        method: "POST",
-        body: fd
-      });
-
-      if (!res.ok) throw new Error("Image upload failed");
-
-      const data = await res.json();
+      const data = await uploadUserImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
 
-      set("imageURL", data.url);
+      set("imageUrl", data.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error uploading image");
     } finally {
@@ -110,32 +103,24 @@ export default function UserForm({
       address: values.address.trim(),
       description: values.description.trim(),
       designation: values.designation.trim(),
-      imageURL: values.imageURL.trim(),
+      imageUrl: values.imageUrl.trim(),
       role: values.role,
       isActive: values.isActive,
       permissions: []
     };
     if (values.password) payload.password = values.password;
 
-    const res = await fetch(userId ? `/api/admin/users/${userId}` : "/api/admin/users", {
-      method: userId ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    setSaving(false);
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setError(data?.message || "Failed to save user.");
-      return;
+    try {
+      const user = userId ? await updateUser(userId, payload) : await createUser(payload);
+      setSaving(false);
+      setSaved(true);
+      set("password", "");
+      onSaved?.(user);
+      router.refresh();
+    } catch (err) {
+      setSaving(false);
+      setError(err instanceof Error ? err.message : "Failed to save user.");
     }
-
-    const user = await res.json();
-    setSaved(true);
-    set("password", "");
-    onSaved?.(user);
-    router.refresh();
   }
 
   const inputClass =
@@ -223,16 +208,16 @@ export default function UserForm({
 
         <div>
           <label className={labelClass}>Profile Image</label>
-          {values.imageURL && (
+          {values.imageUrl && (
             <div className="mb-2 flex items-center gap-3">
               <img
-                src={values.imageURL}
+                src={values.imageUrl}
                 alt="Profile preview"
                 className="h-16 w-16 rounded-full border object-cover"
               />
               <button
                 type="button"
-                onClick={() => set("imageURL", "")}
+                onClick={() => set("imageUrl", "")}
                 className="text-xs text-red-600 hover:underline"
               >
                 Remove
@@ -253,8 +238,8 @@ export default function UserForm({
             </span>
           </label>
           <input
-            value={values.imageURL}
-            onChange={(e) => set("imageURL", e.target.value)}
+            value={values.imageUrl}
+            onChange={(e) => set("imageUrl", e.target.value)}
             className={inputClass}
             placeholder="Or paste image URL"
           />

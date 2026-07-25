@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { processBlogSummary } from "./summaryUtils";
+import { listBlogsForAdmin, deleteBlog } from "@/app/admin/blog/actions";
 
 const BlogForm = dynamic(() => import("./BlogForm"), { ssr: false });
 
@@ -41,30 +42,21 @@ export default function BlogCard() {
   const fetchBlogs = useCallback(async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: "12",
-        ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
-      });
+      // The Laravel blogs endpoint doesn't support server-side search yet;
+      // filter client-side over the current page as a stopgap (matches the
+      // approach used in lib/cached-data.ts for the public blog listing).
+      const { data, total, lastPage } = await listBlogsForAdmin({ page, perPage: 12 });
+      const filtered = debouncedSearchTerm
+        ? data.filter((blog: any) =>
+            [blog.title, blog.author, blog.summary].some((field) =>
+              String(field ?? "").toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+            )
+          )
+        : data;
 
-      // Add cache busting for fresh data but allow caching for pagination
-      const cacheKey = debouncedSearchTerm ? "no-store" : "default";
-      const response = await fetch(`/api/blog?${params}`, {
-        cache: cacheKey as RequestCache,
-        next: { revalidate: debouncedSearchTerm ? 0 : 60 }, // Cache for 60 seconds when not searching
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch blogs");
-      }
-
-      const data = await response.json();
-
-      if (data) {
-        setBlogs(data.blogs || []);
-        setTotalPages(data.pagination?.pages || 1);
-        setTotalCount(data.pagination?.total || 0);
-      }
+      setBlogs(filtered);
+      setTotalPages(lastPage || 1);
+      setTotalCount(total || 0);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       // Keep existing blogs on error to avoid empty state
@@ -82,18 +74,11 @@ export default function BlogCard() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const response = await fetch(`/api/blog/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        fetchBlogs();
-      } else {
-        alert("Error deleting blog");
-      }
+      await deleteBlog(id);
+      fetchBlogs();
     } catch (error) {
       console.error("Error deleting blog:", error);
-      alert("Error deleting blog");
+      alert(error instanceof Error ? error.message : "Error deleting blog");
     }
   };
 

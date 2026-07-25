@@ -1,22 +1,22 @@
-import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import PaymentApprovals from "@/components/admin/PaymentApprovals";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPaymentsPage() {
-  const enrollments = await prisma.enrollment
-    .findMany({
-      include: { course: { select: { id: true, title: true } } },
-      orderBy: { createdAt: "desc" }
-    })
-    .catch(() => []);
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/admin/payments");
+
+  const { data: enrollments } = await api.enrollments.adminList(auth.token, { perPage: 200 }).catch(() => ({ data: [] as any[] }));
 
   const pendingCount = enrollments.filter(
-    (e) => e.paymentStatus === "PENDING" || e.paymentStatus === "PAID"
+    (e: any) => e.paymentStatus === "PENDING" || e.paymentStatus === "PAID"
   ).length;
   const verifiedRevenue = enrollments
-    .filter((e) => e.paymentStatus === "VERIFIED")
-    .reduce((sum, e) => sum + e.paymentAmount, 0);
+    .filter((e: any) => e.paymentStatus === "VERIFIED")
+    .reduce((sum: number, e: any) => sum + e.paymentAmount, 0);
 
   const statCards = [
     { label: "Pending Approvals", value: pendingCount, color: "text-amber-600" },

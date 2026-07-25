@@ -1,27 +1,29 @@
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import UsersTable from "@/components/admin/UsersTable";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminUsersPage() {
-  const users = await prisma.user
-    .findMany({
-      where: { role: { not: "STUDENT" } },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        whatsapp: true,
-        role: true,
-        studentStatus: true,
-        isActive: true,
-        createdAt: true,
-        _count: { select: { enrollments: true } }
-      },
-      orderBy: { createdAt: "desc" }
-    })
-    .catch(() => []);
+  const auth = await getAuthSession();
+  const { data: allUsers } = auth
+    ? await api.users.adminList(auth.token, { perPage: 200 }).catch(() => ({ data: [] }))
+    : { data: [] };
+
+  const users = allUsers
+    .filter((u) => u.role !== "STUDENT")
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone ?? null,
+      whatsapp: u.whatsapp ?? null,
+      role: u.role,
+      studentStatus: u.studentStatus,
+      isActive: u.isActive,
+      createdAt: (u as any).createdAt,
+      _count: { enrollments: u.enrollmentsCount ?? 0 }
+    }));
 
   return (
     <div>
@@ -31,7 +33,7 @@ export default async function AdminUsersPage() {
       </p>
 
       <div className="mt-6">
-        <UsersTable initialUsers={JSON.parse(JSON.stringify(users))} />
+        <UsersTable initialUsers={users} />
       </div>
     </div>
   );

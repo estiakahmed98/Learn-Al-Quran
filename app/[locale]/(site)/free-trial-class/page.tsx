@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import FreeTrialApplication from "@/components/trial/FreeTrialApplication";
-import { prisma } from "@/lib/prisma";
+import { getCachedActiveCourses } from "@/lib/cached-data";
 import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -18,11 +18,7 @@ interface Props {
 
 export default async function FreeTrialClassPage(props: Props) {
   const searchParams = await props.searchParams;
-  const courses = await prisma.course.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: "asc" },
-    select: { id: true, title: true, titleBn: true, slug: true }
-  }).catch(() => []);
+  const courses = await getCachedActiveCourses().catch(() => []);
   const defaultCourseId = courses.find((course) => course.slug === searchParams.course)?.id;
 
   return <FreeTrialApplication courses={courses} defaultCourseId={defaultCourseId} />;

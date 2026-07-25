@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api-client";
 import { siteUrl } from "@/lib/site-config";
 import { routing } from "@/i18n/routing";
 
@@ -42,13 +42,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [courses, blogs] = await Promise.all([
-      prisma.course.findMany({ where: { isActive: true }, select: { slug: true, updatedAt: true } }),
-      prisma.content.findMany({
-        where: { type: "BLOG", isPublished: true },
-        select: { slug: true, updatedAt: true }
-      })
+    const [{ data: courses }, blogContent] = await Promise.all([
+      api.courses.list({ perPage: 100 }),
+      api.content.list("BLOG")
     ]);
+    const blogs = blogContent.data.filter((item: any) => item.isPublished);
 
     const courseRoutes: MetadataRoute.Sitemap = courses.flatMap((c) =>
       buildEntry(`/courses/${c.slug}`, {

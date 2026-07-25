@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { assignCourseToUser } from "./assign-course-actions";
 
 interface CourseOption {
   id: string;
@@ -34,24 +35,17 @@ export default function AssignCourseForm({
     setError(null);
     setDone(false);
 
-    const res = await fetch("/api/admin/enrollments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, courseId, adminNote: note.trim() || undefined })
-    });
-
-    setSaving(false);
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setError(data?.message || "Failed to assign course.");
-      return;
+    try {
+      await assignCourseToUser({ userId, courseId, adminNote: note.trim() || undefined });
+      setCourseId("");
+      setNote("");
+      setDone(true);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to assign course.");
+    } finally {
+      setSaving(false);
     }
-
-    setCourseId("");
-    setNote("");
-    setDone(true);
-    router.refresh();
   }
 
   return (

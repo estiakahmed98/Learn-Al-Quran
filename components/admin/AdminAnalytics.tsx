@@ -36,25 +36,7 @@ import {
 } from "react-icons/fa";
 
 import AdminRecentBlogs from "./blog/AdminRecentBlogs";
-
-type ApiBlog = {
-  id: number;
-  post_title: string;
-  post_content?: unknown;
-  category?: string;
-  tags?: string | string[] | null;
-  post_status: string;
-  createdAt?: string;
-  post_date?: string;
-};
-
-interface Blog {
-  id: number;
-  post_title: string;
-  post_status: string;
-  createdAt?: string | null;
-  _d?: Date | null;
-}
+import { fetchAnalyticsSummary } from "@/app/admin/analytics/actions";
 
 type TrendInfo = { value: string; isPositive: boolean };
 
@@ -172,13 +154,6 @@ const PIE_COLORS = [
 ];
 
 const AdminAnalytics: React.FC = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isLoadingBlogs, setIsLoadingBlogs] = useState<boolean>(true);
-  const [errorBlogs, setErrorBlogs] = useState<string | null>(null);
-
-  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
-  const [editBlogData, setEditBlogData] = useState<Blog | null>(null);
-
   const [isPending, startTransition] = useTransition();
 
   // ---------- Analytics state ----------
@@ -222,117 +197,6 @@ const AdminAnalytics: React.FC = () => {
   const [customFrom, setCustomFrom] = useState<string>("");
   const [customTo, setCustomTo] = useState<string>("");
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
-
-  // ---------- Fetch Blogs ----------
-  const fetchBlogs = useCallback(
-    async (controller?: AbortController) => {
-      setIsLoadingBlogs(true);
-      setErrorBlogs(null);
-      try {
-        const res = await fetch("/api/blog?page=1&limit=1000", {
-          cache: "no-store",
-          signal: controller?.signal,
-        });
-        if (!res.ok) throw new Error("Failed to fetch blogs");
-        const payload = await res.json();
-
-        const items: ApiBlog[] = Array.isArray(payload)
-          ? payload
-          : payload.data || payload.items || [];
-
-        const transformed: Blog[] = items.map((item) => {
-          const createdAt = item.createdAt ?? item.post_date ?? null;
-          const d = createdAt ? new Date(createdAt) : null;
-          return {
-            id: Number(item.id),
-            post_title: String(item.post_title || ""),
-            post_status: String(item.post_status ?? "draft"),
-            createdAt,
-            _d: d && !isNaN(d.getTime()) ? d : null,
-          };
-        });
-
-        runIdle(() => {
-          startTransition(() => {
-            setBlogs(transformed);
-          });
-        });
-      } catch (err: unknown) {
-        if (isAbortError(err)) return;
-        console.error(err);
-        setErrorBlogs("Failed to fetch blogs. Please try again later.");
-      } finally {
-        if (!controller?.signal.aborted) {
-          setIsLoadingBlogs(false);
-        }
-      }
-    },
-    [startTransition],
-  );
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchBlogs(controller);
-    return () => controller.abort();
-  }, [fetchBlogs]);
-
-  const recentBlogs = useMemo(() => blogs.slice(0, 5), [blogs]);
-
-  // ---------- Blog actions ----------
-  const handleDeleteClick = useCallback(async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this blog post?"))
-      return;
-    try {
-      const resp = await fetch("/api/blog", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      if (!resp.ok) throw new Error("Delete failed");
-      startTransition(() => {
-        setBlogs((prev) => prev.filter((b) => b.id !== id));
-      });
-    } catch {
-      alert("Failed to delete blog post. Please try again.");
-    }
-  }, []);
-
-  const handleEditClick = useCallback((blog: Blog) => {
-    setEditBlogData(blog);
-    setIsEditModalVisible(true);
-  }, []);
-
-  const handleEditClose = useCallback(() => {
-    setIsEditModalVisible(false);
-    setEditBlogData(null);
-  }, []);
-
-  const handleEditSave = useCallback(async (updatedBlog: Blog) => {
-    try {
-      const resp = await fetch("/api/blog", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: updatedBlog.id,
-          post_title: updatedBlog.post_title,
-          post_status: updatedBlog.post_status,
-        }),
-      });
-      if (!resp.ok) throw new Error("Update failed");
-
-      startTransition(() => {
-        setBlogs((prev) =>
-          prev.map((b) =>
-            b.id === updatedBlog.id ? { ...b, ...updatedBlog } : b,
-          ),
-        );
-        setIsEditModalVisible(false);
-        setEditBlogData(null);
-      });
-    } catch {
-      alert("Failed to update blog post. Please try again.");
-    }
-  }, []);
 
   // ---------- Analytics range + fetch ----------
   const resolveRange = useCallback(() => {
@@ -380,38 +244,11 @@ const AdminAnalytics: React.FC = () => {
           setAnalyticsLoading(false);
           return;
         }
-        const qs = new URLSearchParams({
+        const data = (await fetchAnalyticsSummary({
           from: toISO(from),
           to: toISO(to),
           bucket: resolvedBucket,
-        });
-
-        const res = await fetch(
-          `/api/admin/analytics/summary?${qs.toString()}`,
-          {
-            cache: "no-store",
-            signal: controller.signal,
-          },
-        );
-        if (!res.ok) {
-          let message = `Failed to load analytics (${res.status})`;
-          try {
-            const body = await res.clone().json();
-            if (typeof body?.error === "string" && body.error.trim()) {
-              message = body.error;
-            }
-          } catch {
-            // ignore
-          }
-          try {
-            const text = await res.text();
-            if (text.trim()) message = text;
-          } catch {
-            // ignore
-          }
-          throw new Error(message);
-        }
-        const data = (await res.json()) as AnalyticsSummary;
+        })) as AnalyticsSummary;
         startTransition(() => setAnalytics(data));
       } catch (e) {
         if (isAbortError(e)) return;
@@ -1316,156 +1153,8 @@ const AdminAnalytics: React.FC = () => {
         </div>
       </section>
       <section className="mb-8 space-y-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800">
-                Recent blog posts
-              </h3>
-              <p className="text-sm text-gray-500">
-                Quick actions for the latest entries
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => fetchBlogs()}
-              className="text-sm px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700"
-              disabled={isLoadingBlogs}
-            >
-              {isLoadingBlogs ? "Refreshing..." : "Refresh"}
-            </button>
-          </div>
-
-          {isLoadingBlogs ? (
-            <SkeletonBox className="h-24" />
-          ) : errorBlogs ? (
-            <div className="text-sm text-red-600">{errorBlogs}</div>
-          ) : recentBlogs.length ? (
-            <ul className="divide-y divide-gray-200">
-              {recentBlogs.map((blog) => (
-                <li
-                  key={blog.id}
-                  className="py-3 flex items-start justify-between gap-4"
-                >
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 line-clamp-1">
-                      {blog.post_title || "Untitled post"}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {blog.post_status}
-                      {" ・ "}
-                      {blog._d
-                        ? blog._d.toLocaleDateString()
-                        : "Date unavailable"}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => handleEditClick(blog)}
-                      className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteClick(blog.id)}
-                      className="px-3 py-1.5 text-xs rounded-lg border border-red-100 text-red-700 hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500">No blog posts found.</p>
-          )}
-        </div>
-
         <AdminRecentBlogs />
       </section>
-
-      {/* Edit Modal */}
-      {isEditModalVisible && editBlogData && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={handleEditClose}
-        >
-          <div
-            className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center p-5 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Edit Blog Post
-              </h2>
-              <button
-                onClick={handleEditClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-5 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Post Title
-                </label>
-                <input
-                  type="text"
-                  value={editBlogData.post_title}
-                  onChange={(e) =>
-                    setEditBlogData({
-                      ...editBlogData,
-                      post_title: e.target.value,
-                    })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003B3A]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Post Status
-                </label>
-                <select
-                  value={editBlogData.post_status}
-                  onChange={(e) =>
-                    setEditBlogData({
-                      ...editBlogData,
-                      post_status: e.target.value,
-                    })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003B3A]"
-                >
-                  <option value="publish">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending Review</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 p-5 border-t border-gray-200">
-              <button
-                onClick={handleEditClose}
-                className="px-4 py-2 text-gray-700 border rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleEditSave(editBlogData)}
-                className="px-4 py-2 bg-[#003B3A] text-white rounded-lg hover:bg-[#022f2f]"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

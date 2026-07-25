@@ -6,6 +6,7 @@ import { BookOpen, CalendarClock, CheckCircle2, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { submitTrialApplication } from "@/app/public-actions";
 
 type Course = { id: string; title: string; titleBn: string | null; slug: string };
 
@@ -47,18 +48,13 @@ export default function FreeTrialApplication({
     }
     setSubmitting(true);
     setError("");
-    const response = await fetch("/api/free-trial/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, consentAccepted })
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      setError(data?.message || t("error"));
+    try {
+      await submitTrialApplication({ ...form, consentAccepted });
+      setSubmitted(true);
+    } catch {
+      setError(t("error"));
       setSubmitting(false);
-      return;
     }
-    setSubmitted(true);
   }
 
   const fieldClass =

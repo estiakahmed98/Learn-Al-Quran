@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { addClassSchedule, updateClassSchedule, deleteClassSchedule } from "@/app/admin/courses/actions";
 
 interface ScheduleRow {
   id: string;
@@ -39,35 +40,33 @@ export default function ClassScheduleManager({
     e.preventDefault();
     if (!form.startTime) return;
     setSaving(true);
-    const res = await fetch("/api/admin/class-schedules", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ courseId, ...form, dayOfWeek: Number(form.dayOfWeek) })
-    });
-    if (res.ok) {
-      const created = await res.json();
+    try {
+      const created = await addClassSchedule({ courseId, ...form, dayOfWeek: Number(form.dayOfWeek) });
       setSchedules((prev) => [...prev, created]);
       setForm(emptyForm);
+    } catch {
+      // no-op: keep existing UI behavior of silently ignoring failures
     }
     setSaving(false);
   }
 
   async function toggleActive(schedule: ScheduleRow) {
-    const res = await fetch(`/api/admin/class-schedules/${schedule.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !schedule.isActive })
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateClassSchedule(schedule.id, { isActive: !schedule.isActive }, courseId);
       setSchedules((prev) => prev.map((s) => (s.id === schedule.id ? updated : s)));
+    } catch {
+      // no-op
     }
   }
 
   async function remove(id: string) {
     if (!confirm("Delete this class schedule entry?")) return;
-    const res = await fetch(`/api/admin/class-schedules/${id}`, { method: "DELETE" });
-    if (res.ok) setSchedules((prev) => prev.filter((s) => s.id !== id));
+    try {
+      await deleteClassSchedule(id, courseId);
+      setSchedules((prev) => prev.filter((s) => s.id !== id));
+    } catch {
+      // no-op
+    }
   }
 
   return (

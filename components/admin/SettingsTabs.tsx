@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Content, SiteSetting } from "@prisma/client";
 import SettingsForm from "@/components/admin/SettingsForm";
-import ContentManager from "@/components/admin/ContentManager";
+import ContentManager, { type ContentItem } from "@/components/admin/ContentManager";
+
+type SiteSetting = Record<string, unknown>;
 
 type TabId =
   | "identity"
@@ -116,7 +117,7 @@ export default function SettingsTabs({
   content
 }: {
   settings: SiteSetting | null;
-  content: Content[];
+  content: ContentItem[];
 }) {
   const [tab, setTab] = useState<TabId>("identity");
 

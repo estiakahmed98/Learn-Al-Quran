@@ -9,7 +9,7 @@ import FAQ from "@/components/home/FAQ";
 import LeadForm from "@/components/home/LeadForm";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
 import { getLocale } from "next-intl/server";
-import { prisma } from "@/lib/prisma";
+import { api } from "@/lib/api-client";
 import { getSiteSettings } from "@/lib/site-config";
 import { getCachedActiveCourses, getCachedTeachers } from "@/lib/cached-data";
 import { pickText } from "@/lib/course-content";
@@ -27,19 +27,16 @@ export const revalidate = 3600;
 
 async function getHomeData() {
   try {
-    const [courses, teachers, reviews, faqs, settings] = await Promise.all([
+    const [courses, teachers, reviewsResult, faqsResult, settings] = await Promise.all([
       getCachedActiveCourses(),
       getCachedTeachers(),
-      prisma.content.findMany({
-        where: { type: "REVIEW", isPublished: true },
-        orderBy: { sortOrder: "asc" },
-      }),
-      prisma.content.findMany({
-        where: { type: "FAQ", isPublished: true },
-        orderBy: { sortOrder: "asc" },
-      }),
+      api.content.list("REVIEW"),
+      api.content.list("FAQ"),
       getSiteSettings(),
     ]);
+
+    const reviews = reviewsResult.data.filter((item: any) => item.isPublished);
+    const faqs = faqsResult.data.filter((item: any) => item.isPublished);
 
     return { courses, teachers, reviews, faqs, settings };
   } catch {

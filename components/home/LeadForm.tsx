@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import type { Course } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { submitEnrollment } from "@/app/public-actions";
+
+interface LeadCourse {
+  slug: string;
+  title: string;
+}
 
 interface LeadFormProps {
-  courses: Course[];
+  courses: LeadCourse[];
   defaultCourseSlug?: string;
   bkashNumber: string;
   nagadNumber: string;
@@ -65,17 +70,7 @@ export default function LeadForm({
     };
 
     try {
-      const res = await fetch("/api/enroll", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.message || t("genericError"));
-      }
-
+      await submitEnrollment(payload);
       trackEvent("generate_lead", { course: payload.courseSlug });
       setStatus("success");
       form.reset();

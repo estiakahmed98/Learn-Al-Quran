@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { submitReview } from "@/app/public-actions";
 
 export default function ReviewForm() {
   const t = useTranslations("sitePages.reviewForm");
@@ -19,29 +20,23 @@ export default function ReviewForm() {
     setError(null);
     setSubmitting(true);
 
-    const res = await fetch("/api/reviews", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await submitReview({
         name: name.trim(),
-        role: role.trim(),
+        role: role.trim() || undefined,
         message: message.trim(),
         rating,
-      }),
-    });
-
-    setSubmitting(false);
-
-    if (!res.ok) {
+      });
+      setSubmitted(true);
+      setName("");
+      setRole("");
+      setMessage("");
+      setRating(5);
+    } catch {
       setError(t("error"));
-      return;
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitted(true);
-    setName("");
-    setRole("");
-    setMessage("");
-    setRating(5);
   }
 
   if (submitted) {

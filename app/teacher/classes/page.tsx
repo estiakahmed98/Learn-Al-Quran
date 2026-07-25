@@ -1,6 +1,6 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/session";
+import { getCachedActiveCourses } from "@/lib/cached-data";
 import ClassReportForm from "@/components/teacher/ClassReportForm";
 
 export default async function TeacherClassesPage(
@@ -9,14 +9,14 @@ export default async function TeacherClassesPage(
   }
 ) {
   const searchParams = await props.searchParams;
-  const session = await getServerSession(authOptions);
-  const teacherId = session!.user.id;
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/teacher/classes");
+  const teacherId = auth.session.user.id;
 
-  const courses = await prisma.course.findMany({
-    where: { instructorId: teacherId, isActive: true },
-    orderBy: { title: "asc" },
-    select: { id: true, title: true, titleBn: true }
-  });
+  const allCourses = await getCachedActiveCourses();
+  const courses = allCourses
+    .filter((course: any) => course.instructorId === teacherId)
+    .sort((a: any, b: any) => a.title.localeCompare(b.title));
 
   return (
     <div>

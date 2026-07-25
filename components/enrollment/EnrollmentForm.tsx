@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CheckCircle2, CreditCard, UserRound } from "lucide-react";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { submitEnrollment } from "@/app/public-actions";
 
 type Course = {
   id: string;
@@ -66,18 +67,13 @@ export default function EnrollmentForm({
     }
     setStatus("submitting");
     setError("");
-    const response = await fetch("/api/enroll", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, consentAccepted })
-    });
-    const body = await response.json().catch(() => null);
-    if (!response.ok) {
-      setError(body?.message || t("genericError"));
+    try {
+      await submitEnrollment({ ...form, consentAccepted });
+      setStatus("success");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("genericError"));
       setStatus("idle");
-      return;
     }
-    setStatus("success");
   }
 
   if (status === "success") {

@@ -1,8 +1,7 @@
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
 
 const contentTypeSchema = z.enum(["PAGE", "HOME_SECTION", "TEACHER", "REVIEW", "FAQ", "BLOG", "BOOK"]);
-const jsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any();
+const jsonValueSchema: z.ZodType<unknown> = z.any();
 
 // Explicit allowlist of writable Content fields — excludes id, createdAt, updatedAt.
 export const contentCreateSchema = z.object({

@@ -1,26 +1,28 @@
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import StudentsTable from "@/components/admin/StudentsTable";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminStudentsPage() {
-  const students = await prisma.user
-    .findMany({
-      where: { role: "STUDENT" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        whatsapp: true,
-        studentStatus: true,
-        isActive: true,
-        createdAt: true,
-        _count: { select: { enrollments: true } }
-      },
-      orderBy: { createdAt: "desc" }
-    })
-    .catch(() => []);
+  const auth = await getAuthSession();
+  const { data: allUsers } = auth
+    ? await api.users.adminList(auth.token, { perPage: 200 }).catch(() => ({ data: [] }))
+    : { data: [] };
+
+  const students = allUsers
+    .filter((u) => u.role === "STUDENT")
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone ?? null,
+      whatsapp: u.whatsapp ?? null,
+      studentStatus: u.studentStatus,
+      isActive: u.isActive,
+      createdAt: (u as any).createdAt,
+      _count: { enrollments: u.enrollmentsCount ?? 0 }
+    }));
 
   return (
     <div>

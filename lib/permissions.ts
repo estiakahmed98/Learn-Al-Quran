@@ -1,4 +1,14 @@
-import type { AdminSection, UserRole } from "@prisma/client";
+export type AdminSection =
+  | "DASHBOARD"
+  | "ANALYTICS"
+  | "BLOG"
+  | "COURSES"
+  | "USERS"
+  | "PAYMENTS"
+  | "CONTENT"
+  | "SETTINGS"
+  | "REPORTS";
+export type UserRole = "ADMIN" | "TEACHER" | "STUDENT";
 
 // Sections a teacher can access by default when no explicit permissions are set yet.
 export const DEFAULT_TEACHER_SECTIONS: AdminSection[] = [

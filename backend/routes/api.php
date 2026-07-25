@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClassReportController;
 use App\Http\Controllers\Api\ClassScheduleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EnrollmentController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\NoteController;
@@ -31,9 +32,11 @@ Route::prefix('v1')->group(function (): void {
     Route::get('books', [ContentController::class, 'books']);
     Route::get('reviews', [ContentController::class, 'reviews']);
     Route::get('contents', [ContentController::class, 'index']);
+    Route::get('teachers', [UserController::class, 'teachers']);
     Route::get('settings', [SiteSettingController::class, 'show']);
     Route::post('enrollments', [EnrollmentController::class, 'store']);
     Route::post('trial-applications', [TrialApplicationController::class, 'store']);
+    Route::post('reviews', [ContentController::class, 'submitReview']);
     Route::post('analytics/collect', [AnalyticsController::class, 'collect'])->middleware('throttle:120,1');
     Route::post('newsletter/subscribe', [SubscriberController::class, 'subscribe'])->middleware('throttle:10,1');
     Route::get('newsletter/unsubscribe', [SubscriberController::class, 'unsubscribeLink'])->middleware('throttle:10,1');
@@ -42,6 +45,9 @@ Route::prefix('v1')->group(function (): void {
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('auth/me', [AuthController::class, 'me']);
         Route::post('auth/logout', [AuthController::class, 'logout']);
+
+        Route::get('my/enrollments', [EnrollmentController::class, 'mine']);
+        Route::get('my/trial-application', [TrialApplicationController::class, 'mine']);
 
         Route::middleware('role:ADMIN,TEACHER')->group(function (): void {
             Route::get('class-reports', [ClassReportController::class, 'index']);
@@ -53,15 +59,20 @@ Route::prefix('v1')->group(function (): void {
             Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
             Route::apiResource('blogs', BlogController::class)->except(['index', 'show']);
             Route::put('settings', [SiteSettingController::class, 'update']);
+            Route::apiResource('content', ContentController::class)->only(['store', 'update', 'destroy']);
             Route::apiResource('class-schedules', ClassScheduleController::class)
                 ->parameters(['class-schedules' => 'classSchedule']);
             Route::apiResource('notes', NoteController::class);
             Route::apiResource('results', ResultController::class);
             Route::get('enrollments', [EnrollmentController::class, 'index']);
+            Route::post('enrollments', [EnrollmentController::class, 'adminStore']);
             Route::get('enrollments/{enrollment}', [EnrollmentController::class, 'show']);
+            Route::put('enrollments/{enrollment}', [EnrollmentController::class, 'update']);
+            Route::patch('enrollments/{enrollment}', [EnrollmentController::class, 'update']);
             Route::delete('enrollments/{enrollment}', [EnrollmentController::class, 'destroy']);
             Route::get('trial-applications', [TrialApplicationController::class, 'index']);
             Route::get('analytics/summary', [AnalyticsController::class, 'summary']);
+            Route::get('dashboard-summary', [DashboardController::class, 'summary']);
             Route::post('newsletters/{newsletter}/send', [NewsletterController::class, 'send']);
             Route::apiResource('newsletters', NewsletterController::class);
             Route::get('newsletter-subscribers', [SubscriberController::class, 'index']);

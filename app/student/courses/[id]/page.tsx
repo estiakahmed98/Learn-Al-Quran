@@ -1,36 +1,28 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import CourseWorkspace from "@/components/student/CourseWorkspace";
 
 export const dynamic = "force-dynamic";
 
 export default async function StudentCourseDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/auth/login?callbackUrl=/student/courses/${params.id}`);
+  const auth = await getAuthSession();
+  if (!auth) redirect(`/auth/login?callbackUrl=/student/courses/${params.id}`);
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!user) redirect("/auth/login");
-
-  const enrollment = await prisma.enrollment.findFirst({
-    where: {
-      courseId: params.id,
-      OR: [{ userId: user.id }, ...(user.email ? [{ email: user.email }] : [])]
-    },
-    include: {
-      course: {
-        include: {
-          classSchedules: { where: { isActive: true }, orderBy: { dayOfWeek: "asc" } },
-          notes: { where: { isPublished: true }, orderBy: { createdAt: "desc" } }
-        }
-      }
-    }
-  });
+  const enrollments = await api.enrollments.my(auth.token);
+  const enrollment = enrollments.find((e: any) => e.courseId === params.id || e.course?.id === params.id);
 
   if (!enrollment) notFound();
+
+  const fullCourse = await api.courses.get(enrollment.course.id).catch(() => null);
+  const classSchedules = (fullCourse?.classSchedules ?? [])
+    .filter((cs: any) => cs.isActive)
+    .sort((a: any, b: any) => a.dayOfWeek - b.dayOfWeek);
+  const notes = (fullCourse?.notes ?? [])
+    .filter((n: any) => n.isPublished)
+    .sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1));
 
   const isApproved =
     enrollment.paymentStatus === "VERIFIED" &&
@@ -58,9 +50,9 @@ export default async function StudentCourseDetailPage(props: { params: Promise<{
               paymentStatus: enrollment.paymentStatus,
               enrollmentStatus: enrollment.enrollmentStatus,
               adminNote: enrollment.adminNote,
-              createdAt: enrollment.createdAt.toISOString()
+              createdAt: enrollment.createdAt
             },
-            classSchedules: enrollment.course.classSchedules.map((cs) => ({
+            classSchedules: classSchedules.map((cs: any) => ({
               id: cs.id,
               dayOfWeek: cs.dayOfWeek,
               startTime: cs.startTime,
@@ -69,12 +61,12 @@ export default async function StudentCourseDetailPage(props: { params: Promise<{
               meetingLink: cs.meetingLink,
               note: cs.note
             })),
-            notes: enrollment.course.notes.map((n) => ({
+            notes: notes.map((n: any) => ({
               id: n.id,
               title: n.title,
               content: n.content,
               fileUrl: n.fileUrl,
-              createdAt: n.createdAt.toISOString()
+              createdAt: n.createdAt
             })),
             isApproved
           }}

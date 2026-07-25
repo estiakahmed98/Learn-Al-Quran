@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { collectAnalyticsEvent } from "@/app/analytics-actions";
 
 type CollectPayload = {
   event: "session_start" | "page_view" | "heartbeat";
@@ -114,13 +115,7 @@ function getDeviceInfo() {
 
 async function send(payload: CollectPayload) {
   try {
-    await fetch("/api/analytics/collect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      keepalive: true,
-      cache: "no-store",
-    });
+    await collectAnalyticsEvent(payload);
   } catch {
     // ignore
   }

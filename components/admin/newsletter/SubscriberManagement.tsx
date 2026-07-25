@@ -8,19 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Mail, Trash2, Download } from "lucide-react";
+import { listSubscribers, addSubscriber, deleteSubscriber } from "@/app/admin/newsletter/actions";
 
 interface Subscriber {
   email: string;
   status: string;
 }
-
-interface SubscribersResponse {
-  success: boolean;
-  data: Subscriber[];
-  count: number;
-}
-
-const API_BASE = "/api/newsletter/subscribers";
 
 export default function SubscriberManagement() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -34,11 +27,8 @@ export default function SubscriberManagement() {
   const fetchSubscribers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_BASE);
-      if (!response.ok) throw new Error("Failed to fetch subscribers");
-      const data: SubscribersResponse = await response.json();
-      if (!data.success) throw new Error("Failed to fetch subscribers");
-      setSubscribers(data.data);
+      const data = await listSubscribers();
+      setSubscribers(data);
     } catch (error) {
       console.error("Failed to fetch subscribers:", error);
       toast.error("Failed to fetch subscribers");
@@ -57,18 +47,7 @@ export default function SubscriberManagement() {
 
     setSubmitting(true);
     try {
-      const response = await fetch(API_BASE, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newEmail }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to add subscriber");
-      }
-
+      await addSubscriber(newEmail);
       toast.success("Subscriber added successfully");
       setNewEmail("");
       setIsAddDialogOpen(false);
@@ -84,16 +63,7 @@ export default function SubscriberManagement() {
     if (!deletingEmail) return;
 
     try {
-      const response = await fetch(`${API_BASE}?email=${encodeURIComponent(deletingEmail)}`, {
-        method: "DELETE",
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to delete subscriber");
-      }
-
+      await deleteSubscriber(deletingEmail);
       toast.success("Subscriber deleted successfully");
       fetchSubscribers();
     } catch (error) {

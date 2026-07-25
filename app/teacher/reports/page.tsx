@@ -1,18 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import MonthlyPdfDownload from "@/components/teacher/MonthlyPdfDownload";
 
 export default async function TeacherReportsPage() {
-  const session = await getServerSession(authOptions);
-  const teacherId = session!.user.id;
+  const auth = await getAuthSession();
+  if (!auth) redirect("/auth/login?callbackUrl=/teacher/reports");
+  const teacherId = auth.session.user.id;
 
-  const reports = await prisma.classReport.findMany({
-    where: { teacherId },
-    include: { course: { select: { title: true } } },
-    orderBy: { classDate: "desc" },
-    take: 100
-  });
+  const reports = await api.classReports.list(auth.token);
 
   return (
     <div>
