@@ -1,3 +1,4 @@
+//app/%5Blocale%5D/%28site%29/courses/page.tsx
 import type { Metadata } from "next";
 import CoursesIndexView from "@/components/courses/CoursesIndexView";
 import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
@@ -8,13 +9,13 @@ export const metadata: Metadata = {
   title: "Our Courses",
   description:
     "Explore our Quran learning courses: Smart Maktab, Tajweed Master Course, Complete Nazera Quran, Hifzul Quran, Adult Quran Learning and English Speaking.",
-  alternates: buildAlternates("/courses")
+  alternates: buildAlternates("/courses"),
 };
 
 export default function CoursesPage() {
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: siteUrl },
-    { name: "Courses", url: `${siteUrl}/courses` }
+    { name: "Courses", url: `${siteUrl}/courses` },
   ]);
 
   return (

@@ -26,12 +26,15 @@ Route::prefix('v1')->group(function (): void {
     });
 
     Route::get('courses/slug/{course:slug}', [CourseController::class, 'show']);
-    Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::get('blogs/slug/{blog:slug}', [BlogController::class, 'show']);
     Route::apiResource('blogs', BlogController::class)->only(['index', 'show']);
     Route::get('books', [ContentController::class, 'books']);
     Route::get('reviews', [ContentController::class, 'reviews']);
-    Route::get('contents', [ContentController::class, 'index']);
+
+    Route::middleware('auth.optional')->group(function (): void {
+        Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+        Route::get('contents', [ContentController::class, 'index']);
+    });
     Route::get('teachers', [UserController::class, 'teachers']);
     Route::get('settings', [SiteSettingController::class, 'show']);
     Route::post('enrollments', [EnrollmentController::class, 'store']);

@@ -32,7 +32,7 @@ export function DialogTrigger({
   children,
 }: {
   asChild?: boolean;
-  children: React.ReactElement;
+  children: React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>;
 }) {
   const ctx = React.useContext(DialogContext);
   if (!ctx) return children;

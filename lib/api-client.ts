@@ -102,10 +102,20 @@ async function rawFetch(path: string, options: FetchOptions = {}): Promise<unkno
   return data;
 }
 
+/** Unwraps a Laravel JsonResource/ResourceCollection envelope, e.g. `{ data: {...} }` -> `{...}`
+ *  or `{ data: [...] }` -> `[...]`. Paginated envelopes (which also carry `meta`/`links`) are
+ *  fetched via apiFetchPaginated instead of apiFetch, so they never pass through this helper. */
+function unwrapResource(value: unknown): unknown {
+  if (isPlainObject(value) && "data" in value && (isPlainObject(value.data) || Array.isArray(value.data))) {
+    return value.data;
+  }
+  return value;
+}
+
 /** Fetches from the Laravel API and normalizes response keys from snake_case to camelCase. */
 export async function apiFetch<T = unknown>(path: string, options?: FetchOptions): Promise<T> {
   const data = await rawFetch(path, options);
-  return snakeToCamel<T>(data);
+  return snakeToCamel<T>(unwrapResource(data));
 }
 
 /** Fetches a Laravel paginate() envelope, returning { data, total, meta } normalized to camelCase. */

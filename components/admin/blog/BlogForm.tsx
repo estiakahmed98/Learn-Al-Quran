@@ -83,10 +83,10 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
     try {
       if (blog) {
-        await updateBlog(blog.id, formData);
+        await updateBlog(blog.id, { ...formData, slug });
         toast.success("Blog updated successfully");
       } else {
-        await createBlog(formData);
+        await createBlog({ ...formData, slug });
         toast.success("Blog created successfully");
       }
 
