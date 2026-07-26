@@ -1,6 +1,7 @@
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+const mediaOrigin = new URL(process.env.API_URL || "http://127.0.0.1:8000/api/v1");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -15,12 +16,22 @@ const nextConfig = {
     }
   },
   images: {
-    // All images are either served from /public (local uploads, static
-    // assets) or referenced via same-origin paths — nothing in the app
-    // currently needs to load remote images through next/image, so no
-    // remotePatterns are allowed. Add a specific host here (not a wildcard)
-    // if a future feature needs to render images from an external URL.
-    remotePatterns: []
+    // Uploaded media and its placeholder are served by the Laravel origin.
+    // Keep this allowlist tied to API_URL instead of allowing arbitrary hosts.
+    remotePatterns: [
+      {
+        protocol: mediaOrigin.protocol.replace(":", ""),
+        hostname: mediaOrigin.hostname,
+        port: mediaOrigin.port,
+        pathname: "/storage/**"
+      },
+      {
+        protocol: mediaOrigin.protocol.replace(":", ""),
+        hostname: mediaOrigin.hostname,
+        port: mediaOrigin.port,
+        pathname: "/images/**"
+      }
+    ]
   },
   async headers() {
     return [

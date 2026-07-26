@@ -309,7 +309,10 @@ export const api = {
 
   uploads: {
     store: (folder: string, formData: FormData, token: string) =>
-      apiFetch<{ url: string }>(`admin/uploads/${folder}`, { method: "POST", body: formData, token })
+      apiFetch<{ path: string; url: string; optimized: boolean }>(
+        `admin/uploads/${folder}`,
+        { method: "POST", body: formData, token }
+      )
   },
 
   analytics: {

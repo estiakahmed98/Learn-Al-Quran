@@ -7,7 +7,11 @@ use Illuminate\Validation\Rule;
 
 class CourseRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
         $courseId = $this->route('course')?->getKey();
@@ -24,6 +28,8 @@ class CourseRequest extends FormRequest
             'features' => ['nullable', 'array'],
             'why_cards' => ['nullable', 'array'],
             'faqs' => ['nullable', 'array'],
+            'thumbnail' => ['nullable', 'string', 'max:2048'],
+            'banner_image' => ['nullable', 'string', 'max:2048'],
             'is_active' => ['sometimes', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
         ];

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContentResource;
 use App\Models\Content;
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ContentController extends Controller
@@ -21,6 +23,7 @@ class ContentController extends Controller
         if (! $request->user() || $request->user()->role !== 'ADMIN') {
             $query->where('is_published', true);
         }
+
         return ContentResource::collection($query->paginate($request->integer('per_page', 20)));
     }
 
@@ -50,7 +53,7 @@ class ContentController extends Controller
         $content = Content::create([
             'type' => 'REVIEW',
             'title' => $data['name'],
-            'slug' => 'review-'.\Illuminate\Support\Str::slug($data['name']).'-'.\Illuminate\Support\Str::random(8),
+            'slug' => 'review-'.Str::slug($data['name']).'-'.Str::random(8),
             'subtitle' => $data['role'] ?? null,
             'description' => $data['message'],
             'data' => ['rating' => $data['rating']],
@@ -60,7 +63,7 @@ class ContentController extends Controller
         return new ContentResource($content);
     }
 
-    public function store(Request $request): ContentResource
+    public function store(Request $request, MediaService $media): ContentResource
     {
         $data = $request->validate([
             'type' => ['required', Rule::in(['PAGE', 'HOME_SECTION', 'TEACHER', 'REVIEW', 'FAQ', 'BLOG', 'BOOK'])],
@@ -74,10 +77,10 @@ class ContentController extends Controller
             'sort_order' => ['sometimes', 'integer'],
         ]);
 
-        return new ContentResource(Content::create($data));
+        return new ContentResource($media->createModel(new Content, $data, ['image']));
     }
 
-    public function update(Request $request, Content $content): ContentResource
+    public function update(Request $request, Content $content, MediaService $media): ContentResource
     {
         $data = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
@@ -89,14 +92,14 @@ class ContentController extends Controller
             'sort_order' => ['sometimes', 'integer'],
         ]);
 
-        $content->update($data);
+        $media->updateModel($content, $data, ['image']);
 
         return new ContentResource($content->refresh());
     }
 
-    public function destroy(Content $content): Response
+    public function destroy(Content $content, MediaService $media): Response
     {
-        $content->delete();
+        $media->deleteModel($content, ['image']);
 
         return response()->noContent();
     }

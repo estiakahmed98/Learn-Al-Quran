@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasStringPrimaryKey;
+use App\Models\Concerns\SerializesMedia;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,8 +13,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, HasStringPrimaryKey, Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, HasStringPrimaryKey, Notifiable, SerializesMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -60,9 +62,33 @@ class User extends Authenticatable
         ];
     }
 
-    public function enrollments(): HasMany { return $this->hasMany(Enrollment::class); }
-    public function trialApplications(): HasMany { return $this->hasMany(TrialApplication::class); }
-    public function taughtCourses(): HasMany { return $this->hasMany(Course::class, 'instructor_id'); }
-    public function classReports(): HasMany { return $this->hasMany(ClassReport::class, 'teacher_id'); }
-    public function analyticsEvents(): HasMany { return $this->hasMany(AnalyticsEvent::class); }
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function trialApplications(): HasMany
+    {
+        return $this->hasMany(TrialApplication::class);
+    }
+
+    public function taughtCourses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'instructor_id');
+    }
+
+    public function classReports(): HasMany
+    {
+        return $this->hasMany(ClassReport::class, 'teacher_id');
+    }
+
+    public function analyticsEvents(): HasMany
+    {
+        return $this->hasMany(AnalyticsEvent::class);
+    }
+
+    protected function mediaFields(): array
+    {
+        return ['image_url'];
+    }
 }

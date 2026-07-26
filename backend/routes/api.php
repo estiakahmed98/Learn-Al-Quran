@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AnalyticsController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ClassReportController;
 use App\Http\Controllers\Api\ClassScheduleController;
@@ -81,7 +81,10 @@ Route::prefix('v1')->group(function (): void {
             Route::get('newsletter-subscribers', [SubscriberController::class, 'index']);
             Route::delete('newsletter-subscribers', [SubscriberController::class, 'destroy']);
             Route::post('uploads/{folder?}', [UploadController::class, 'store'])
-                ->whereIn('folder', ['blogImages', 'blogAds', 'content', 'courses', 'users']);
+                ->whereIn('folder', [
+                    'blogImages', 'blogAds', 'content', 'courses', 'users',
+                    'employees', 'products', 'hero', 'gallery', 'news', 'organization', 'general',
+                ]);
         });
     });
 });

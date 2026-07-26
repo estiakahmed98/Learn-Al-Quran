@@ -131,6 +131,8 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("variant", "image");
+      if (blog?.id) fd.append("owner_id", String(blog.id));
 
       const data = await uploadBlogImage(fd);
 
@@ -164,6 +166,8 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("variant", "ad");
+      if (blog?.id) fd.append("owner_id", String(blog.id));
 
       const data = await uploadBlogAd(fd);
 
@@ -312,7 +316,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
           <label className="inline-flex items-center gap-2 w-fit cursor-pointer">
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={handleImageFileChange}
               disabled={uploadingImage}
@@ -323,15 +327,6 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
             </span>
           </label>
 
-          {/* Optional: manual URL input */}
-          <input
-            type="text"
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-            placeholder="Or paste image URL (optional)"
-            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
         </div>
 
         <div className="space-y-2">
@@ -357,7 +352,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
           <label className="inline-flex items-center gap-2 w-fit cursor-pointer">
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={handleAdImageFileChange}
               disabled={uploadingAdImage}
@@ -368,14 +363,6 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
             </span>
           </label>
 
-          <input
-            type="text"
-            name="ads"
-            value={formData.ads}
-            onChange={handleChange}
-            placeholder="Or paste ad image URL (optional)"
-            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
         </div>
 
         <div className="flex justify-end space-x-3 pt-6">

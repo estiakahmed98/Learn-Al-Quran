@@ -141,6 +141,8 @@ export default function CourseForm({
       setUploading(true);
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("variant", field === "thumbnail" ? "thumbnail" : "banner");
+      if (courseId) fd.append("owner_id", courseId);
 
       const data = await uploadCourseImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
@@ -483,7 +485,7 @@ export default function CourseForm({
             <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 onChange={(e) => uploadFile(e, "thumbnail", setUploadingThumbnail)}
                 disabled={uploadingThumbnail}
@@ -493,12 +495,6 @@ export default function CourseForm({
                 {uploadingThumbnail ? "Uploading..." : "Upload thumbnail"}
               </span>
             </label>
-            <input
-              value={values.thumbnail}
-              onChange={(e) => set("thumbnail", e.target.value)}
-              className={inputClass}
-              placeholder="Or paste image URL"
-            />
           </div>
 
           <div>
@@ -522,7 +518,7 @@ export default function CourseForm({
             <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 onChange={(e) => uploadFile(e, "bannerImage", setUploadingBanner)}
                 disabled={uploadingBanner}
@@ -532,12 +528,6 @@ export default function CourseForm({
                 {uploadingBanner ? "Uploading..." : "Upload banner"}
               </span>
             </label>
-            <input
-              value={values.bannerImage}
-              onChange={(e) => set("bannerImage", e.target.value)}
-              className={inputClass}
-              placeholder="Or paste image URL"
-            />
           </div>
 
           <div>

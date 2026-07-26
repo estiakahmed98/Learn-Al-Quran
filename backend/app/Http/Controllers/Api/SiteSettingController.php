@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SiteSettingRequest;
 use App\Http\Resources\SiteSettingResource;
 use App\Models\SiteSetting;
+use App\Services\MediaService;
 
 class SiteSettingController extends Controller
 {
@@ -16,10 +17,15 @@ class SiteSettingController extends Controller
         );
     }
 
-    public function update(SiteSettingRequest $request): SiteSettingResource
+    public function update(SiteSettingRequest $request, MediaService $media): SiteSettingResource
     {
         $settings = SiteSetting::firstOrCreate(['id' => 'main']);
-        $settings->update($request->validated());
+        $media->updateModel(
+            $settings,
+            $request->validated(),
+            ['logo', 'favicon', 'hero_image', 'about_image'],
+        );
+
         return new SiteSettingResource($settings->refresh());
     }
 }

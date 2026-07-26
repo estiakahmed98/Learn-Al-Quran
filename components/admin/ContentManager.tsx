@@ -70,6 +70,8 @@ export default function ContentManager({
       setUploadingImage(true);
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("variant", "image");
+      if (editingId) fd.append("owner_id", editingId);
 
       const data = await uploadSettingsImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
@@ -290,7 +292,7 @@ export default function ContentManager({
                 <label className="inline-flex w-fit cursor-pointer items-center gap-2">
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp"
                     className="hidden"
                     onChange={handleImageFileChange}
                     disabled={uploadingImage}

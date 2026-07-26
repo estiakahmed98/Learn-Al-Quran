@@ -20,9 +20,12 @@ export async function updateSiteSettings(payload: Record<string, unknown>) {
   return settings;
 }
 
-export async function uploadSettingsImage(formData: FormData) {
+export async function uploadSettingsImage(
+  formData: FormData,
+  collection: "general" | "hero" | "organization" = "general"
+) {
   const auth = await requireAdmin();
-  return api.uploads.store("content", formData, auth.token);
+  return api.uploads.store(collection, formData, auth.token);
 }
 
 export async function createContentItem(payload: Record<string, unknown>) {

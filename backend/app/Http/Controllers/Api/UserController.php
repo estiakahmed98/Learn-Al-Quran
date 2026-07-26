@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -33,7 +34,7 @@ class UserController extends Controller
         );
     }
 
-    public function store(UserRequest $request): UserResource
+    public function store(UserRequest $request, MediaService $media): UserResource
     {
         $data = $request->validated();
         $role = $data['role'] ?? 'STUDENT';
@@ -43,7 +44,9 @@ class UserController extends Controller
         $data['password'] = $role === 'STUDENT' ? Str::random(64) : $data['password'];
         $data['permissions'] ??= [];
 
-        return new UserResource(User::create($data)->loadCount('enrollments'));
+        $user = $media->createModel(new User, $data, ['image_url']);
+
+        return new UserResource($user->loadCount('enrollments'));
     }
 
     public function show(User $user): UserResource
@@ -51,23 +54,24 @@ class UserController extends Controller
         return new UserResource($user->loadCount('enrollments'));
     }
 
-    public function update(UserRequest $request, User $user): UserResource
+    public function update(UserRequest $request, User $user, MediaService $media): UserResource
     {
         $data = $request->validated();
         if (empty($data['password'])) {
             unset($data['password']);
         }
-        $user->update($data);
+        $media->updateModel($user, $data, ['image_url']);
 
         return new UserResource($user->refresh()->loadCount('enrollments'));
     }
 
-    public function destroy(Request $request, User $user): Response
+    public function destroy(Request $request, User $user, MediaService $media): Response
     {
         if ($request->user()->is($user)) {
             throw ValidationException::withMessages(['user' => 'You cannot delete your own account.']);
         }
-        $user->delete();
+        $media->deleteModel($user, ['image_url']);
+
         return response()->noContent();
     }
 }

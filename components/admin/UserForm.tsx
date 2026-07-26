@@ -71,6 +71,8 @@ export default function UserForm({
       setUploadingImage(true);
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("variant", "profile");
+      if (userId) fd.append("owner_id", userId);
 
       const data = await uploadUserImage(fd);
       if (!data.url) throw new Error("Invalid upload response: url missing");
@@ -227,7 +229,7 @@ export default function UserForm({
           <label className="mb-2 inline-flex w-fit cursor-pointer items-center gap-2">
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={uploadImage}
               disabled={uploadingImage}
@@ -237,12 +239,6 @@ export default function UserForm({
               {uploadingImage ? "Uploading..." : "Upload image"}
             </span>
           </label>
-          <input
-            value={values.imageUrl}
-            onChange={(e) => set("imageUrl", e.target.value)}
-            className={inputClass}
-            placeholder="Or paste image URL"
-          />
         </div>
 
         <div>

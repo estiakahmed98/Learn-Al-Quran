@@ -159,7 +159,10 @@ export default function SettingsForm({
       setUploadingField(key);
       const fd = new FormData();
       fd.append("file", file);
-      const data = await uploadSettingsImage(fd);
+      const collection = key === "heroImage" ? "hero" : key === "logo" || key === "favicon" ? "organization" : "general";
+      fd.append("variant", key === "heroImage" ? "banner" : key === "logo" || key === "favicon" ? "logo" : "image");
+      fd.append("owner_id", "main");
+      const data = await uploadSettingsImage(fd, collection);
       if (!data.url) throw new Error("Invalid upload response: url missing");
       update(key, data.url);
     } catch (err) {
@@ -276,7 +279,7 @@ export default function SettingsForm({
                     <div className="flex-1">
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
                         onChange={(e) => handleImageChange(field.key, e)}
                         disabled={uploadingField === field.key}
                         className="block w-full text-xs text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-primary-dark hover:file:bg-primary/20"
