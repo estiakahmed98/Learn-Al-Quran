@@ -23,7 +23,7 @@ export default async function AdminLayout({
   // Middleware redirects unauthenticated /admin requests to /auth/login.
   if (!session) {
     return (
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className="flex min-h-screen flex-col font-body">
           <AuthProvider>{children}</AuthProvider>
           <Toaster richColors position="top-right" />
@@ -33,7 +33,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-body">
         <AuthProvider>
           <AdminShell role={session.user.role} permissions={[]}>

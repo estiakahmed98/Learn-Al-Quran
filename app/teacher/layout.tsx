@@ -26,7 +26,7 @@ export default async function TeacherLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-body">
         <AuthProvider>
           <TeacherShell teacherName={session.user.name || ""}>{children}</TeacherShell>

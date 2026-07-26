@@ -5,7 +5,7 @@
     "backHome": "Back to Home"
   },
   "consent": {
-    "label": "I agree to the {terms} and {privacy}.",
+    "label": "I agree to the <terms>Terms &amp; Conditions</terms> and <privacy>Privacy Policy</privacy>.",
     "terms": "Terms & Conditions",
     "privacy": "Privacy Policy",
     "required": "You must agree to the Terms & Conditions and Privacy Policy."

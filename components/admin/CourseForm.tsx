@@ -130,6 +130,13 @@ export default function CourseForm({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      setError(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is 5MB.`);
+      e.target.value = "";
+      return;
+    }
+
     try {
       setUploading(true);
       const fd = new FormData();

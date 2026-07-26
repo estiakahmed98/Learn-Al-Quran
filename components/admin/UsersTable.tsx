@@ -45,8 +45,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
     const matchesSearch =
-      u.name.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q) ||
+      (u.name || "").toLowerCase().includes(q) ||
+      (u.email || "").toLowerCase().includes(q) ||
       (u.phone || "").includes(q);
     const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
     const matchesStatus =

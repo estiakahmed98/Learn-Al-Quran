@@ -16,7 +16,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   const messages = (await import(`../../messages/${routing.defaultLocale}.json`)).default;
 
   return (
-    <html lang={routing.defaultLocale}>
+    <html lang={routing.defaultLocale} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-body">
         <NextIntlClientProvider locale={routing.defaultLocale} messages={messages}>
           {children}

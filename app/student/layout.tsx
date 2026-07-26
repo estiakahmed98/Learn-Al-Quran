@@ -19,7 +19,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   // Middleware redirects unauthenticated /student requests to /auth/login.
   if (!session) {
     return (
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className="flex min-h-screen flex-col font-body">
           <AuthProvider>{children}</AuthProvider>
         </body>
@@ -29,7 +29,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   if (session.user.role === "ADMIN") redirect("/admin");
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-body">
         <AuthProvider>
           <StudentShell>{children}</StudentShell>

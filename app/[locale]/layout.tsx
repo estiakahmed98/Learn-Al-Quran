@@ -164,7 +164,7 @@ export default async function RootLayout(
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "";
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <GoogleTagManager gtmId={gtmId} />
       </head>

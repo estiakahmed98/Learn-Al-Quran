@@ -6,6 +6,14 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig = {
   reactStrictMode: true,
   distDir: "out",
+  experimental: {
+    // Image/file uploads go through Server Actions as multipart FormData;
+    // the backend already caps files at 5MB (see UploadImageRequest), so
+    // raise Next's default 1MB Server Action body limit to match.
+    serverActions: {
+      bodySizeLimit: "6mb"
+    }
+  },
   images: {
     // All images are either served from /public (local uploads, static
     // assets) or referenced via same-origin paths — nothing in the app
