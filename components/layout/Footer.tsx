@@ -3,6 +3,7 @@ import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { parseSocialLinks, socialPlatformInfo } from "@/lib/social-platforms";
+import { publicMediaUrl } from "@/lib/media-url";
 
 interface FooterProps {
   phone: string;
@@ -54,7 +55,7 @@ export default function Footer({
           <Link href="/" className="inline-flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={logo}
+              src={publicMediaUrl(logo, "/Learn_Al_Quran_Logo.png")}
               alt={`${siteName} logo`}
               className="h-14 w-14 shrink-0 rounded-full border border-gold/30 object-cover"
             />
@@ -71,9 +72,9 @@ export default function Footer({
                 {t("followUs")}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                {socials.map((social) => (
+                {socials.map((social, index) => (
                   <a
-                    key={social.title}
+                    key={`${social.title}-${social.url}-${index}`}
                     href={social.url as string}
                     target="_blank"
                     rel="noopener noreferrer"

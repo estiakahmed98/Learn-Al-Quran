@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Calendar, User, ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecentBlogs, { type RecentBlog } from "./RecentBlogs";
+import { publicMediaUrl } from "@/lib/media-url";
 
 export interface Blog {
   id: number;
@@ -94,7 +95,7 @@ export default function BlogDetails({
         <aside className="col-span-2 sticky top-24 pl-8 h-fit">
           {blog.ads ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={blog.ads} alt="" className="rounded-lg border w-full" />
+            <img src={publicMediaUrl(blog.ads)} alt="" className="rounded-lg border w-full" />
           ) : (
             <div className="text-center text-muted-foreground border rounded-lg p-4">
               {t("adsNotFound")}
@@ -136,7 +137,7 @@ export default function BlogDetails({
                   <div className="relative aspect-video rounded-xl overflow-hidden border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={blog.image}
+                      src={publicMediaUrl(blog.image)}
                       alt={blog.title}
                       className="w-full h-full object-cover"
                     />

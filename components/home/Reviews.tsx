@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { publicMediaUrl } from "@/lib/media-url";
 
 interface ReviewItem {
   id: string;
@@ -72,7 +73,7 @@ function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-gold/40 ring-offset-2 ring-offset-white transition-all duration-300 group-hover:ring-4 group-hover:ring-gold/60">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={review.image || "/images/teacher-placeholder.jpg"}
+                src={publicMediaUrl(review.image, "/images/teacher-placeholder.jpg")}
                 alt={review.title}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />

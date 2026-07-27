@@ -3,9 +3,13 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/shared/WhatsAppFloat";
 import { getSiteSettings } from "@/lib/site-config";
+import { getCachedActiveCourses } from "@/lib/cached-data";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSiteSettings();
+  const [settings, courses] = await Promise.all([
+    getSiteSettings(),
+    getCachedActiveCourses().catch(() => []),
+  ]);
 
   return (
     <>
@@ -14,6 +18,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         phone={settings.phone || ""}
         siteName={settings.siteName}
         logo={settings.logo}
+        courses={courses}
       />
       <main className="flex-1">{children}</main>
       <Footer

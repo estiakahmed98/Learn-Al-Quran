@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { pickText } from "@/lib/course-content";
 import type { CourseListItem } from "@/hooks/useCourses";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { publicMediaUrl } from "@/lib/media-url";
 
 const courseIcons: Record<string, string> = {
   "smart-maktab-learning": "📖",
@@ -80,7 +81,7 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                 <div className="relative flex h-32 sm:h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 to-gold/5">
                   {course.thumbnail ? (
                     <Image
-                      src={course.thumbnail}
+                      src={publicMediaUrl(course.thumbnail)}
                       alt={pickText(locale, course.title, course.titleBn)}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

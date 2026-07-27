@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calendar, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { processBlogSummary } from "./summaryUtils";
+import { publicMediaUrl } from "@/lib/media-url";
 
 export interface RecentBlog {
   id: number;
@@ -51,7 +52,7 @@ export default function RecentBlogs({ blogs }: { blogs: RecentBlog[] }) {
                 <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={blog.image}
+                    src={publicMediaUrl(blog.image)}
                     alt={blog.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />

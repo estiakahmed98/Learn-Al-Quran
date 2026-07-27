@@ -67,7 +67,12 @@ export async function getSiteSettings() {
     // Only override fallback values with API values that are actually set (not null/empty).
     const merged: Record<string, unknown> = { ...fallbackSettings };
     for (const [key, value] of Object.entries(settings)) {
-      if (value !== null && value !== undefined && value !== "") {
+      const isMissingMedia =
+        ["logo", "favicon", "heroImage", "aboutImage"].includes(key) &&
+        typeof value === "string" &&
+        value.includes("media-placeholder.svg");
+
+      if (value !== null && value !== undefined && value !== "" && !isMissingMedia) {
         merged[key] = value;
       }
     }

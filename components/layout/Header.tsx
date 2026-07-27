@@ -7,8 +7,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
 import IslamicPattern from "@/components/shared/IslamicPattern";
-import { useCourses } from "@/hooks/useCourses";
+import type { CourseListItem } from "@/hooks/useCourses";
 import { pickText } from "@/lib/course-content";
+import { publicMediaUrl } from "@/lib/media-url";
 
 const fallbackIcons: Record<string, string> = {
   "smart-maktab-learning": "🕌",
@@ -32,7 +33,7 @@ function UserAvatar({
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={image}
+        src={publicMediaUrl(image)}
         alt={name || "Profile"}
         className={`${size} rounded-full border-2 border-gold object-cover`}
       />
@@ -51,10 +52,12 @@ export default function Header({
   phone,
   siteName = "Learn Al Quran Online BD",
   logo = "/Learn_Al_Quran_Logo.png",
+  courses = [],
 }: {
   phone: string;
   siteName?: string;
   logo?: string;
+  courses?: CourseListItem[];
 }) {
 
   const [open, setOpen] = useState(false);
@@ -66,8 +69,8 @@ export default function Header({
   const t = useTranslations("header");
   const pathname = usePathname();
   const locale = useLocale();
-  const { courses } = useCourses();
   const courseLinks = courses.slice(0, 6);
+  const logoUrl = publicMediaUrl(logo, "/Learn_Al_Quran_Logo.png");
 
   const isActive = (href: string) => pathname === href;
 
@@ -87,7 +90,7 @@ export default function Header({
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={logo}
+            src={logoUrl}
             alt={`${siteName} logo`}
             className="h-11 w-11 shrink-0 rounded-full border-2 border-gold/40 object-cover"
           />
@@ -143,7 +146,7 @@ export default function Header({
                       {c.thumbnail ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={c.thumbnail}
+                          src={publicMediaUrl(c.thumbnail)}
                           alt=""
                           className="h-8 w-8 shrink-0 rounded-lg object-cover"
                         />
@@ -330,7 +333,7 @@ export default function Header({
                   {c.thumbnail ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={c.thumbnail}
+                      src={publicMediaUrl(c.thumbnail)}
                       alt=""
                       className="h-6 w-6 shrink-0 rounded-md object-cover"
                     />

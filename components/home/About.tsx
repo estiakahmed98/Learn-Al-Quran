@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { publicMediaUrl } from "@/lib/media-url";
 
 interface AboutProps {
   title?: string;
@@ -17,7 +18,7 @@ export default function About({ title, description, image }: AboutProps) {
   );
 
   const aboutTitle = title || t("title");
-  const aboutImage = image || "/images/about-madrasa.jpg";
+  const aboutImage = publicMediaUrl(image, "/images/about-madrasa.jpg");
 
   return (
     <section id="about" className="relative overflow-hidden bg-primary/5">

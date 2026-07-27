@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { publicMediaUrl } from "@/lib/media-url";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GraduationCap, Search, X } from "lucide-react";
@@ -202,7 +203,7 @@ export default function CoursesIndexView() {
                     <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
                       {course.thumbnail ? (
                         <Image
-                          src={course.thumbnail}
+                          src={publicMediaUrl(course.thumbnail)}
                           alt={pickText(locale, course.title, course.titleBn)}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

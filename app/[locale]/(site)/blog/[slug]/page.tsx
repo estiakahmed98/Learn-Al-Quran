@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import BlogDetails from "@/components/admin/blog/BlogDetails";
 import { api } from "@/lib/api-client";
@@ -10,7 +10,16 @@ import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
+}
+
+const LEGACY_BLOG_SLUG =
+  "প-রস-য-উপস-গর-ছ-প-য-ইর-ন-য-দ-ধ-ছড-য-পড-ছ-নত-ন-নত-ন-অঞ-চল";
+const CORRECTED_BLOG_SLUG =
+  "পারস্য-উপসাগর-ছাপিয়ে-ইরান-যুদ্ধ-ছড়িয়ে-পড়ছে-নতুন-নতুন-অঞ্চলে";
+
+function canonicalBlogSlug(slug: string) {
+  return slug === LEGACY_BLOG_SLUG ? CORRECTED_BLOG_SLUG : slug;
 }
 
 // Next.js should hand `params.slug` to us already decoded, but on some
@@ -37,7 +46,7 @@ function serializeDate(value: Date | string | null | undefined) {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const slug = decodeSlug(params.slug);
+  const slug = canonicalBlogSlug(decodeSlug(params.slug));
   const [blog, t] = await Promise.all([
     getCachedBlogBySlug(slug).catch(() => null),
     getTranslations("sitePages.blog")
@@ -72,7 +81,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function BlogDetailsPage(props: Props) {
   const params = await props.params;
-  const slug = decodeSlug(params.slug);
+  const requestedSlug = decodeSlug(params.slug);
+  const slug = canonicalBlogSlug(requestedSlug);
+
+  if (requestedSlug !== slug) {
+    const localePrefix = params.locale === "en" ? "/en" : "";
+    redirect(`${localePrefix}/blog/${encodeURIComponent(slug)}`);
+  }
   const [blog, t] = await Promise.all([
     getCachedBlogBySlug(slug).catch(() => null),
     getTranslations("sitePages.blog")

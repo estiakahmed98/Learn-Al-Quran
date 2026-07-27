@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { publicMediaUrl } from "@/lib/media-url";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
@@ -52,7 +53,7 @@ export default function PriceCard({
     <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
       {bannerImage && (
         <div className="relative aspect-video w-full">
-          <Image src={bannerImage} alt={title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
+          <Image src={publicMediaUrl(bannerImage)} alt={title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
         </div>
       )}
 

@@ -18,9 +18,9 @@ export function waLink(number: string, message = "") {
 
 export function generateSlug(value: string) {
   return value
-    .normalize("NFKD")
+    .normalize("NFKC")
     .toLowerCase()
     .trim()
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/[^\p{L}\p{M}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
 }

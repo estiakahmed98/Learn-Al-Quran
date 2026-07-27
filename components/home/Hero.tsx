@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import IslamicPattern from "../shared/IslamicPattern";
+import { publicMediaUrl } from "@/lib/media-url";
 
 interface HeroProps {
   phone: string;
@@ -27,7 +28,7 @@ export default function Hero({
   const heroTitle =
     title || `${t("titleLine1")} ${t("titleLine2")} ${t("titleLine3")}`;
   const heroSubtitle = subtitle || t("subtitle");
-  const heroImage = image || "/images/hero-banner.jpg";
+  const heroImage = publicMediaUrl(image, "/images/hero-banner.jpg");
 
   return (
     <section className="relative min-h-[32rem] overflow-hidden bg-primary-dark sm:min-h-[38rem] lg:min-h-[44rem]">

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { GraduationCap } from "lucide-react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { publicMediaUrl } from "@/lib/media-url";
 
 export interface TeacherCard {
   id: string;
@@ -29,7 +30,7 @@ function TeacherCardItem({
       <div className="relative isolate h-56 w-full shrink-0 overflow-hidden bg-primary-dark sm:h-64">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={teacher.imageUrl || "/images/teacher-placeholder.jpg"}
+          src={publicMediaUrl(teacher.imageUrl, "/images/teacher-placeholder.jpg")}
           alt={teacher.name}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />

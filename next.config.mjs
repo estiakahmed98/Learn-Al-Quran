@@ -33,6 +33,14 @@ const nextConfig = {
       }
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: "/storage/:path*",
+        destination: `${mediaOrigin.origin}/storage/:path*`
+      }
+    ];
+  },
   async headers() {
     return [
       {

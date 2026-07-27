@@ -15,10 +15,12 @@ export default async function GoogleMapSection({
   email?: string;
 }) {
   const t = await getTranslations("sitePages.map");
-  const googleMapUrl =
-    mapUrl && !mapUrl.includes("!1d1234")
-      ? mapUrl
-      : "https://www.google.com/maps?q=Dhaka%2C%20Bangladesh&z=12&output=embed";
+  const isEmbeddableUrl =
+    mapUrl.includes("/maps/embed") || mapUrl.includes("output=embed");
+  const mapQuery = address?.trim() || "Dhaka, Bangladesh";
+  const googleMapUrl = isEmbeddableUrl
+    ? mapUrl
+    : `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed`;
 
   if (embedded) {
     return (
