@@ -25,7 +25,7 @@ function LoginForm() {
     const res = await signIn("credentials", {
       email,
       password,
-      redirect: false
+      redirect: false,
     });
 
     if (res?.error) {
@@ -35,24 +35,30 @@ function LoginForm() {
     }
 
     const session = await getSession();
-    const isStaff = session?.user?.role === "ADMIN" || session?.user?.role === "TEACHER";
-    const destination = callbackUrl || (isStaff ? "/admin" : "/student/dashboard");
+    const isStaff =
+      session?.user?.role === "ADMIN" || session?.user?.role === "TEACHER";
+    const destination =
+      callbackUrl || (isStaff ? "/admin" : "/student/dashboard");
 
     router.push(destination);
     router.refresh();
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-12">
+    <div className="flex w-full flex-1 items-center justify-center bg-cream px-4 py-12">
       <div className="w-full max-w-sm rounded-2xl border border-gold/20 bg-white p-8 shadow-lg">
         <h1 className="text-center font-heading text-xl font-bold text-primary-dark">
           {t("loginTitle")}
         </h1>
-        <p className="mt-1 text-center text-sm text-gray-500">{t("siteName")}</p>
+        <p className="mt-1 text-center text-sm text-gray-500">
+          {t("siteName")}
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">{t("email")}</label>
+            <label className="text-sm font-medium text-gray-700">
+              {t("email")}
+            </label>
             <input
               type="email"
               required
@@ -62,7 +68,9 @@ function LoginForm() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">{t("password")}</label>
+            <label className="text-sm font-medium text-gray-700">
+              {t("password")}
+            </label>
             <div className="relative mt-1">
               <input
                 type={showPassword ? "text" : "password"}
@@ -78,12 +86,20 @@ function LoginForm() {
                 aria-pressed={showPassword}
                 className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 transition hover:text-primary focus:outline-none"
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
 
-          {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{error}</p>}
+          {error && (
+            <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"

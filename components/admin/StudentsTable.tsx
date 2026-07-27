@@ -9,12 +9,16 @@ import { updateUser, deleteUser } from "@/app/admin/users/actions";
 
 export interface StudentRow {
   id: string;
+  recordType?: "USER" | "TRIAL_APPLICATION";
+  userId?: string | null;
   name: string;
   email: string;
   phone: string | null;
   whatsapp: string | null;
   imageUrl: string | null;
   studentStatus: "FREE_TRIAL" | "REGULAR";
+  applicationStatus?: "PENDING" | "GROUP_ASSIGNED" | "COMPLETED" | "CANCELLED";
+  courseTitle?: string | null;
   isActive: boolean;
   createdAt: string;
   _count: { enrollments: number };
@@ -98,6 +102,13 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
     setSavingId(null);
   }
 
+  function detailHref(student: StudentRow) {
+    if (student.recordType === "TRIAL_APPLICATION") {
+      return student.userId ? `/admin/students/${student.userId}` : null;
+    }
+    return `/admin/students/${student.id}`;
+  }
+
   return (
     <div>
       <div className="mb-4 flex flex-wrap gap-2">
@@ -154,18 +165,26 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
               <th className="px-4 py-3">Student</th>
               <th className="px-4 py-3">Contact</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Enrollments</th>
+              <th className="px-4 py-3">
+                {statusTab === "FREE_TRIAL" ? "Course" : "Enrollments"}
+              </th>
               <th className="px-4 py-3">Joined</th>
-              <th className="px-4 py-3">Account</th>
+              <th className="px-4 py-3">
+                {statusTab === "FREE_TRIAL" ? "Application" : "Account"}
+              </th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {paginated.map((student) => (
-              <tr key={student.id} className="border-t border-gray-100">
+            {paginated.map((student) => {
+              const href = detailHref(student);
+
+              return (
+              <tr key={`${student.recordType ?? "USER"}:${student.id}`} className="border-t border-gray-100">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <Link href={`/admin/students/${student.id}`} className="shrink-0">
+                    {href ? (
+                    <Link href={href} className="shrink-0">
                       {student.imageUrl ? (
                         <img
                           src={student.imageUrl}
@@ -181,13 +200,22 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
                         </span>
                       )}
                     </Link>
+                    ) : (
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold uppercase text-primary">
+                        {student.name.trim().charAt(0) || "S"}
+                      </span>
+                    )}
                     <div className="min-w-0">
-                      <Link
-                        href={`/admin/students/${student.id}`}
-                        className="font-medium text-gray-800 hover:text-primary hover:underline"
-                      >
-                        {student.name}
-                      </Link>
+                      {href ? (
+                        <Link
+                          href={href}
+                          className="font-medium text-gray-800 hover:text-primary hover:underline"
+                        >
+                          {student.name}
+                        </Link>
+                      ) : (
+                        <p className="font-medium text-gray-800">{student.name}</p>
+                      )}
                       <p className="truncate text-xs text-gray-400">{student.email}</p>
                     </div>
                   </div>
@@ -208,27 +236,48 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/students/${student.id}`}
-                    className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
-                  >
-                    {student._count.enrollments}
-                  </Link>
+                  {student.recordType === "TRIAL_APPLICATION" ? (
+                    <span className="text-xs font-medium text-gray-600">
+                      {student.courseTitle || "Course unavailable"}
+                    </span>
+                  ) : (
+                    <Link
+                      href={`/admin/students/${student.id}`}
+                      className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+                    >
+                      {student._count.enrollments}
+                    </Link>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-gray-500">{formatDate(student.createdAt)}</td>
                 <td className="px-4 py-3">
-                  <button
-                    onClick={() => toggleActive(student)}
-                    disabled={savingId === student.id}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      student.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    {student.isActive ? "Active" : "Blocked"}
-                  </button>
+                  {student.recordType === "TRIAL_APPLICATION" ? (
+                    <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                      {(student.applicationStatus || "PENDING").replace("_", " ")}
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => toggleActive(student)}
+                      disabled={savingId === student.id}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        student.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                      }`}
+                    >
+                      {student.isActive ? "Active" : "Blocked"}
+                    </button>
+                  )}
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
+                  {student.recordType === "TRIAL_APPLICATION" ? (
+                    href ? (
+                      <Link href={href} className="text-xs font-semibold text-primary hover:underline">
+                        View Profile
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-gray-400">Guest application</span>
+                    )
+                  ) : (
+                    <div className="flex items-center gap-3">
                     <Link
                       href={`/admin/students/${student.id}`}
                       className="text-xs font-semibold text-primary hover:underline"
@@ -242,10 +291,12 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
                     >
                       Delete
                     </button>
-                  </div>
+                    </div>
+                  )}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
         {filtered.length === 0 && (

@@ -240,7 +240,12 @@ export const api = {
   trialApplications: {
     create: (payload: unknown) => apiFetch<any>("trial-applications", { method: "POST", body: payload }),
     my: (token: string) => apiFetch<any | null>("my/trial-application", { token, cache: "no-store" }),
-    adminList: (token: string) => apiFetchPaginated<any>("admin/trial-applications", { token, cache: "no-store" })
+    adminList: (token: string, params?: { perPage?: number }) =>
+      apiFetchPaginated<any>("admin/trial-applications", {
+        token,
+        searchParams: { per_page: params?.perPage ?? 200 },
+        cache: "no-store"
+      })
   },
 
   classReports: {

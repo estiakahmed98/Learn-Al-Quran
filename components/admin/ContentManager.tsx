@@ -2,6 +2,7 @@
 
 import { useState, ChangeEvent } from "react";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 import { createContentItem, updateContentItem, deleteContentItem, uploadSettingsImage } from "@/app/admin/settings/actions";
 
 type ContentType = "PAGE" | "HOME_SECTION" | "TEACHER" | "REVIEW" | "FAQ" | "BLOG" | "BOOK";
@@ -29,6 +30,20 @@ const LABELS: Record<ContentType, string> = {
 
 const emptyForm = { title: "", subtitle: "", description: "", image: "" };
 
+function mergeContentItem(
+  current: ContentItem,
+  updated: Partial<ContentItem> | null | undefined,
+): ContentItem {
+  return {
+    ...current,
+    ...(updated ?? {}),
+    // A row's identity must remain stable across update responses so React
+    // never receives an undefined/replaced list key after publish or edit.
+    id: current.id,
+    type: current.type,
+  };
+}
+
 export default function ContentManager({
   type,
   initialContent
@@ -42,6 +57,7 @@ export default function ContentManager({
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [publishingIds, setPublishingIds] = useState<Set<string>>(() => new Set());
 
   const label = LABELS[type];
 
@@ -92,7 +108,11 @@ export default function ContentManager({
     try {
       if (editingId) {
         const updated = await updateContentItem(editingId, form);
-        setItems((prev) => prev.map((i) => (i.id === editingId ? updated : i)));
+        setItems((prev) =>
+          prev.map((item) =>
+            item.id === editingId ? mergeContentItem(item, updated) : item,
+          ),
+        );
         setForm(emptyForm);
         setEditingId(null);
         setShowForm(false);
@@ -111,11 +131,52 @@ export default function ContentManager({
   }
 
   async function togglePublish(item: ContentItem) {
+    if (publishingIds.has(item.id)) return;
+
+    const nextPublished = !item.isPublished;
+    setPublishingIds((prev) => new Set(prev).add(item.id));
+    setItems((prev) =>
+      prev.map((current) =>
+        current.id === item.id
+          ? { ...current, isPublished: nextPublished }
+          : current,
+      ),
+    );
+
     try {
-      const updated = await updateContentItem(item.id, { isPublished: !item.isPublished });
-      setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
-    } catch {
-      // no-op
+      const updated = await updateContentItem(item.id, { isPublished: nextPublished });
+      setItems((prev) =>
+        prev.map((current) =>
+          current.id === item.id
+            ? {
+                ...mergeContentItem(current, updated),
+                isPublished: nextPublished,
+              }
+            : current,
+        ),
+      );
+      toast.success(
+        `${label} ${nextPublished ? "published" : "hidden"} successfully.`,
+      );
+    } catch (error) {
+      setItems((prev) =>
+        prev.map((current) =>
+          current.id === item.id
+            ? { ...current, isPublished: item.isPublished }
+            : current,
+        ),
+      );
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : `Failed to update ${label.toLowerCase()} status.`,
+      );
+    } finally {
+      setPublishingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
     }
   }
 
@@ -144,7 +205,7 @@ export default function ContentManager({
         <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => (
             <div
-              key={item.id}
+              key={`${item.type}:${item.id}`}
               className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
               <div className="h-48 w-full shrink-0 bg-cream">
@@ -170,7 +231,8 @@ export default function ContentManager({
                 <div className="mt-4 flex items-center justify-between gap-2 pt-2">
                   <button
                     onClick={() => togglePublish(item)}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    disabled={publishingIds.has(item.id)}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold disabled:cursor-wait disabled:opacity-60 ${
                       item.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                     }`}
                   >
@@ -197,7 +259,7 @@ export default function ContentManager({
       ) : (
         <div className="mt-6 space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4">
+            <div key={`${item.type}:${item.id}`} className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4">
               <div>
                 <p className="font-medium text-gray-800">{item.title}</p>
                 {item.subtitle && <p className="text-xs text-gray-400">{item.subtitle}</p>}
@@ -205,7 +267,8 @@ export default function ContentManager({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => togglePublish(item)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  disabled={publishingIds.has(item.id)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold disabled:cursor-wait disabled:opacity-60 ${
                     item.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                   }`}
                 >
