@@ -18,5 +18,6 @@ export async function setEnrollmentPaymentStatus(id: string, reject: boolean) {
   );
 
   revalidatePath("/admin/payments");
+  revalidatePath("/admin/students");
   return enrollment;
 }

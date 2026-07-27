@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { listBooks } from "@/app/public-actions";
+import { publicMediaUrl } from "@/lib/media-url";
 
 type Book = {
   id: string;
@@ -40,18 +41,20 @@ type BooksApiResponse = {
 const BOOKS_PER_PAGE = 12;
 
 function normalizeImageUrl(image: string | null): string | null {
-  if (!image) return null;
+  const normalized = publicMediaUrl(image);
+  if (!normalized) return null;
 
   if (
-    image.startsWith("http://") ||
-    image.startsWith("https://") ||
-    image.startsWith("data:") ||
-    image.startsWith("blob:")
+    normalized.startsWith("/") ||
+    normalized.startsWith("http://") ||
+    normalized.startsWith("https://") ||
+    normalized.startsWith("data:") ||
+    normalized.startsWith("blob:")
   ) {
-    return image;
+    return normalized;
   }
 
-  return image.startsWith("/") ? image : `/${image}`;
+  return `/${normalized}`;
 }
 
 function truncateWords(text: string | null, wordLimit = 10) {

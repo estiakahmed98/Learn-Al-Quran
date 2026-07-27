@@ -7,6 +7,8 @@ use App\Http\Requests\Api\StoreEnrollmentRequest;
 use App\Http\Resources\EnrollmentResource;
 use App\Models\Enrollment;
 use App\Models\User;
+use App\Services\EnrollmentStudentService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -76,7 +78,11 @@ class EnrollmentController extends Controller
         return new EnrollmentResource($enrollment->load(['user', 'course', 'results']));
     }
 
-    public function update(Request $request, Enrollment $enrollment): EnrollmentResource
+    public function update(
+        Request $request,
+        Enrollment $enrollment,
+        EnrollmentStudentService $studentService,
+    ): EnrollmentResource
     {
         $data = $request->validate([
             'payment_status' => ['sometimes', Rule::in(['PENDING', 'PAID', 'VERIFIED', 'REJECTED'])],
@@ -84,7 +90,17 @@ class EnrollmentController extends Controller
             'admin_note' => ['sometimes', 'nullable', 'string'],
         ]);
 
-        $enrollment->update($data);
+        DB::transaction(function () use ($data, $enrollment, $studentService): void {
+            $enrollment->update($data);
+            $enrollment->refresh();
+
+            if (
+                $enrollment->payment_status === 'VERIFIED'
+                && in_array($enrollment->enrollment_status, ['APPROVED', 'ACTIVE', 'COMPLETED'], true)
+            ) {
+                $studentService->promoteToRegular($enrollment);
+            }
+        });
 
         return new EnrollmentResource($enrollment->refresh()->load(['user', 'course', 'results']));
     }

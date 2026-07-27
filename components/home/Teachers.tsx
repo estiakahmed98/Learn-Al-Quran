@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { GraduationCap } from "lucide-react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
@@ -96,55 +95,11 @@ export default function Teachers({
   embedded = false,
 }: TeachersProps) {
   const t = useTranslations("sitePages.teachers");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [itemsPerView, setItemsPerView] = useState(4);
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  // Calculate items per view based on screen size
-  useEffect(() => {
-    const updateItemsPerView = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setItemsPerView(1);
-      } else if (width < 1024) {
-        setItemsPerView(2);
-      } else {
-        setItemsPerView(4);
-      }
-    };
-
-    updateItemsPerView();
-    window.addEventListener("resize", updateItemsPerView);
-    return () => window.removeEventListener("resize", updateItemsPerView);
-  }, []);
 
   if (!teachers.length) return null;
 
   const title = embedded ? t("embeddedTitle") : t("title");
   const subtitle = embedded ? t("embeddedSubtitle") : t("eyebrow");
-
-  const totalSlides = Math.ceil(teachers.length / itemsPerView);
-  const maxIndex = Math.max(0, totalSlides - 1);
-
-  const goToSlide = (index: number) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex(Math.max(0, Math.min(index, maxIndex)));
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const nextSlide = () => {
-    if (isAnimating) return;
-    goToSlide(currentIndex + 1);
-  };
-
-  const prevSlide = () => {
-    if (isAnimating) return;
-    goToSlide(currentIndex - 1);
-  };
-
-  const hasMultipleSlides = totalSlides > 1;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white">
@@ -196,148 +151,15 @@ export default function Teachers({
           )}
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative mt-10">
-          {/* Navigation Buttons */}
-          {hasMultipleSlides && (
-            <>
-              <button
-                onClick={prevSlide}
-                disabled={currentIndex === 0 || isAnimating}
-                className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex isolate items-center justify-center h-10 w-10 overflow-hidden rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
-                aria-label="Previous slide"
-              >
-                <IslamicPattern tone="green" opacity={0.14} className="z-0" />
-                <svg
-                  className="relative z-10 w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-
-              <button
-                onClick={nextSlide}
-                disabled={currentIndex >= maxIndex || isAnimating}
-                className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex isolate items-center justify-center h-10 w-10 overflow-hidden rounded-full bg-white shadow-lg border border-gold/20 text-primary-dark hover:bg-gold hover:text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-110"
-                aria-label="Next slide"
-              >
-                <IslamicPattern tone="green" opacity={0.14} className="z-0" />
-                <svg
-                  className="relative z-10 w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </>
-          )}
-
-          {/* Carousel Track */}
-          <div className="overflow-hidden">
-            <div
-              ref={carouselRef}
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-              }}
-            >
-              {Array.from({ length: totalSlides }).map((_, slideIndex) => {
-                const start = slideIndex * itemsPerView;
-                const slideTeachers = teachers.slice(
-                  start,
-                  start + itemsPerView,
-                );
-
-                // Pad with empty items if needed
-                const paddedTeachers = [...slideTeachers];
-                while (paddedTeachers.length < itemsPerView) {
-                  paddedTeachers.push(null as any);
-                }
-
-                return (
-                  <div
-                    key={slideIndex}
-                    className="min-w-full grid gap-4 sm:gap-6"
-                    style={{
-                      gridTemplateColumns: `repeat(${itemsPerView}, 1fr)`,
-                    }}
-                  >
-                    {paddedTeachers.map((teacher, idx) =>
-                      teacher ? (
-                        <TeacherCardItem
-                          key={teacher.id}
-                          teacher={teacher}
-                          index={start + idx}
-                        />
-                      ) : (
-                        <div key={`empty-${idx}`} className="invisible" />
-                      ),
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Mobile Navigation Dots */}
-          {hasMultipleSlides && (
-            <div className="flex justify-center gap-2 mt-6 sm:hidden">
-              {Array.from({ length: totalSlides }).map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => goToSlide(idx)}
-                  className={`transition-all duration-300 rounded-full ${
-                    currentIndex === idx
-                      ? "w-6 h-2 bg-gold"
-                      : "w-2 h-2 bg-gold/30 hover:bg-gold/50"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Desktop Slide Indicators */}
-          {hasMultipleSlides && (
-            <div className="hidden sm:flex justify-center gap-2 mt-6">
-              {Array.from({ length: totalSlides }).map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => goToSlide(idx)}
-                  className={`transition-all duration-300 rounded-full ${
-                    currentIndex === idx
-                      ? "w-8 h-1.5 bg-gold"
-                      : "w-1.5 h-1.5 bg-gold/30 hover:bg-gold/50"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Slide Counter */}
-          {hasMultipleSlides && (
-            <div className="flex justify-center mt-3 text-xs text-gray-400">
-              <span>
-                {currentIndex + 1} / {totalSlides}
-              </span>
-            </div>
-          )}
+        {/* Every active teacher remains visible; the grid wraps responsively. */}
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+          {teachers.map((teacher, index) => (
+            <TeacherCardItem
+              key={teacher.id}
+              teacher={teacher}
+              index={index}
+            />
+          ))}
         </div>
 
         {/* Bottom Decorative Element */}

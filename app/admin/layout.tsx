@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
 import { Toaster } from "sonner";
-import { authOptions } from "@/lib/auth";
 import AuthProvider from "@/components/admin/AuthProvider";
 import AdminShell from "@/components/admin/AdminShell";
+import { getAuthSession } from "@/lib/session";
+import { api } from "@/lib/api-client";
 import "../globals.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
@@ -18,7 +18,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const auth = await getAuthSession();
+  const session = auth?.session;
+  const dashboardSummary = auth
+    ? await api.dashboard.summary(auth.token).catch(() => null)
+    : null;
+  const paymentStatuses = dashboardSummary?.enrollments?.byPaymentStatus ?? {};
+  const pendingPaymentsCount =
+    Number(paymentStatuses.PENDING ?? 0) + Number(paymentStatuses.PAID ?? 0);
 
   // Middleware redirects unauthenticated /admin requests to /auth/login.
   if (!session) {
@@ -36,7 +43,11 @@ export default async function AdminLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-body">
         <AuthProvider>
-          <AdminShell role={session.user.role} permissions={[]}>
+          <AdminShell
+            role={session.user.role}
+            permissions={[]}
+            pendingPaymentsCount={pendingPaymentsCount}
+          >
             {children}
           </AdminShell>
         </AuthProvider>

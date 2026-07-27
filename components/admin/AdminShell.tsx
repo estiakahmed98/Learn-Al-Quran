@@ -91,9 +91,11 @@ function getPageTitle(pathname: string | null) {
 function SidebarNav({
   onNavigate,
   visibleLinks,
+  pendingPaymentsCount,
 }: {
   onNavigate?: () => void;
   visibleLinks: typeof navLinks;
+  pendingPaymentsCount: number;
 }) {
   const pathname = usePathname();
 
@@ -109,13 +111,22 @@ function SidebarNav({
             key={link.href}
             href={link.href}
             onClick={onNavigate}
-            className={`rounded-lg px-3 py-2 font-medium hover:bg-cream ${
+            className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 font-medium hover:bg-cream ${
               isActive && link.href !== "/"
                 ? "bg-cream text-primary-dark"
                 : "text-gray-700"
             }`}
           >
-            {link.label}
+            <span>{link.label}</span>
+            {link.href === "/admin/payments" && pendingPaymentsCount > 0 && (
+              <span
+                className="inline-flex min-w-7 items-center justify-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-bold text-red-700"
+                aria-label={`${pendingPaymentsCount} pending payment approvals`}
+              >
+                <span aria-hidden="true">🔔</span>
+                {pendingPaymentsCount}
+              </span>
+            )}
           </Link>
         );
       })}
@@ -127,12 +138,17 @@ export default function AdminShell({
   children,
   role,
   permissions,
+  pendingPaymentsCount: initialPendingPaymentsCount = 0,
 }: {
   children: React.ReactNode;
   role?: UserRole;
   permissions?: AdminSection[];
+  pendingPaymentsCount?: number;
 }) {
   const [open, setOpen] = useState(false);
+  const [pendingPaymentsCount, setPendingPaymentsCount] = useState(
+    initialPendingPaymentsCount,
+  );
   const pathname = usePathname();
 
   useEffect(() => {
@@ -145,6 +161,24 @@ export default function AdminShell({
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    function handlePendingPaymentsChange(event: Event) {
+      const change = Number((event as CustomEvent<number>).detail ?? 0);
+      setPendingPaymentsCount((current) => Math.max(0, current + change));
+    }
+
+    window.addEventListener(
+      "admin:pending-payments-change",
+      handlePendingPaymentsChange,
+    );
+    return () => {
+      window.removeEventListener(
+        "admin:pending-payments-change",
+        handlePendingPaymentsChange,
+      );
+    };
+  }, []);
 
   const visibleLinks =
     role === "TEACHER"
@@ -162,7 +196,10 @@ export default function AdminShell({
           Admin Panel
         </h2>
         <p className="mt-1 text-xs text-gray-400">Learn Al Quran Online BD</p>
-        <SidebarNav visibleLinks={visibleLinks} />
+        <SidebarNav
+          visibleLinks={visibleLinks}
+          pendingPaymentsCount={pendingPaymentsCount}
+        />
         <div className="mt-auto pt-6">
           <SignOutButton />
         </div>
@@ -197,6 +234,7 @@ export default function AdminShell({
             <SidebarNav
               onNavigate={() => setOpen(false)}
               visibleLinks={visibleLinks}
+              pendingPaymentsCount={pendingPaymentsCount}
             />
             <div className="mt-auto pt-6">
               <SignOutButton />

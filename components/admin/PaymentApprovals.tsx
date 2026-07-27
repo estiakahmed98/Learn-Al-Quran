@@ -45,6 +45,9 @@ export default function PaymentApprovals({ initialRows }: { initialRows: Payment
     try {
       const updated = await setEnrollmentPaymentStatus(id, reject);
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...updated } : r)));
+      window.dispatchEvent(
+        new CustomEvent("admin:pending-payments-change", { detail: -1 }),
+      );
     } catch {
       // no-op: leave the row as-is, admin can retry
     } finally {

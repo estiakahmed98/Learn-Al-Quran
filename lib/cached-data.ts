@@ -79,6 +79,6 @@ export const getCachedTeachers = unstable_cache(
   async () => {
     return api.teachers.list();
   },
-  ["teachers"],
+  ["active-teachers-v2"],
   { revalidate: 3600, tags: [CACHE_TAGS.teachers] }
 );
