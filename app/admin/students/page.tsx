@@ -18,6 +18,7 @@ export default async function AdminStudentsPage() {
       email: u.email,
       phone: u.phone ?? null,
       whatsapp: u.whatsapp ?? null,
+      imageUrl: u.imageUrl ?? null,
       studentStatus: u.studentStatus,
       isActive: u.isActive,
       createdAt: (u as any).createdAt,

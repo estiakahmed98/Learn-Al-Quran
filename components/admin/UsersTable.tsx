@@ -13,6 +13,7 @@ export interface UserRow {
   email: string;
   phone: string | null;
   whatsapp: string | null;
+  imageUrl: string | null;
   role: "ADMIN" | "TEACHER" | "STUDENT";
   studentStatus: "FREE_TRIAL" | "REGULAR";
   isActive: boolean;
@@ -150,13 +151,33 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
             {paginated.map((user) => (
               <tr key={user.id} className="border-t border-gray-100">
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/users/${user.id}`}
-                    className="font-medium text-gray-800 hover:text-primary hover:underline"
-                  >
-                    {user.name}
-                  </Link>
-                  <p className="text-xs text-gray-400">{user.email}</p>
+                  <div className="flex items-center gap-3">
+                    <Link href={`/admin/users/${user.id}`} className="shrink-0">
+                      {user.imageUrl ? (
+                        <img
+                          src={user.imageUrl}
+                          alt={`${user.name} avatar`}
+                          className="h-10 w-10 rounded-full border border-gray-200 object-cover"
+                        />
+                      ) : (
+                        <span
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold uppercase text-primary"
+                          aria-hidden="true"
+                        >
+                          {user.name.trim().charAt(0) || "U"}
+                        </span>
+                      )}
+                    </Link>
+                    <div className="min-w-0">
+                      <Link
+                        href={`/admin/users/${user.id}`}
+                        className="font-medium text-gray-800 hover:text-primary hover:underline"
+                      >
+                        {user.name}
+                      </Link>
+                      <p className="truncate text-xs text-gray-400">{user.email}</p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-gray-600">
                   {user.phone && <p>Tel: {user.phone}</p>}

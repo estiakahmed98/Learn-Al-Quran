@@ -13,6 +13,7 @@ export interface StudentRow {
   email: string;
   phone: string | null;
   whatsapp: string | null;
+  imageUrl: string | null;
   studentStatus: "FREE_TRIAL" | "REGULAR";
   isActive: boolean;
   createdAt: string;
@@ -163,13 +164,33 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
             {paginated.map((student) => (
               <tr key={student.id} className="border-t border-gray-100">
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/students/${student.id}`}
-                    className="font-medium text-gray-800 hover:text-primary hover:underline"
-                  >
-                    {student.name}
-                  </Link>
-                  <p className="text-xs text-gray-400">{student.email}</p>
+                  <div className="flex items-center gap-3">
+                    <Link href={`/admin/students/${student.id}`} className="shrink-0">
+                      {student.imageUrl ? (
+                        <img
+                          src={student.imageUrl}
+                          alt={`${student.name} avatar`}
+                          className="h-10 w-10 rounded-full border border-gray-200 object-cover"
+                        />
+                      ) : (
+                        <span
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold uppercase text-primary"
+                          aria-hidden="true"
+                        >
+                          {student.name.trim().charAt(0) || "S"}
+                        </span>
+                      )}
+                    </Link>
+                    <div className="min-w-0">
+                      <Link
+                        href={`/admin/students/${student.id}`}
+                        className="font-medium text-gray-800 hover:text-primary hover:underline"
+                      >
+                        {student.name}
+                      </Link>
+                      <p className="truncate text-xs text-gray-400">{student.email}</p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-gray-600">
                   {student.phone && <p>Tel: {student.phone}</p>}

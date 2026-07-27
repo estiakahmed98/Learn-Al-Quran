@@ -3,6 +3,7 @@
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 import { createUser, updateUser, uploadUserImage } from "@/app/admin/users/actions";
 
 export interface UserFormValues {
@@ -91,7 +92,9 @@ export default function UserForm({
     setError(null);
 
     if (!isStudentOnly && !userId && values.password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      const message = "Password must be at least 6 characters.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -114,14 +117,17 @@ export default function UserForm({
 
     try {
       const user = userId ? await updateUser(userId, payload) : await createUser(payload);
-      setSaving(false);
-      setSaved(true);
       set("password", "");
+      setSaved(true);
+      toast.success(userId ? "User updated successfully." : "User created successfully.");
       onSaved?.(user);
       router.refresh();
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to save user.";
+      setError(message);
+      toast.error(message);
+    } finally {
       setSaving(false);
-      setError(err instanceof Error ? err.message : "Failed to save user.");
     }
   }
 

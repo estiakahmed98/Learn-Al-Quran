@@ -18,6 +18,7 @@ export default async function AdminUsersPage() {
       email: u.email,
       phone: u.phone ?? null,
       whatsapp: u.whatsapp ?? null,
+      imageUrl: u.imageUrl ?? null,
       role: u.role,
       studentStatus: u.studentStatus,
       isActive: u.isActive,
