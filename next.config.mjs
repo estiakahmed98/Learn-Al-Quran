@@ -6,7 +6,6 @@ const mediaOrigin = new URL(process.env.API_URL || "http://127.0.0.1:8000/api/v1
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  distDir: "out",
   experimental: {
     // Image/file uploads go through Server Actions as multipart FormData;
     // the backend already caps files at 5MB (see UploadImageRequest), so
