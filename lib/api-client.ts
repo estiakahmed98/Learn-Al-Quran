@@ -92,11 +92,31 @@ async function rawFetch(path: string, options: FetchOptions = {}): Promise<unkno
   if (res.status === 204) return null;
 
   const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  let data: any = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      // Proxies/shared hosts may return an HTML error document (for example
+      // for an exceeded PHP upload limit). Preserve a useful status message
+      // instead of masking it with a JSON.parse error.
+      if (!res.ok) {
+        throw new ApiError(
+          res.status,
+          `API request failed with status ${res.status}. Check the Laravel log and PHP upload limits.`
+        );
+      }
+      throw new ApiError(res.status, "The API returned an invalid response.");
+    }
+  }
 
   if (!res.ok) {
-    const message = (data && (data as any).message) || `Request failed with status ${res.status}`;
-    throw new ApiError(res.status, message, (data as any)?.errors);
+    const validationMessage =
+      data?.errors && typeof data.errors === "object"
+        ? Object.values(data.errors).flat().find((message) => typeof message === "string")
+        : undefined;
+    const message = validationMessage || data?.message || `Request failed with status ${res.status}`;
+    throw new ApiError(res.status, String(message), data?.errors);
   }
 
   return data;

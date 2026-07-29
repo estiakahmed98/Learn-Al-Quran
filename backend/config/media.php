@@ -3,7 +3,11 @@
 return [
     'disk' => env('MEDIA_DISK', 'public'),
     'quality' => (int) env('MEDIA_WEBP_QUALITY', 82),
-    'require_webp' => (bool) env('MEDIA_REQUIRE_WEBP', true),
+    // Shared hosts do not always enable GD with WebP support. When it is
+    // unavailable, keep the original validated image instead of failing the
+    // whole upload. Set MEDIA_REQUIRE_WEBP=true only on a server where WebP
+    // support has been verified.
+    'require_webp' => filter_var(env('MEDIA_REQUIRE_WEBP', false), FILTER_VALIDATE_BOOL),
     'placeholder' => '/images/media-placeholder.svg',
 
     'aliases' => [

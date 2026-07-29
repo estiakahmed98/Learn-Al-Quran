@@ -33,7 +33,10 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Do not register Laravel's temporary signed /storage/{path}
+            // route for the private disk. Public uploads use the "public"
+            // disk and are served by the public media route/symlink.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
