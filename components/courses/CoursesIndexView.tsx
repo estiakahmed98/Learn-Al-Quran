@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GraduationCap, Search, X } from "lucide-react";
 import { pickText } from "@/lib/course-content";
-import { useCourses, type CourseListItem } from "@/hooks/useCourses";
+import type { CourseListItem } from "@/hooks/useCourses";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
 export type CourseCardData = CourseListItem;
@@ -21,10 +21,9 @@ const courseIcons: Record<string, string> = {
   "english-speaking": "💬"
 };
 
-export default function CoursesIndexView() {
+export default function CoursesIndexView({ courses }: { courses: CourseCardData[] }) {
   const t = useTranslations("courses");
   const locale = useLocale();
-  const { courses, isLoading } = useCourses();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCourses = useMemo(() => {
@@ -125,45 +124,29 @@ export default function CoursesIndexView() {
               )}
             </div>
 
-            {!isLoading && (
-              <div className="flex items-center justify-between gap-3 lg:justify-end">
-                <p className="text-sm text-gray-500">
-                  {t("showing")}{" "}
-                  <span className="font-semibold text-primary-dark">{filteredCourses.length}</span>{" "}
-                  {t("of")} <span className="font-semibold text-primary-dark">{courses.length}</span>{" "}
-                  {t("coursesLabel")}
-                </p>
+            <div className="flex items-center justify-between gap-3 lg:justify-end">
+              <p className="text-sm text-gray-500">
+                {t("showing")}{" "}
+                <span className="font-semibold text-primary-dark">{filteredCourses.length}</span>{" "}
+                {t("of")} <span className="font-semibold text-primary-dark">{courses.length}</span>{" "}
+                {t("coursesLabel")}
+              </p>
 
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="text-sm font-semibold text-gold transition-colors hover:text-primary-dark"
-                  >
-                    {t("clearSearch")}
-                  </button>
-                )}
-              </div>
-            )}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="text-sm font-semibold text-gold transition-colors hover:text-primary-dark"
+                >
+                  {t("clearSearch")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Main states */}
-        {isLoading ? (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label={t("loading")}>
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                <div className="aspect-[16/10] animate-pulse rounded-xl bg-gray-100" />
-                <div className="mt-5 h-5 w-3/4 animate-pulse rounded bg-gray-100" />
-                <div className="mt-3 h-4 w-1/2 animate-pulse rounded bg-gray-100" />
-                <div className="mt-5 space-y-2">
-                  <div className="h-3 w-full animate-pulse rounded bg-gray-100" />
-                  <div className="h-3 w-5/6 animate-pulse rounded bg-gray-100" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredCourses.length === 0 ? (
+        {filteredCourses.length === 0 ? (
           <div className="mx-auto mt-12 max-w-xl rounded-2xl border border-dashed border-gold/30 bg-white/90 px-6 py-14 text-center shadow-lg shadow-primary/5">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/10">
               {searchQuery ? (

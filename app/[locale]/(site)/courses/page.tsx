@@ -4,6 +4,7 @@ import CoursesIndexView from "@/components/courses/CoursesIndexView";
 import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
+import { getCachedActiveCourses } from "@/lib/cached-data";
 
 export const metadata: Metadata = {
   title: "Our Courses",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   alternates: buildAlternates("/courses"),
 };
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const courses = await getCachedActiveCourses();
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: siteUrl },
     { name: "Courses", url: `${siteUrl}/courses` },
@@ -21,7 +23,7 @@ export default function CoursesPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd} />
-      <CoursesIndexView />
+      <CoursesIndexView courses={courses} />
     </>
   );
 }
