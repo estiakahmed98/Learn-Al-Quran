@@ -42,7 +42,7 @@ export default function Hero({
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-primary-dark/15 sm:bg-gradient-to-r sm:from-primary-dark/60 sm:via-primary-dark/60 sm:via-[35%] sm:to-transparent sm:to-[50%]" />
+        <div className="absolute inset-0 bg-primary-dark/30 sm:bg-gradient-to-r sm:from-primary-dark/60 sm:via-primary-dark/60 sm:via-[35%] sm:to-transparent sm:to-[50%]" />
       </div>
 
       {/* Left-aligned copy over the image */}

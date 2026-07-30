@@ -82,13 +82,16 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
     setLoading(true);
 
     try {
-      if (blog) {
-        await updateBlog(blog.id, { ...formData, slug });
-        toast.success("Blog updated successfully");
-      } else {
-        await createBlog({ ...formData, slug });
-        toast.success("Blog created successfully");
+      const result = blog
+        ? await updateBlog(blog.id, { ...formData, slug })
+        : await createBlog({ ...formData, slug });
+
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+
+      toast.success(blog ? "Blog updated successfully" : "Blog created successfully");
 
       if (onSuccess) {
         onSuccess();
@@ -266,7 +269,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Summary (optional)
+            Summary (optional — generated from content when empty)
           </label>
           <textarea
             name="summary"
