@@ -35,7 +35,6 @@ import {
   FaInternetExplorer,
 } from "react-icons/fa";
 
-import AdminRecentBlogs from "./blog/AdminRecentBlogs";
 import { fetchAnalyticsSummary } from "@/app/admin/analytics/actions";
 
 type TrendInfo = { value: string; isPositive: boolean };
@@ -1151,9 +1150,6 @@ const AdminAnalytics: React.FC = () => {
             </div>
           )}
         </div>
-      </section>
-      <section className="mb-8 space-y-6">
-        <AdminRecentBlogs />
       </section>
     </div>
   );

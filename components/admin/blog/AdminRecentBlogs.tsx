@@ -93,68 +93,68 @@ export default function AdminRecentBlogs() {
               href={`/blog/${blog.slug}`}
               className="group block"
             >
-            <article className="relative flex flex-col gap-3 p-4 rounded-lg border bg-card hover:bg-accent/30 hover:shadow-md transition-all duration-300">
-              {/* New badge (only first item) */}
-              {index === 0 && (
-                <span className="absolute top-3 right-3 text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-primary/10 text-primary">
-                  New
-                </span>
-              )}
+              <article className="relative flex flex-col gap-3 p-4 rounded-lg border bg-card hover:bg-accent/30 hover:shadow-md transition-all duration-300">
+                {/* New badge (only first item) */}
+                {index === 0 && (
+                  <span className="absolute top-3 right-3 text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-primary/10 text-primary">
+                    New
+                  </span>
+                )}
 
-              {/* Image */}
-              {blog.image && (
-                <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
-                  <img
-                    src={blog.image}
-                    alt={blog.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                {/* Image */}
+                {blog.image && (
+                  <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+
+                {/* Text */}
+                <div className="space-y-2 flex-1">
+                  <h4 className="font-semibold text-sm leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                    {blog.title}
+                  </h4>
+
+                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                    {processBlogSummary(blog.summary, 120)}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                    <Calendar className="h-3 w-3 text-primary" />
+                    <time dateTime={new Date(blog.date).toISOString()}>
+                      {format(new Date(blog.date), "MMM d, yyyy")}
+                    </time>
+                  </div>
                 </div>
-              )}
 
-              {/* Text */}
-              <div className="space-y-2 flex-1">
-                <h4 className="font-semibold text-sm leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                  {blog.title}
-                </h4>
-
-                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                  {processBlogSummary(blog.summary, 120)}
-                </p>
-
-                <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                  <Calendar className="h-3 w-3 text-primary" />
-                  <time dateTime={new Date(blog.date).toISOString()}>
-                    {format(new Date(blog.date), "MMM d, yyyy")}
-                  </time>
+                {/* Read link */}
+                <div className="flex items-center text-xs font-medium text-primary gap-1">
+                  <span>Read article</span>
+                  <svg
+                    className="h-3 w-3 transform group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </div>
-              </div>
-
-              {/* Read link */}
-              <div className="flex items-center text-xs font-medium text-primary gap-1">
-                <span>Read article</span>
-                <svg
-                  className="h-3 w-3 transform group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </article>
-          </Link>
-        ))}
+              </article>
+            </Link>
+          ))}
         </div>
 
         {/* View all */}
         <Link
-          href="admin/blog"
+          href="/blog"
           className="mt-6 block text-center py-3 rounded-lg border border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 text-sm font-medium text-primary transition-all"
         >
           View all articles →
