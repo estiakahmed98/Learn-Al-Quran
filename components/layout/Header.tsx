@@ -83,24 +83,25 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-40 bg-primary-dark">
-      <IslamicPattern tone="gold" opacity={0.06} />
+      <IslamicPattern tone="gold" opacity={0.03} className="sm:hidden" />
+      <IslamicPattern tone="gold" opacity={0.06} className="hidden sm:block" />
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-2.5">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={logoUrl}
             alt={`${siteName} logo`}
             className="h-11 w-11 shrink-0 rounded-full border-2 border-gold/40 object-cover"
           />
-          <span className="block font-heading text-base font-bold uppercase tracking-wide text-white lg:text-lg">
+          <span className="truncate font-heading text-sm font-bold uppercase tracking-wide text-white sm:text-base xl:text-lg">
             {siteName}
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-7 xl:flex">
           <Link href="/" className={navLinkClass("/")}>
             {t("home")}
           </Link>
@@ -182,7 +183,7 @@ export default function Header({
         </nav>
 
         {/* Desktop right actions */}
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden shrink-0 items-center gap-3 xl:flex">
           <Link
             href="/contact-us"
             className="relative isolate overflow-hidden rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-gold hover:text-gold"
@@ -262,21 +263,7 @@ export default function Header({
         </div>
 
         {/* Mobile trigger area */}
-        <div className="flex items-center gap-3 lg:hidden">
-          {status !== "loading" && user && (
-            <NextLink
-              href={
-                user.role === "ADMIN"
-                  ? "/admin"
-                  : user.role === "TEACHER"
-                  ? "/teacher"
-                  : "/student/dashboard"
-              }
-              aria-label={t("myDashboard")}
-            >
-              <UserAvatar name={user.name} image={user.image} size="h-8 w-8" />
-            </NextLink>
-          )}
+        <div className="flex shrink-0 items-center xl:hidden">
           <button
             className="relative isolate flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/15 text-xl text-gold transition hover:border-gold"
             onClick={() => setOpen(!open)}
@@ -291,7 +278,7 @@ export default function Header({
 
       {/* Mobile menu */}
       <div
-        className={`overflow-hidden border-t border-gold/20 bg-primary-dark transition-all duration-300 lg:hidden ${
+        className={`overflow-hidden border-t border-gold/15 bg-primary-dark transition-all duration-300 xl:hidden ${
           open ? "max-h-[calc(100vh-4rem)] overflow-y-auto" : "max-h-0"
         }`}
       >

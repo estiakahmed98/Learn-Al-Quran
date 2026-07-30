@@ -9,7 +9,7 @@ export default function TopBar({ phone }: { phone: string }) {
   if (!phone) return null;
 
   return (
-    <div className="hidden items-center justify-end gap-4 border-b border-white/10 bg-primary-dark px-4 py-1.5 text-right lg:flex lg:px-8">
+    <div className="hidden items-center justify-end gap-4 border-b border-white/10 bg-primary-dark px-4 py-1.5 text-right xl:flex xl:px-8">
       <a
         href={`tel:${phone}`}
         onClick={() => trackEvent("call_click", { location: "topbar" })}

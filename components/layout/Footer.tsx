@@ -1,9 +1,24 @@
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTiktok,
+  FaYoutube
+} from "react-icons/fa6";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { parseSocialLinks, socialPlatformInfo } from "@/lib/social-platforms";
 import { publicMediaUrl } from "@/lib/media-url";
+
+const SOCIAL_ICONS = {
+  facebook: FaFacebookF,
+  youtube: FaYoutube,
+  linkedin: FaLinkedinIn,
+  tiktok: FaTiktok,
+  instagram: FaInstagram
+} as const;
 
 interface FooterProps {
   phone: string;
@@ -31,7 +46,8 @@ export default function Footer({
     .filter((link) => link.url)
     .map((link) => {
       const info = socialPlatformInfo(link.platform);
-      return { label: info.label, title: info.title, url: link.url };
+      const Icon = SOCIAL_ICONS[link.platform as keyof typeof SOCIAL_ICONS];
+      return { Icon, label: info.label, title: info.title, url: link.url };
     });
 
   const quickLinks = [
@@ -82,7 +98,11 @@ export default function Footer({
                     aria-label={social.title}
                     className="flex h-9 min-w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-2 text-[11px] font-bold text-white transition hover:border-gold hover:bg-gold hover:text-primary-dark"
                   >
-                    {social.label}
+                    {social.Icon ? (
+                      <social.Icon aria-hidden="true" className="h-4 w-4" />
+                    ) : (
+                      social.label
+                    )}
                   </a>
                 ))}
               </div>
