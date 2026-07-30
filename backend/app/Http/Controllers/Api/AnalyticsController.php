@@ -29,14 +29,14 @@ class AnalyticsController extends Controller
             ? CarbonImmutable::createFromTimestampMsUTC($data['ts'])
             : CarbonImmutable::now('UTC');
         $activeSeconds = $data['event'] === 'heartbeat'
-            ? min(60, max(0, (int) data_get($data, 'engagement.activeSeconds', 0)))
+            ? min(60, max(0, (int) data_get($data, 'engagement.active_seconds', 0)))
             : 0;
         $geo = $data['event'] === 'heartbeat' ? null : $this->geoForIp((string) $request->ip());
 
         AnalyticsEvent::create([
             'ts' => $timestamp, 'day_key' => $timestamp->toDateString(), 'event' => $data['event'],
-            'visitor_id' => $data['visitorId'], 'session_id' => $data['sessionId'],
-            'user_id' => $data['userId'] ?? null, 'path' => $path,
+            'visitor_id' => $data['visitor_id'], 'session_id' => $data['session_id'],
+            'user_id' => $data['user_id'] ?? null, 'path' => $path,
             'title' => data_get($data, 'page.title'), 'referrer' => data_get($data, 'page.referrer'),
             'utm_source' => data_get($data, 'utm.source'), 'utm_medium' => data_get($data, 'utm.medium'),
             'utm_campaign' => data_get($data, 'utm.campaign'), 'device_type' => data_get($data, 'device.type'),
