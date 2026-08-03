@@ -76,7 +76,10 @@ export default function LeadForm({
         setErrorMsg(result.error || t("genericError"));
         return;
       }
-      trackEvent("generate_lead", { course: payload.courseSlug });
+      trackEvent("course_enrollment", {
+        course: payload.courseSlug,
+        form_location: embedded ? "homepage_embedded_form" : "homepage_lead_form"
+      });
       setStatus("success");
       form.reset();
       setConsentAccepted(false);

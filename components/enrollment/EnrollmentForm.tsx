@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CheckCircle2, CreditCard, UserRound } from "lucide-react";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import { submitEnrollment } from "@/app/public-actions";
 
 type Course = {
@@ -80,6 +81,11 @@ export default function EnrollmentForm({
         setStatus("idle");
         return;
       }
+      trackEvent("course_enrollment", {
+        course: form.courseSlug,
+        payment_method: form.paymentMethod,
+        form_location: "enrollment_page"
+      });
       setStatus("success");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("genericError"));

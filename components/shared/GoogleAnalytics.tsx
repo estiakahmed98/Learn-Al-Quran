@@ -24,7 +24,7 @@ export default function GoogleAnalytics({ gaId }: { gaId: string }) {
 }
 
 // Helper to fire custom GA4 events from client components, e.g.
-// trackEvent('generate_lead', { course: 'Tajweed Master Course' })
+// trackEvent('course_enrollment', { course: 'tajweed-master-course' })
 export function trackEvent(eventName: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   (window as any).gtag?.("event", eventName, params);

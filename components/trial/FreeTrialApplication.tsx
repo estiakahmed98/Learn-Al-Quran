@@ -6,6 +6,7 @@ import { BookOpen, CalendarClock, CheckCircle2, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ConsentCheckbox from "@/components/shared/ConsentCheckbox";
 import IslamicPattern from "@/components/shared/IslamicPattern";
+import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import { submitTrialApplication } from "@/app/public-actions";
 
 type Course = { id: string; title: string; titleBn: string | null; slug: string };
@@ -50,6 +51,10 @@ export default function FreeTrialApplication({
     setError("");
     try {
       await submitTrialApplication({ ...form, consentAccepted });
+      trackEvent("trial_class_book", {
+        course_id: form.courseId,
+        form_location: "trial_class_page"
+      });
       setSubmitted(true);
     } catch {
       setError(t("error"));

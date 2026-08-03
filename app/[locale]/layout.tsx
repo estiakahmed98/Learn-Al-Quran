@@ -165,10 +165,8 @@ export default async function RootLayout(
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        <GoogleTagManager gtmId={gtmId} />
-      </head>
       <body className="flex min-h-screen flex-col font-body">
+        <GoogleTagManager gtmId={gtmId} />
         <GoogleTagManagerNoScript gtmId={gtmId} />
         <GoogleAnalytics gaId={settings.ga4Id || ""} />
         <Suspense fallback={null}>
