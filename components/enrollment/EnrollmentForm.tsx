@@ -68,7 +68,18 @@ export default function EnrollmentForm({
     setStatus("submitting");
     setError("");
     try {
-      await submitEnrollment({ ...form, consentAccepted });
+      const { phone, ...values } = form;
+      const result = await submitEnrollment({
+        ...values,
+        whatsappNumber: phone,
+        contactNumber: phone,
+        consentAccepted
+      });
+      if (!result.ok) {
+        setError(result.error || t("genericError"));
+        setStatus("idle");
+        return;
+      }
       setStatus("success");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("genericError"));

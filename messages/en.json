@@ -106,7 +106,7 @@
     "profileMenu": "Profile menu"
   },
   "footer": {
-    "mission": "Our mission is to spread the light of Quran education around the world with quality and sincerity.",
+    "mission": "Learn Al Quran Online BD provides authentic Quran education through certified teachers, offering Quran learning with Tajweed, Nazera Quran, Hifz-ul-Quran, and online Quran classes for students of all ages. Our mission is to make high-quality, authentic Quran education accessible to every Muslim family around the world.",
     "followUs": "Follow Us",
     "contactInfo": "Contact Information",
     "whatsapp": "WhatsApp",
@@ -201,8 +201,8 @@
     "remarks": "Remarks",
     "date": "Date",
     "viewCourse": "View Course Page",
-    "manage": "Manage"
-    ,"trialStudent": "Free Trial Student",
+    "manage": "Manage",
+    "trialStudent": "Free Trial Student",
     "trialApplication": "Trial Application",
     "preferredTrialTime": "Preferred trial time",
     "schedulePending": "Schedule to be confirmed",
@@ -318,7 +318,9 @@
       "feedback": "We value your feedback",
       "error": "Failed to submit your review."
     },
-    "faq": { "title": "Frequently Asked Questions" },
+    "faq": {
+      "title": "Frequently Asked Questions"
+    },
     "map": {
       "title": "Our Location",
       "badge": "Find us on Google Maps",

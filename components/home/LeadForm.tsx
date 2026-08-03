@@ -70,7 +70,12 @@ export default function LeadForm({
     };
 
     try {
-      await submitEnrollment(payload);
+      const result = await submitEnrollment(payload);
+      if (!result.ok) {
+        setStatus("error");
+        setErrorMsg(result.error || t("genericError"));
+        return;
+      }
       trackEvent("generate_lead", { course: payload.courseSlug });
       setStatus("success");
       form.reset();

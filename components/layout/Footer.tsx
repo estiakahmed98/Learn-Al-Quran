@@ -6,7 +6,7 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaTiktok,
-  FaYoutube
+  FaYoutube,
 } from "react-icons/fa6";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { parseSocialLinks, socialPlatformInfo } from "@/lib/social-platforms";
@@ -17,7 +17,7 @@ const SOCIAL_ICONS = {
   youtube: FaYoutube,
   linkedin: FaLinkedinIn,
   tiktok: FaTiktok,
-  instagram: FaInstagram
+  instagram: FaInstagram,
 } as const;
 
 interface FooterProps {
@@ -39,7 +39,7 @@ export default function Footer({
   socialLinks,
   copyrightText,
   siteName = "Learn Al Quran Online BD",
-  logo = "/Learn_Al_Quran_Logo.png"
+  logo = "/Learn_Al_Quran_Logo.png",
 }: FooterProps) {
   const t = useTranslations("footer");
   const socials = parseSocialLinks(socialLinks)
@@ -56,7 +56,7 @@ export default function Footer({
     { href: "/books", label: t("books") },
     { href: "/blog", label: t("blog") },
     { href: "/about-us", label: t("aboutUs") },
-    { href: "/contact-us", label: t("contactUs") }
+    { href: "/contact-us", label: t("contactUs") },
   ];
 
   return (
@@ -80,7 +80,9 @@ export default function Footer({
             </span>
           </Link>
 
-          <p className="mt-5 max-w-sm text-sm leading-6 text-cream/70">{t("mission")}</p>
+          <p className="mt-5 max-w-sm text-sm leading-6 text-cream/70">
+            {t("mission")}
+          </p>
 
           {socials.length > 0 && (
             <div className="mt-6">
@@ -118,7 +120,10 @@ export default function Footer({
           <ul className="mt-5 space-y-3 text-sm text-cream/70">
             {quickLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="inline-flex items-center gap-2 transition hover:translate-x-1 hover:text-gold-light">
+                <Link
+                  href={link.href}
+                  className="inline-flex items-center gap-2 transition hover:translate-x-1 hover:text-gold-light"
+                >
                   <span className="h-1 w-1 rounded-full bg-gold/70" />
                   {link.label}
                 </Link>
@@ -135,17 +140,21 @@ export default function Footer({
           <ul className="mt-5 space-y-4 text-sm text-cream/70">
             <li className="flex items-start gap-3">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
-              <a href={`tel:${phone}`} className="break-all transition hover:text-gold-light">{phone}</a>
-            </li>
-            <li className="flex items-start gap-3">
-              <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
-              <a href={`https://wa.me/${whatsapp}`} className="break-all transition hover:text-gold-light">
-                {t("whatsapp")}: {whatsapp}
+              <a
+                href={`tel:${phone}`}
+                className="break-all transition hover:text-gold-light"
+              >
+                {phone}
               </a>
             </li>
             <li className="flex items-start gap-3">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
-              <a href={`mailto:${email}`} className="break-all transition hover:text-gold-light">{email}</a>
+              <a
+                href={`mailto:${email}`}
+                className="break-all transition hover:text-gold-light"
+              >
+                {email}
+              </a>
             </li>
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-light" />
@@ -162,7 +171,9 @@ export default function Footer({
             <h2 className="mt-3 font-heading text-xl font-bold leading-snug text-white">
               {t("ctaTitle")}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-cream/65">{t("ctaText")}</p>
+            <p className="mt-3 text-sm leading-6 text-cream/65">
+              {t("ctaText")}
+            </p>
             <Link
               href="/free-trial-class"
               className="relative isolate mt-5 inline-flex items-center gap-2 overflow-hidden rounded-full bg-gold px-5 py-2.5 text-sm font-bold text-primary-dark transition hover:bg-gold-light"
@@ -179,13 +190,31 @@ export default function Footer({
 
       <div className="relative border-t border-white/10 bg-black/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 text-center text-xs text-cream/60 sm:flex-row sm:text-left lg:px-8">
-          <p>{copyrightText || t("copyright", { year: new Date().getFullYear() })}</p>
+          <p>
+            {copyrightText ||
+              t("copyright", { year: new Date().getFullYear() })}
+          </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/privacy-policy" className="transition hover:text-gold-light">{t("privacyPolicy")}</Link>
+            <Link
+              href="/privacy-policy"
+              className="transition hover:text-gold-light"
+            >
+              {t("privacyPolicy")}
+            </Link>
             <span className="text-white/20">|</span>
-            <Link href="/terms-and-conditions" className="transition hover:text-gold-light">{t("terms")}</Link>
+            <Link
+              href="/terms-and-conditions"
+              className="transition hover:text-gold-light"
+            >
+              {t("terms")}
+            </Link>
             <span className="text-white/20">|</span>
-            <Link href="/return-policy" className="transition hover:text-gold-light">{t("returnPolicy")}</Link>
+            <Link
+              href="/return-policy"
+              className="transition hover:text-gold-light"
+            >
+              {t("returnPolicy")}
+            </Link>
           </div>
         </div>
       </div>

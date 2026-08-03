@@ -1,6 +1,6 @@
 "use server";
 
-import { api } from "@/lib/api-client";
+import { api, ApiError } from "@/lib/api-client";
 import { sendAdminNotification } from "@/lib/admin-notification";
 
 function textValue(value: unknown): string | number | null | undefined {
@@ -10,30 +10,42 @@ function textValue(value: unknown): string | number | null | undefined {
 }
 
 export async function submitEnrollment(payload: Record<string, unknown>) {
-  const { courseSlug, courseId, ...rest } = payload as Record<string, unknown> & {
-    courseSlug?: string | null;
-    courseId?: string | null;
-  };
-  const resolvedCourseId = courseId || (courseSlug ? (await api.courses.getBySlug(courseSlug)).id : undefined);
-  const enrollment = await api.enrollments.create({ ...rest, course_id: resolvedCourseId });
+  try {
+    const { courseSlug, courseId, ...rest } = payload as Record<string, unknown> & {
+      courseSlug?: string | null;
+      courseId?: string | null;
+    };
+    const resolvedCourseId = courseId || (courseSlug ? (await api.courses.getBySlug(courseSlug)).id : undefined);
+    const enrollment = await api.enrollments.create({ ...rest, course_id: resolvedCourseId });
 
-  await sendAdminNotification({
-    subject: `New enrollment: ${textValue(rest.studentName) || "Student"}`,
-    heading: "A new enrollment application was submitted",
-    replyTo: typeof rest.email === "string" ? rest.email : null,
-    fields: {
-      "Student name": textValue(rest.studentName),
-      "Guardian name": textValue(rest.guardianName),
-      Email: textValue(rest.email),
-      Phone: textValue(rest.phone),
-      Course: textValue(enrollment?.course?.title ?? courseSlug ?? resolvedCourseId),
-      "Payment method": textValue(rest.paymentMethod),
-      "Transaction ID": textValue(rest.transactionId),
-      "Application ID": textValue(enrollment?.id),
-    },
-  });
+    await sendAdminNotification({
+      subject: `New enrollment: ${textValue(rest.studentName) || "Student"}`,
+      heading: "A new enrollment application was submitted",
+      replyTo: typeof rest.email === "string" ? rest.email : null,
+      fields: {
+        "Student name": textValue(rest.studentName),
+        "Guardian name": textValue(rest.guardianName),
+        Email: textValue(rest.email),
+        Phone: textValue(rest.contactNumber ?? rest.whatsappNumber ?? rest.phone),
+        Course: textValue(enrollment?.course?.title ?? courseSlug ?? resolvedCourseId),
+        "Payment method": textValue(rest.paymentMethod),
+        "Transaction ID": textValue(rest.transactionId),
+        "Application ID": textValue(enrollment?.id),
+      },
+    });
 
-  return enrollment;
+    return { ok: true } as const;
+  } catch (error) {
+    console.error("[submitEnrollment] failed", error);
+
+    return {
+      ok: false,
+      error:
+        error instanceof ApiError && error.status >= 400 && error.status < 500
+          ? error.message
+          : "Unable to submit the enrollment. Please try again.",
+    } as const;
+  }
 }
 
 export async function submitTrialApplication(payload: Record<string, unknown>) {
