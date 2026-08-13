@@ -32,8 +32,7 @@ export default function Hero({
 
   return (
     <section className="relative min-h-[28rem] overflow-hidden bg-primary-dark sm:min-h-[34rem] lg:min-h-[40rem]">
-      {/* Keep the complete artwork visible on narrow screens and move it away
-          from the copy as more horizontal space becomes available. */}
+      {/* Full-screen responsive banner */}
       <div className="absolute inset-0">
         <Image
           src={heroImage}
@@ -41,7 +40,7 @@ export default function Hero({
           fill
           priority
           sizes="100vw"
-          className="object-contain object-center sm:object-right"
+          className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/25 via-primary-dark/45 to-primary-dark/75 sm:bg-gradient-to-r sm:from-primary-dark/60 sm:via-primary-dark/60 sm:via-[35%] sm:to-transparent sm:to-[50%]" />
       </div>

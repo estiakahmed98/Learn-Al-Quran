@@ -479,14 +479,14 @@ function BookCard({
       className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm outline-none transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10 focus-visible:ring-4 focus-visible:ring-gold/20"
     >
       {/* Cover */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-white shadow-md">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-3 sm:p-4">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white shadow-md">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={book.title}
               fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
               priority={index < 4}
               className="object-contain object-center"
             />
@@ -565,21 +565,13 @@ function BookDetailsModal({
         className="absolute inset-0 bg-primary-dark/70 backdrop-blur-sm"
       />
 
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/20 bg-white shadow-2xl sm:rounded-3xl">
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/20 bg-white shadow-2xl sm:rounded-3xl">
         {/* Modal header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 sm:px-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gold">
-              {t("bookDetails")}
-            </p>
-
-            <h2
-              id="book-modal-title"
-              className="mt-1 line-clamp-1 font-heading text-lg font-bold text-primary-dark sm:text-xl"
-            >
-              {book.title}
-            </h2>
-          </div>
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-gold sm:text-sm">
+            <BookOpen className="h-4 w-4" />
+            {t("bookDetails")}
+          </p>
 
           <button
             type="button"
@@ -593,9 +585,8 @@ function BookDetailsModal({
 
         {/* Modal body */}
         <div className="overflow-y-auto">
-          <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
-            {/* Cover */}
-            <div className="relative flex min-h-[340px] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/[0.08] via-gold/[0.08] to-primary-dark/[0.1] p-6 sm:p-8 lg:min-h-[560px]">
+          {/* Full image */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.08] via-gold/[0.08] to-primary-dark/[0.1] p-4 sm:p-6 lg:p-8">
               <div
                 className="pointer-events-none absolute inset-0 opacity-[0.07]"
                 style={{
@@ -618,34 +609,35 @@ function BookDetailsModal({
                 }}
               />
 
-              <div className="relative z-10 w-full max-w-[280px]">
+              <div className="relative z-10 mx-auto w-full max-w-3xl">
                 {imageUrl ? (
-                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/10">
-                    <Image src={imageUrl} alt={book.title} fill sizes="280px" className="object-contain object-center" />
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-black/10 sm:rounded-2xl">
+                    <Image
+                      src={imageUrl}
+                      alt={book.title}
+                      fill
+                      sizes="(max-width: 768px) calc(100vw - 64px), 768px"
+                      className="object-contain object-center"
+                    />
                   </div>
                 ) : (
-                  <BookPlaceholder title={book.title} />
+                  <div className="aspect-[16/10] overflow-hidden rounded-xl sm:rounded-2xl">
+                    <BookPlaceholder title={book.title} />
+                  </div>
                 )}
-
-                <div className="absolute -bottom-5 left-6 right-6 h-10 rounded-full bg-black/20 blur-2xl" />
               </div>
-            </div>
+          </div>
 
-            {/* Details */}
-            <div className="relative p-6 sm:p-8 lg:p-10">
-              <div className="pointer-events-none absolute right-8 top-8 hidden h-16 w-16 opacity-25 sm:block">
-                <div className="absolute inset-0 rotate-45 border border-gold/50" />
-                <div className="absolute inset-4 rotate-45 border border-gold/50" />
-              </div>
-
+          {/* Details below the image */}
+          <div className="relative mx-auto w-full max-w-3xl p-6 sm:p-8 lg:py-10">
               <span className="inline-flex items-center gap-2 rounded-full border border-gold/20 bg-gold/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-gold-dark">
                 <BookOpen className="h-3.5 w-3.5" />
                 {t("islamicBook")}
               </span>
 
-              <h3 className="mt-5 max-w-2xl font-heading text-2xl font-bold leading-tight text-primary-dark sm:text-3xl">
+              <h2 id="book-modal-title" className="mt-5 font-heading text-2xl font-bold leading-tight text-primary-dark sm:text-3xl">
                 {book.title}
-              </h3>
+              </h2>
 
               {book.subtitle && (
                 <p className="mt-3 text-base font-semibold leading-7 text-gold-dark sm:text-lg">
@@ -671,7 +663,7 @@ function BookDetailsModal({
                 </p>
               )}
 
-              <div className="mt-8 rounded-2xl border border-gold/15 bg-primary/[0.035] p-4">
+              <div className="mt-8 rounded-2xl border border-gold/15 bg-primary/[0.035] p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold/10">
                     <BookOpen className="h-5 w-5 text-gold-dark" />
@@ -688,7 +680,6 @@ function BookDetailsModal({
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
 
