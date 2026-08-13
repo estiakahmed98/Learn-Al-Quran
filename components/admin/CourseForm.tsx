@@ -471,7 +471,7 @@ export default function CourseForm({
                 <img
                   src={values.thumbnail}
                   alt="Thumbnail preview"
-                  className="h-16 w-16 rounded-md border object-cover"
+                  className="h-16 w-16 rounded-md border bg-gray-50 object-contain object-center"
                 />
                 <button
                   type="button"
@@ -504,7 +504,7 @@ export default function CourseForm({
                 <img
                   src={values.bannerImage}
                   alt="Banner preview"
-                  className="h-16 w-16 rounded-md border object-cover"
+                  className="h-16 w-16 rounded-md border bg-gray-50 object-contain object-center"
                 />
                 <button
                   type="button"

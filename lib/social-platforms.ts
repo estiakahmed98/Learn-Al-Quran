@@ -11,6 +11,7 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
   { key: "linkedin", title: "LinkedIn", label: "in" },
   { key: "whatsapp", title: "WhatsApp", label: "WA" },
   { key: "tiktok", title: "TikTok", label: "Tk" },
+  { key: "reddit", title: "Reddit", label: "Reddit" },
   { key: "twitter", title: "X (Twitter)", label: "X" },
   { key: "telegram", title: "Telegram", label: "Tg" },
   { key: "pinterest", title: "Pinterest", label: "Pi" },

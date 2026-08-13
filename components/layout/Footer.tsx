@@ -5,6 +5,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
+  FaRedditAlien,
   FaTiktok,
   FaYoutube,
 } from "react-icons/fa6";
@@ -18,6 +19,7 @@ const SOCIAL_ICONS = {
   linkedin: FaLinkedinIn,
   tiktok: FaTiktok,
   instagram: FaInstagram,
+  reddit: FaRedditAlien,
 } as const;
 
 interface FooterProps {

@@ -53,7 +53,7 @@ export default function PriceCard({
     <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
       {bannerImage && (
         <div className="relative aspect-video w-full">
-          <Image src={publicMediaUrl(bannerImage)} alt={title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
+          <Image src={publicMediaUrl(bannerImage)} alt={title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-contain object-center" />
         </div>
       )}
 

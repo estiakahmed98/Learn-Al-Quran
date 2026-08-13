@@ -49,12 +49,12 @@ export default function RecentBlogs({ blogs }: { blogs: RecentBlog[] }) {
 
               {/* Image */}
               {blog.image && (
-                <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
+                <div className="relative aspect-video w-full overflow-hidden rounded-md bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={publicMediaUrl(blog.image)}
                     alt={blog.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="h-full w-full object-contain object-center"
                   />
                 </div>
               )}

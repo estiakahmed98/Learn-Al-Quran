@@ -488,7 +488,7 @@ function BookCard({
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               priority={index < 4}
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              className="object-contain object-center"
             />
           ) : (
             <BookPlaceholder title={book.title} />
@@ -621,7 +621,7 @@ function BookDetailsModal({
               <div className="relative z-10 w-full max-w-[280px]">
                 {imageUrl ? (
                   <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/10">
-                    <Image src={imageUrl} alt={book.title} fill sizes="280px" className="object-cover" />
+                    <Image src={imageUrl} alt={book.title} fill sizes="280px" className="object-contain object-center" />
                   </div>
                 ) : (
                   <BookPlaceholder title={book.title} />

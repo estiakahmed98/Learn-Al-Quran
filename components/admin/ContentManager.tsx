@@ -210,7 +210,7 @@ export default function ContentManager({
             >
               <div className="h-48 w-full shrink-0 bg-cream">
                 {item.image ? (
-                  <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                  <img src={item.image} alt={item.title} className="h-full w-full object-contain object-center" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gold">
                     <svg className="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -341,7 +341,7 @@ export default function ContentManager({
               <div className="space-y-2">
                 {form.image && (
                   <div className="flex items-center gap-3">
-                    <img src={form.image} alt="Preview" className="h-16 w-16 rounded-md border object-cover" />
+                    <img src={form.image} alt="Preview" className="h-16 w-16 rounded-md border bg-gray-50 object-contain object-center" />
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, image: "" }))}

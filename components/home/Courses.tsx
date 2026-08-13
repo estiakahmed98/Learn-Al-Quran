@@ -78,14 +78,14 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                 <div className="absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Illustration / thumbnail */}
-                <div className="relative flex h-32 sm:h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 to-gold/5">
+                <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 to-gold/5">
                   {course.thumbnail ? (
                     <Image
                       src={publicMediaUrl(course.thumbnail)}
                       alt={pickText(locale, course.title, course.titleBn)}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-contain object-center"
                     />
                   ) : (
                     <span className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl sm:text-4xl text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">

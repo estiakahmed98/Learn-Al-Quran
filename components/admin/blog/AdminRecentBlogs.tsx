@@ -103,11 +103,11 @@ export default function AdminRecentBlogs() {
 
                 {/* Image */}
                 {blog.image && (
-                  <div className="relative w-full h-32 rounded-md overflow-hidden bg-muted">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-md bg-muted">
                     <img
                       src={blog.image}
                       alt={blog.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="h-full w-full object-contain object-center"
                     />
                   </div>
                 )}

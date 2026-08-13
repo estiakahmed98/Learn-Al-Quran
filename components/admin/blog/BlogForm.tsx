@@ -304,7 +304,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
               <img
                 src={formData.image}
                 alt="Blog featured"
-                className="w-24 h-24 rounded-md object-cover border"
+                className="h-24 w-24 rounded-md border bg-gray-50 object-contain object-center"
               />
               <button
                 type="button"
@@ -340,7 +340,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
               <img
                 src={formData.ads}
                 alt="Blog ad"
-                className="w-24 h-24 rounded-md object-cover border"
+                className="h-24 w-24 rounded-md border bg-gray-50 object-contain object-center"
               />
               <button
                 type="button"

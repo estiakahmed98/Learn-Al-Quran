@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
@@ -72,6 +72,16 @@ export default function Header({
   const courseLinks = courses.slice(0, 6);
   const logoUrl = publicMediaUrl(logo, "/Learn_Al_Quran_Logo.png");
 
+  // A navigation can complete while the pointer is still over the trigger.
+  // Reset every flyout from the route itself so stale menus never cover the
+  // destination page (this also covers browser back/forward navigation).
+  useEffect(() => {
+    setCoursesOpen(false);
+    setProfileOpen(false);
+    setOpen(false);
+    setMobileCoursesOpen(false);
+  }, [pathname]);
+
   const isActive = (href: string) => pathname === href;
 
   const navLinkClass = (href: string) =>
@@ -142,6 +152,7 @@ export default function Header({
                     <Link
                       key={c.slug}
                       href={`/courses/${c.slug}`}
+                      onClick={() => setCoursesOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-cream hover:text-primary-dark"
                     >
                       {c.thumbnail ? (
@@ -149,7 +160,7 @@ export default function Header({
                         <img
                           src={publicMediaUrl(c.thumbnail)}
                           alt=""
-                          className="h-8 w-8 shrink-0 rounded-lg object-cover"
+                          className="h-8 w-8 shrink-0 rounded-lg bg-white object-contain object-center"
                         />
                       ) : (
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-base">
@@ -314,7 +325,10 @@ export default function Header({
                 <Link
                   key={c.slug}
                   href={`/courses/${c.slug}`}
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    setMobileCoursesOpen(false);
+                  }}
                   className="flex items-center gap-2 py-2 text-sm text-white/70 hover:text-gold"
                 >
                   {c.thumbnail ? (
@@ -322,7 +336,7 @@ export default function Header({
                     <img
                       src={publicMediaUrl(c.thumbnail)}
                       alt=""
-                      className="h-6 w-6 shrink-0 rounded-md object-cover"
+                      className="h-6 w-6 shrink-0 rounded-md bg-white object-contain object-center"
                     />
                   ) : (
                     <span>{fallbackIcons[c.slug] || "📖"}</span>
@@ -332,7 +346,10 @@ export default function Header({
               ))}
               <Link
                 href="/courses"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  setMobileCoursesOpen(false);
+                }}
                 className="block py-2 text-sm font-semibold text-gold"
               >
                 {t("seeAllCourses")}

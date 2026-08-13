@@ -3,7 +3,11 @@ import { api, ApiError } from "@/lib/api-client";
 
 export const SITE_SETTINGS_CACHE_TAG = "site-settings";
 
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://learnalquranonlinebd.com";
+// Environment values are often entered with a trailing slash. Keeping one
+// canonical, slash-free origin prevents `//path` in sitemap and SEO URLs.
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://learnalquranonlinebd.com"
+).replace(/\/+$/, "");
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Learn Al Quran Online BD";
 export const ga4Id = process.env.NEXT_PUBLIC_GA4_ID || "";
 

@@ -183,14 +183,14 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                   className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10"
                 >
                   <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
-                    <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
+                    <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
                       {course.thumbnail ? (
                         <Image
                           src={publicMediaUrl(course.thumbnail)}
                           alt={pickText(locale, course.title, course.titleBn)}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          className="object-contain object-center"
                         />
                       ) : (
                         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl text-white shadow">

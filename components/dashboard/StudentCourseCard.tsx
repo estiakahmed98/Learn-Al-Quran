@@ -48,7 +48,7 @@ export default function StudentCourseCard({
           <img
             src={enrollment.course.thumbnail}
             alt={enrollment.course.title}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain object-center"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gold">

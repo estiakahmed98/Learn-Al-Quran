@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { generateSlug } from "@/lib/utils";
 import { listBlogsForAdmin } from "@/app/admin/blog/actions";
+import { publicMediaUrl } from "@/lib/media-url";
 
 interface Blog {
   id: number;
@@ -150,12 +151,12 @@ export default function AllBlogs() {
               <article key={blog.id} className="group">
                 <Link href={blog.href} aria-label={`Read: ${blog.title}`}>
                   <div className="bg-white/80 rounded-3xl shadow-xl hover:shadow-2xl transition-all border border-emerald-200/30 hover:scale-105">
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/[0.04] to-gold/[0.08]">
                       {blog.image ? (
                         <img
-                          src={blog.image}
+                          src={publicMediaUrl(blog.image)}
                           alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          className="h-full w-full object-contain object-center"
                         />
                       ) : (
                         <div className="h-full flex items-center justify-center bg-emerald-100">

@@ -139,7 +139,7 @@ export default function BlogDetails({
                     <img
                       src={publicMediaUrl(blog.image)}
                       alt={blog.title}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-contain object-center"
                     />
                   </div>
                 )}

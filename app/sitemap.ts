@@ -7,23 +7,34 @@ function localePrefix(locale: string) {
   return locale === routing.defaultLocale ? "" : `/${locale}`;
 }
 
+function absoluteUrl(path: string) {
+  return new URL(path.replace(/^\/+/, ""), `${siteUrl}/`).toString();
+}
+
 function buildEntry(
   path: string,
   options: { changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number; lastModified?: Date }
 ): MetadataRoute.Sitemap {
   const clean = path === "/" ? "" : path;
 
-  return routing.locales.map((locale) => ({
-    url: `${siteUrl}${localePrefix(locale)}${clean || "/"}`,
-    lastModified: options.lastModified,
-    changeFrequency: options.changeFrequency,
-    priority: options.priority,
-    alternates: {
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `${siteUrl}${localePrefix(l)}${clean || "/"}`])
-      )
-    }
-  }));
+  return routing.locales.map((locale) => {
+    const localizedPath = `${localePrefix(locale)}${clean || "/"}`;
+
+    return {
+      url: absoluteUrl(localizedPath),
+      lastModified: options.lastModified,
+      changeFrequency: options.changeFrequency,
+      priority: options.priority,
+      alternates: {
+        languages: Object.fromEntries(
+          routing.locales.map((l) => [
+            l,
+            absoluteUrl(`${localePrefix(l)}${clean || "/"}`)
+          ])
+        )
+      }
+    };
+  });
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
