@@ -50,4 +50,36 @@ class MediaServiceTest extends TestCase
 
         Storage::disk('public')->assertMissing($path);
     }
+
+    public function test_book_upload_preserves_the_full_portrait_aspect_ratio(): void
+    {
+        if (! function_exists('imagecreatetruecolor') || ! function_exists('imagejpeg')) {
+            $this->markTestSkipped('PHP GD is required for the aspect-ratio test.');
+        }
+
+        Storage::fake('public');
+        config()->set('media.disk', 'public');
+        config()->set('media.require_webp', false);
+
+        $temporaryFile = tempnam(sys_get_temp_dir(), 'book-cover-test-');
+        $source = imagecreatetruecolor(600, 1000);
+        imagefill($source, 0, 0, imagecolorallocate($source, 255, 255, 255));
+        imagejpeg($source, $temporaryFile, 90);
+        imagedestroy($source);
+
+        $upload = new UploadedFile($temporaryFile, 'book-cover.jpg', 'image/jpeg', null, true);
+
+        try {
+            $result = app(MediaService::class)->upload($upload, 'general', 'book');
+        } finally {
+            @unlink($temporaryFile);
+        }
+
+        $stored = Storage::disk('public')->get($result['path']);
+        $dimensions = getimagesizefromstring($stored);
+
+        $this->assertNotFalse($dimensions);
+        $this->assertSame(600, $dimensions[0]);
+        $this->assertSame(1000, $dimensions[1]);
+    }
 }

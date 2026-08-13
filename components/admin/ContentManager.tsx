@@ -4,6 +4,7 @@ import { useState, ChangeEvent } from "react";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { createContentItem, updateContentItem, deleteContentItem, uploadSettingsImage } from "@/app/admin/settings/actions";
+import { publicMediaUrl } from "@/lib/media-url";
 
 type ContentType = "PAGE" | "HOME_SECTION" | "TEACHER" | "REVIEW" | "FAQ" | "BLOG" | "BOOK";
 
@@ -86,7 +87,7 @@ export default function ContentManager({
       setUploadingImage(true);
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("variant", "image");
+      fd.append("variant", type === "BOOK" ? "book" : "image");
       if (editingId) fd.append("owner_id", editingId);
 
       const data = await uploadSettingsImage(fd);
@@ -98,6 +99,7 @@ export default function ContentManager({
       alert(err instanceof Error ? err.message : "Error uploading image");
     } finally {
       setUploadingImage(false);
+      e.target.value = "";
     }
   }
 
@@ -208,9 +210,13 @@ export default function ContentManager({
               key={`${item.type}:${item.id}`}
               className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
             >
-              <div className="h-48 w-full shrink-0 bg-cream">
+              <div className="aspect-[3/4] w-full shrink-0 bg-cream p-3">
                 {item.image ? (
-                  <img src={item.image} alt={item.title} className="h-full w-full object-contain object-center" />
+                  <img
+                    src={publicMediaUrl(item.image)}
+                    alt={item.title}
+                    className="h-full w-full rounded-lg bg-white object-contain object-center shadow-sm"
+                  />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gold">
                     <svg className="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,8 +346,14 @@ export default function ContentManager({
 
               <div className="space-y-2">
                 {form.image && (
-                  <div className="flex items-center gap-3">
-                    <img src={form.image} alt="Preview" className="h-16 w-16 rounded-md border bg-gray-50 object-contain object-center" />
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={publicMediaUrl(form.image)}
+                      alt="Preview"
+                      className={type === "BOOK"
+                        ? "h-32 w-24 rounded-md border bg-gray-50 object-contain object-center"
+                        : "h-16 w-16 rounded-md border bg-gray-50 object-contain object-center"}
+                    />
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, image: "" }))}
@@ -365,6 +377,11 @@ export default function ContentManager({
                     {uploadingImage ? "Uploading..." : "Upload image"}
                   </span>
                 </label>
+                {type === "BOOK" && (
+                  <p className="text-xs text-gray-500">
+                    Upload the original full book cover. Portrait images are recommended; the image will be resized without cropping.
+                  </p>
+                )}
               </div>
 
               <button

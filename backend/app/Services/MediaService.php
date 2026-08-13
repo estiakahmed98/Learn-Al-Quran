@@ -224,22 +224,14 @@ class MediaService
 
         $sourceWidth = imagesx($source);
         $sourceHeight = imagesy($source);
-        $sourceRatio = $sourceWidth / $sourceHeight;
-        $targetRatio = $width / $height;
+        // Treat profile dimensions as maximum bounds. Resize proportionally
+        // without centre-cropping so titles, faces and book-cover artwork are
+        // never discarded during upload.
+        $scale = min($width / $sourceWidth, $height / $sourceHeight, 1);
+        $targetWidth = max(1, (int) round($sourceWidth * $scale));
+        $targetHeight = max(1, (int) round($sourceHeight * $scale));
 
-        if ($sourceRatio > $targetRatio) {
-            $cropHeight = $sourceHeight;
-            $cropWidth = (int) round($sourceHeight * $targetRatio);
-            $sourceX = (int) round(($sourceWidth - $cropWidth) / 2);
-            $sourceY = 0;
-        } else {
-            $cropWidth = $sourceWidth;
-            $cropHeight = (int) round($sourceWidth / $targetRatio);
-            $sourceX = 0;
-            $sourceY = (int) round(($sourceHeight - $cropHeight) / 2);
-        }
-
-        $target = imagecreatetruecolor($width, $height);
+        $target = imagecreatetruecolor($targetWidth, $targetHeight);
         imagealphablending($target, false);
         imagesavealpha($target, true);
         $transparent = imagecolorallocatealpha($target, 0, 0, 0, 127);
@@ -249,12 +241,12 @@ class MediaService
             $source,
             0,
             0,
-            $sourceX,
-            $sourceY,
-            $width,
-            $height,
-            $cropWidth,
-            $cropHeight,
+            0,
+            0,
+            $targetWidth,
+            $targetHeight,
+            $sourceWidth,
+            $sourceHeight,
         );
 
         ob_start();

@@ -480,7 +480,7 @@ function BookCard({
     >
       {/* Cover */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-3 sm:p-4">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white shadow-md">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-white shadow-md">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -611,13 +611,14 @@ function BookDetailsModal({
 
               <div className="relative z-10 mx-auto w-full max-w-3xl">
                 {imageUrl ? (
-                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-black/10 sm:rounded-2xl">
-                    <Image
+                  <div className="flex max-h-[58vh] w-full items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl">
+                    {/* Book uploads may be portrait, square or landscape. Let
+                        the browser use the file's real aspect ratio here. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={imageUrl}
                       alt={book.title}
-                      fill
-                      sizes="(max-width: 768px) calc(100vw - 64px), 768px"
-                      className="object-contain object-center"
+                      className="max-h-[58vh] max-w-full rounded-xl object-contain shadow-xl ring-1 ring-black/10 sm:rounded-2xl"
                     />
                   </div>
                 ) : (
