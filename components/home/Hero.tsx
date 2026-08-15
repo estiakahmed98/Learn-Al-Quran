@@ -30,14 +30,33 @@ export default function Hero({
   const heroImage = publicMediaUrl(image, "/images/hero-banner.jpg");
 
   return (
-    <section className="relative min-h-[28rem] overflow-hidden bg-primary-dark sm:min-h-[34rem] lg:min-h-[40rem]">
-      {/* Full-screen responsive banner */}
-      <div className="absolute inset-0">
-        <picture className="block h-full w-full">
-          <source
-            media="(max-width: 639px)"
-            srcSet="/images/mobile%20image.jpg"
+    <section className="relative z-10 -mb-px min-h-[28rem] overflow-hidden bg-primary-dark sm:z-auto sm:mb-0 sm:min-h-[34rem] lg:min-h-[40rem]">
+      {/* Mobile gradient with soft waves */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-dark via-primary to-primary-dark sm:hidden">
+        <IslamicPattern tone="gold" opacity={0.09} patternSize={104} />
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold/10 blur-3xl" />
+        <div className="absolute -bottom-16 -left-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+
+        <svg
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 h-20 w-full"
+          viewBox="0 0 1440 180"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 54C190 126 360 130 552 68C760 1 938 -11 1114 38C1244 74 1340 84 1440 48V180H0V54Z"
+            className="fill-white/[0.06]"
           />
+          <path
+            d="M0 112C220 55 410 66 610 119C820 175 1026 164 1206 105C1300 74 1376 72 1440 89V180H0V112Z"
+            className="fill-[#f4f6f6]"
+          />
+        </svg>
+      </div>
+
+      {/* Desktop and tablet banner */}
+      <div className="absolute inset-0 hidden sm:block">
+        <picture className="block h-full w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={heroImage}
@@ -46,7 +65,7 @@ export default function Hero({
             className="h-full w-full object-cover object-center"
           />
         </picture>
-        <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/25 via-primary-dark/45 to-primary-dark/75 sm:bg-gradient-to-r sm:from-primary-dark/60 sm:via-primary-dark/60 sm:via-[35%] sm:to-transparent sm:to-[50%]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/60 via-primary-dark/60 via-[35%] to-transparent to-[50%]" />
       </div>
 
       {/* Left-aligned copy over the image */}

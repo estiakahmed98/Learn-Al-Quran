@@ -14,7 +14,9 @@ import "@fontsource/hind-siliguri/500.css";
 import "@fontsource/hind-siliguri/600.css";
 import AuthProvider from "@/components/admin/AuthProvider";
 import GoogleAnalytics from "@/components/shared/GoogleAnalytics";
-import GoogleTagManager, { GoogleTagManagerNoScript } from "@/components/shared/GoogleTagManager";
+import GoogleTagManager, {
+  GoogleTagManagerNoScript,
+} from "@/components/shared/GoogleTagManager";
 import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
@@ -25,27 +27,36 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
-  const locale = hasLocale(routing.locales, params.locale) ? params.locale : routing.defaultLocale;
+  const locale = hasLocale(routing.locales, params.locale)
+    ? params.locale
+    : routing.defaultLocale;
   const ogLocale = locale === "bn" ? "bn_BD" : "en_US";
   const ogAlternateLocale = locale === "bn" ? "en_US" : "bn_BD";
 
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
-      template: "%s | Learn Al Quran Online BD"
+      default:
+        "Bangla Quran Shikkha | Learn Al Quran Online BD | Learn Quran Online ",
+      template: "%s | Learn Al Quran Online BD",
     },
     description:
-      "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes for students worldwide. Book a free trial class today.",
+      "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
     keywords: [
       "Learn Quran Online",
+      "Bangla Quran Shikkha",
+      "Bangla Quran",
       "Online Quran Classes Bangladesh",
+      "spoken english course",
+      "spoken english bangla",
+      "learn english speaking",
+      "english speaking course",
+      "spoken english spoken english",
+      "spoken english for kids",
       "Tajweed Course",
       "Hifzul Quran Online",
       "Nazera Quran",
@@ -54,17 +65,19 @@ export async function generateMetadata(
       "Adult Quran Learning",
       "কুরআন শরীফ",
       "অনলাইন কুরআন শিক্ষা",
+      "কুরআন তেলাওয়াত বাংলা অর্থসহ",
       "কুরআন তেলাওয়াত",
       "তাজবীদ শিক্ষা",
       "আল কুরআন",
       "কুরআন শিক্ষা কোর্স",
       "হিফজুল কুরআন",
-      "অনলাইন মাদ্রাসা"
+      "স্পোকেন ইংলিশ কোর্স",
+      "অনলাইন মাদ্রাসা",
     ],
     authors: [{ name: "Learn Al Quran Online BD" }],
     creator: "Learn Al Quran Online BD",
     alternates: {
-      canonical: "/"
+      canonical: "/",
     },
     openGraph: {
       type: "website",
@@ -72,17 +85,25 @@ export async function generateMetadata(
       alternateLocale: ogAlternateLocale,
       url: siteUrl,
       siteName: "Learn Al Quran Online BD",
-      title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
+      title:
+        "Bangla Quran Shikkha | Learn Al Quran Online BD | Learn Quran Online ",
       description:
-        "Personalized live online Quran, Tajweed & Hifz classes for kids and adults, with certified Huffaz and Qaris. Book your free trial class today.",
-      images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: "Learn Al Quran Online BD" }]
+        "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
+      images: [
+        {
+          url: "/images/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Learn Al Quran Online BD",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: "Learn Al Quran Online BD",
       description:
-        "Learn the Holy Quran online with certified Huffaz and Qaris. Book a free trial class today.",
-      images: ["/images/og-image.jpg"]
+        "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
+      images: ["/images/og-image.jpg"],
     },
     robots: {
       index: true,
@@ -91,35 +112,31 @@ export async function generateMetadata(
         index: true,
         follow: true,
         "max-image-preview": "large",
-        "max-snippet": -1
-      }
+        "max-snippet": -1,
+      },
     },
     verification: {
-      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
     },
     icons: {
-      icon: "/favicon.ico"
-    }
+      icon: "/favicon.ico",
+    },
   };
 }
 
 export const viewport: Viewport = {
   themeColor: "#28504F",
   width: "device-width",
-  initialScale: 1
+  initialScale: 1,
 };
 
-export default async function RootLayout(
-  props: {
-    children: React.ReactNode;
-    params: Promise<{ locale: string }>;
-  }
-) {
+export default async function RootLayout(props: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
   const params = await props.params;
 
-  const {
-    children
-  } = props;
+  const { children } = props;
 
   if (!hasLocale(routing.locales, params.locale)) {
     notFound();
@@ -142,11 +159,11 @@ export default async function RootLayout(
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dhaka",
-      addressCountry: "BD"
+      addressCountry: "BD",
     },
     sameAs: parseSocialLinks(settings.socialLinks)
       .map((link) => link.url)
-      .filter(Boolean)
+      .filter(Boolean),
   };
 
   const websiteJsonLd = {
@@ -157,8 +174,8 @@ export default async function RootLayout(
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/blog?q={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
+      "query-input": "required name=search_term_string",
+    },
   };
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "";
