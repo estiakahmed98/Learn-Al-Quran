@@ -73,6 +73,12 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                 className="group relative flex flex-col overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
+                <Link
+                  href={`/courses/${course.slug}`}
+                  aria-label={`${pickText(locale, course.title, course.titleBn)} - ${t("details")}`}
+                  className="absolute inset-0 z-10 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                />
+
                 {/* Decorative corner */}
                 <div className="absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -113,7 +119,7 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                     {pickText(locale, course.description, course.descriptionBn)}
                   </p>
 
-                  <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <div className="relative z-20 mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Link
                       href={`/courses/${course.slug}`}
                       className="relative isolate flex-1 overflow-hidden rounded-lg border border-primary/30 px-3 py-2 text-center text-xs font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md sm:py-2.5 sm:text-sm"

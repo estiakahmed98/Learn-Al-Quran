@@ -180,8 +180,14 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
               return (
                 <article
                   key={course.id}
-                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10"
                 >
+                  <Link
+                    href={`/courses/${course.slug}`}
+                    aria-label={`${pickText(locale, course.title, course.titleBn)} - ${t("details")}`}
+                    className="absolute inset-0 z-10 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                  />
+
                   <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
                     <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
                       {course.thumbnail ? (
@@ -239,7 +245,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                       </span>
                     </div>
 
-                    <div className="mt-4 flex gap-3">
+                    <div className="relative z-20 mt-4 flex gap-3">
                       <Link
                         href={`/courses/${course.slug}`}
                         className="flex-1 rounded-xl border border-primary/30 py-2.5 text-center text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
