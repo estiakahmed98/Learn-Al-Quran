@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { publicMediaUrl } from "@/lib/media-url";
@@ -71,11 +72,13 @@ function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold/20 to-primary/20 animate-pulse" />
             <div className="absolute inset-0.5 rounded-full bg-white" />
             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-gold/40 ring-offset-2 ring-offset-white transition-all duration-300 group-hover:ring-4 group-hover:ring-gold/60">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={publicMediaUrl(review.image, "/images/teacher-placeholder.jpg")}
                 alt={review.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                quality={85}
+                sizes="48px"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
           </div>

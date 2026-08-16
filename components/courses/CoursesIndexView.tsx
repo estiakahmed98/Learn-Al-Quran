@@ -190,6 +190,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                           alt={pickText(locale, course.title, course.titleBn)}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          quality={90}
                           className="object-contain object-center"
                         />
                       ) : (

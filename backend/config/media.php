@@ -2,7 +2,7 @@
 
 return [
     'disk' => env('MEDIA_DISK', 'public'),
-    'quality' => (int) env('MEDIA_WEBP_QUALITY', 82),
+    'quality' => (int) env('MEDIA_WEBP_QUALITY', 88),
     // Shared hosts do not always enable GD with WebP support. When it is
     // unavailable, keep the original validated image instead of failing the
     // whole upload. Set MEDIA_REQUIRE_WEBP=true only on a server where WebP
@@ -36,13 +36,15 @@ return [
 
     'profiles' => [
         'courses' => [
-            'thumbnail' => [400, 225],
-            'banner' => [800, 450],
-            'cover' => [800, 450],
+            // Keep enough source pixels for two-column cards on Retina/high-DPI
+            // displays. Next.js will still send smaller responsive variants.
+            'thumbnail' => [960, 540],
+            'banner' => [1600, 900],
+            'cover' => [1600, 900],
         ],
         'users' => [
-            'profile' => [400, 400],
-            'avatar' => [400, 400],
+            'profile' => [800, 800],
+            'avatar' => [800, 800],
         ],
         'employees' => [
             'profile' => [400, 400],

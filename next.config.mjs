@@ -6,6 +6,8 @@ const mediaOrigin = new URL(process.env.API_URL || "http://127.0.0.1:8000/api/v1
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
   experimental: {
     // Image/file uploads go through Server Actions as multipart FormData;
     // the backend already caps files at 5MB (see UploadImageRequest), so
@@ -15,6 +17,11 @@ const nextConfig = {
     }
   },
   images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [75, 85, 90],
+    // Uploaded files have UUID names and are immutable. Let the optimized
+    // variants stay at the edge instead of regenerating them under load.
+    minimumCacheTTL: 31536000,
     // Uploaded media and its placeholder are served by the Laravel origin.
     // Keep this allowlist tied to API_URL instead of allowing arbitrary hosts.
     remotePatterns: [
@@ -42,6 +49,12 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/storage/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" }
+        ]
+      },
       {
         source: "/sitemap.xml",
         headers: [

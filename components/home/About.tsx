@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import IslamicPattern from "@/components/shared/IslamicPattern";
@@ -38,11 +39,14 @@ export default function About({ title, description, image }: AboutProps) {
             {/* Decorative border pattern */}
             <div className="absolute inset-0 pointer-events-none border-2 border-gold/20 rounded-2xl sm:rounded-3xl" />
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={aboutImage}
               alt={t("imageAlt")}
-              className="h-full w-full object-cover aspect-[4/3] sm:aspect-auto"
+              width={768}
+              height={576}
+              quality={85}
+              sizes="(max-width: 640px) 320px, 384px"
+              className="aspect-[4/3] h-auto w-full object-cover"
             />
           </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
@@ -56,15 +57,17 @@ export default function Hero({
 
       {/* Desktop and tablet banner */}
       <div className="absolute inset-0 hidden sm:block">
-        <picture className="block h-full w-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative h-full w-full">
+          <Image
             src={heroImage}
             alt={t("imageAlt")}
-            fetchPriority="high"
-            className="h-full w-full object-cover object-center"
+            fill
+            priority
+            quality={90}
+            sizes="100vw"
+            className="object-cover object-center"
           />
-        </picture>
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/60 via-primary-dark/60 via-[35%] to-transparent to-[50%]" />
       </div>
 

@@ -20,7 +20,9 @@ class CourseController extends Controller
             $query->where('is_active', true);
         }
 
-        return CourseResource::collection($query->paginate($request->integer('per_page', 15)));
+        $perPage = max(1, min($request->integer('per_page', 15), 100));
+
+        return CourseResource::collection($query->paginate($perPage));
     }
 
     public function store(CourseRequest $request, MediaService $media): CourseResource

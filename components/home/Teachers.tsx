@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { GraduationCap } from "lucide-react";
 import IslamicPattern from "@/components/shared/IslamicPattern";
@@ -27,11 +28,13 @@ function TeacherCardItem({
     >
       {/* Image panel */}
       <div className="relative isolate h-56 w-full shrink-0 overflow-hidden bg-primary-dark sm:h-64">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={publicMediaUrl(teacher.imageUrl, "/images/teacher-placeholder.jpg")}
           alt={teacher.name}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          fill
+          quality={85}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/15 to-transparent" />

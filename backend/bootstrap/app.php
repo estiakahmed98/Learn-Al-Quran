@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\AuthenticateOptionally;
+use App\Http\Middleware\CachePublicResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureRole::class,
             'auth.optional' => AuthenticateOptionally::class,
+            'public.cache' => CachePublicResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

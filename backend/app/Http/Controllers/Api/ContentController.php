@@ -24,7 +24,9 @@ class ContentController extends Controller
             $query->where('is_published', true);
         }
 
-        return ContentResource::collection($query->paginate($request->integer('per_page', 20)));
+        $perPage = max(1, min($request->integer('per_page', 20), 100));
+
+        return ContentResource::collection($query->paginate($perPage));
     }
 
     public function books(): AnonymousResourceCollection

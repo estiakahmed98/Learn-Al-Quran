@@ -15,7 +15,9 @@ class BlogController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        return BlogResource::collection(Blog::query()->latest('date')->paginate($request->integer('per_page', 12)));
+        $perPage = max(1, min($request->integer('per_page', 12), 100));
+
+        return BlogResource::collection(Blog::query()->latest('date')->paginate($perPage));
     }
 
     public function store(BlogRequest $request, MediaService $media): BlogResource

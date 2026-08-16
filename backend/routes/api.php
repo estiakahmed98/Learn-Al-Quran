@@ -22,24 +22,24 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function (): void {
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register']);
-        Route::post('login', [AuthController::class, 'login']);
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     });
 
-    Route::get('courses/slug/{course:slug}', [CourseController::class, 'show']);
-    Route::get('blogs/slug/{blog:slug}', [BlogController::class, 'show']);
-    Route::apiResource('blogs', BlogController::class)->only(['index', 'show']);
-    Route::get('books', [ContentController::class, 'books']);
-    Route::get('reviews', [ContentController::class, 'reviews']);
+    Route::get('courses/slug/{course:slug}', [CourseController::class, 'show'])->middleware('public.cache:600');
+    Route::get('blogs/slug/{blog:slug}', [BlogController::class, 'show'])->middleware('public.cache:600');
+    Route::apiResource('blogs', BlogController::class)->only(['index', 'show'])->middleware('public.cache:300');
+    Route::get('books', [ContentController::class, 'books'])->middleware('public.cache:600');
+    Route::get('reviews', [ContentController::class, 'reviews'])->middleware('public.cache:300');
 
     Route::middleware('auth.optional')->group(function (): void {
-        Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
-        Route::get('contents', [ContentController::class, 'index']);
+        Route::apiResource('courses', CourseController::class)->only(['index', 'show'])->middleware('public.cache:300');
+        Route::get('contents', [ContentController::class, 'index'])->middleware('public.cache:300');
     });
-    Route::get('teachers', [UserController::class, 'teachers']);
-    Route::get('settings', [SiteSettingController::class, 'show']);
-    Route::post('enrollments', [EnrollmentController::class, 'store']);
-    Route::post('trial-applications', [TrialApplicationController::class, 'store']);
-    Route::post('reviews', [ContentController::class, 'submitReview']);
+    Route::get('teachers', [UserController::class, 'teachers'])->middleware('public.cache:600');
+    Route::get('settings', [SiteSettingController::class, 'show'])->middleware('public.cache:600');
+    Route::post('enrollments', [EnrollmentController::class, 'store'])->middleware('throttle:20,1');
+    Route::post('trial-applications', [TrialApplicationController::class, 'store'])->middleware('throttle:10,1');
+    Route::post('reviews', [ContentController::class, 'submitReview'])->middleware('throttle:5,1');
     Route::post('analytics/collect', [AnalyticsController::class, 'collect'])->middleware('throttle:120,1');
     Route::post('newsletter/subscribe', [SubscriberController::class, 'subscribe'])->middleware('throttle:10,1');
     Route::get('newsletter/unsubscribe', [SubscriberController::class, 'unsubscribeLink'])->middleware('throttle:10,1');
