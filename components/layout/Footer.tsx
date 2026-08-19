@@ -68,8 +68,8 @@ export default function Footer({
       <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full border-[28px] border-white/[0.025]" />
       <div className="pointer-events-none absolute -bottom-28 right-10 h-72 w-72 rounded-full border-[32px] border-gold/[0.035]" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:py-14">
-        <div className="sm:col-span-2 lg:col-span-4">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-10 px-4 py-12 sm:gap-x-10 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:py-14">
+        <div className="col-span-2 lg:col-span-4">
           <Link href="/" className="inline-flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -165,7 +165,7 @@ export default function Footer({
           </ul>
         </div>
 
-        <div className="sm:col-span-2 lg:col-span-3">
+        <div className="col-span-2 lg:col-span-3">
           <div className="h-full rounded-2xl border border-gold/15 bg-white/[0.055] p-6 shadow-inner">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold-light">
               {t("ctaEyebrow")}
