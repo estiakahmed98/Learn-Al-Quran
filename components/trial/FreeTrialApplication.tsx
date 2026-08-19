@@ -102,7 +102,7 @@ export default function FreeTrialApplication({
       <div className="absolute -left-32 top-16 h-80 w-80 rounded-full border-[36px] border-primary/5" />
       <div className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:px-8">
-        <div>
+        <div className="order-2 lg:order-1">
           <p className="text-xs font-bold uppercase tracking-[.28em] text-secondary">
             {t("eyebrow")}
           </p>
@@ -144,7 +144,7 @@ export default function FreeTrialApplication({
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[2rem] bg-primary-dark shadow-2xl shadow-primary-dark/20">
+        <div className="relative order-1 overflow-hidden rounded-[2rem] bg-primary-dark shadow-2xl shadow-primary-dark/20 lg:order-2">
           <IslamicPattern tone="gold" opacity={0.08} />
           <div className="relative border-b border-white/10 px-6 py-6 sm:px-9">
             <p className="text-xs font-bold uppercase tracking-[.25em] text-secondary">
