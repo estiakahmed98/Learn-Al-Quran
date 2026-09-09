@@ -419,14 +419,15 @@ export default function CourseDetailView({
         </section>
       )}
 
-      {/* ============ FAQ ============ */}
-      {faqs.length > 0 && (
-        <section className="bg-cream">
-          <div className="mx-auto max-w-4xl px-4 py-14 lg:px-8">
-            <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
-              {t("faqTitle")}
-            </h2>
-            <div className="mt-8 space-y-3">
+      {/* ============ FAQ + Review submission ============ */}
+      <section className="bg-cream">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 lg:grid-cols-2 lg:items-start lg:px-8">
+          {faqs.length > 0 && (
+            <div>
+              <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
+                {t("faqTitle")}
+              </h2>
+              <div className="mt-8 space-y-3">
               {faqs.map((faq, i) => {
                 const isOpen = openFaqIndex === i;
                 return (
@@ -458,10 +459,21 @@ export default function CourseDetailView({
                   </div>
                 );
               })}
+              </div>
             </div>
+          )}
+
+          <div
+            className={
+              faqs.length > 0
+                ? ""
+                : "lg:col-span-2 lg:mx-auto lg:w-full lg:max-w-2xl"
+            }
+          >
+            <ReviewForm />
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* ============ Testimonials ============ */}
       {reviews.length > 0 && (
@@ -513,13 +525,6 @@ export default function CourseDetailView({
           </div>
         </section>
       )}
-
-      {/* ============ Review submission ============ */}
-      <section className="bg-cream">
-        <div className="mx-auto max-w-2xl px-4 py-14 lg:px-8">
-          <ReviewForm />
-        </div>
-      </section>
 
       {/* ============ Bottom enroll ============ */}
       <section className="bg-gradient-to-br from-primary-dark to-primary">
