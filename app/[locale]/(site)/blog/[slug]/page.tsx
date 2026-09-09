@@ -5,12 +5,13 @@ import BlogDetails from "@/components/admin/blog/BlogDetails";
 import { api } from "@/lib/api-client";
 import { getCachedBlogBySlug } from "@/lib/cached-data";
 import { sanitizeRichHtml } from "@/lib/sanitize-html";
-import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { buildAlternates, buildBreadcrumbJsonLd, publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
 
 interface Props {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ locale: Locale; slug: string }>;
 }
 
 const LEGACY_BLOG_SLUG =
@@ -56,17 +57,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     return {
       title: t("notFound"),
       description: t("heroSubtitle"),
-      alternates: buildAlternates(`/blog/${slug}`)
+      alternates: buildAlternates(params.locale, `/blog/${slug}`),
+      robots: { index: false, follow: false }
     };
   }
 
   const publishedTime = serializeDate(blog.date);
   const modifiedTime = serializeDate(blog.updatedAt);
 
-  return {
+  return publicPageMetadata(params.locale, `/blog/${blog.slug}`, {
     title: blog.title,
     description: blog.summary,
-    alternates: buildAlternates(`/blog/${blog.slug}`),
     openGraph: {
       type: "article",
       title: blog.title,
@@ -76,7 +77,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       modifiedTime: modifiedTime || undefined,
       authors: [blog.author]
     }
-  };
+  });
 }
 
 export default async function BlogDetailsPage(props: Props) {
@@ -85,8 +86,7 @@ export default async function BlogDetailsPage(props: Props) {
   const slug = canonicalBlogSlug(requestedSlug);
 
   if (requestedSlug !== slug) {
-    const localePrefix = params.locale === "en" ? "/en" : "";
-    redirect(`${localePrefix}/blog/${encodeURIComponent(slug)}`);
+    redirect(`/${params.locale}/blog/${encodeURIComponent(slug)}`);
   }
   const [blog, t] = await Promise.all([
     getCachedBlogBySlug(slug).catch(() => null),

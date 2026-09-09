@@ -4,7 +4,7 @@ import { siteUrl } from "@/lib/site-config";
 import { routing } from "@/i18n/routing";
 
 function localePrefix(locale: string) {
-  return locale === routing.defaultLocale ? "" : `/${locale}`;
+  return `/${locale}`;
 }
 
 function absoluteUrl(path: string) {
@@ -26,12 +26,16 @@ function buildEntry(
       changeFrequency: options.changeFrequency,
       priority: options.priority,
       alternates: {
-        languages: Object.fromEntries(
-          routing.locales.map((l) => [
+        languages: Object.fromEntries([
+          ...routing.locales.map((l) => [
             l,
             absoluteUrl(`${localePrefix(l)}${clean || "/"}`)
-          ])
-        )
+          ]),
+          [
+            "x-default",
+            absoluteUrl(`${localePrefix(routing.defaultLocale)}${clean || "/"}`)
+          ]
+        ])
       }
     };
   });

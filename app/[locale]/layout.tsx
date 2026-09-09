@@ -22,6 +22,7 @@ import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
 import { parseSocialLinks } from "@/lib/social-platforms";
 import { routing } from "@/i18n/routing";
+import { buildAlternates } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -76,9 +77,7 @@ export async function generateMetadata(props: {
     ],
     authors: [{ name: "Learn Al Quran Online BD" }],
     creator: "Learn Al Quran Online BD",
-    alternates: {
-      canonical: "/",
-    },
+    alternates: buildAlternates(locale, "/"),
     openGraph: {
       type: "website",
       locale: ogLocale,

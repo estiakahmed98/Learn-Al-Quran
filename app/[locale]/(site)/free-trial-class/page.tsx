@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import FreeTrialApplication from "@/components/trial/FreeTrialApplication";
 import { getCachedActiveCourses } from "@/lib/cached-data";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Free Trial Class",
-  description:
-    "Book your free trial class with Learn Al Quran Online BD. Experience our live one-to-one Quran, Tajweed and Hifz teaching before you enroll.",
-  alternates: buildAlternates("/free-trial-class")
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/free-trial-class", {
+    title: "Free Trial Class",
+    description:
+      "Book your free trial class with Learn Al Quran Online BD. Experience our live one-to-one Quran, Tajweed and Hifz teaching before you enroll."
+  });
+}
 
 export const dynamic = "force-dynamic";
 

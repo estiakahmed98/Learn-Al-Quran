@@ -79,7 +79,7 @@ const nextConfig = {
       {
         // Sensitive routes: keep out of search-engine indexes even if a
         // client mistakenly links to them, on top of robots.txt disallow.
-        source: "/(admin|api|auth)/:path*",
+        source: "/(admin|api|auth|student|teacher)/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }]
       }
     ];

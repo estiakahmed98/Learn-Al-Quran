@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
 import { getSiteSettings } from "@/lib/site-config";
 import { getTranslations } from "next-intl/server";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description:
-    "Get in touch with Learn Al Quran Online BD. Call, WhatsApp, or email us to learn more about our online Quran courses or book a free trial class.",
-  alternates: buildAlternates("/contact-us"),
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/contact-us", {
+    title: "Contact Us",
+    description:
+      "Get in touch with Learn Al Quran Online BD. Call, WhatsApp, or email us to learn more about our online Quran courses or book a free trial class."
+  });
+}
 
 export const revalidate = 3600;
 

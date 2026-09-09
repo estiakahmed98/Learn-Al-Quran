@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getSiteSettings } from "@/lib/site-config";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Read the privacy policy of Learn Al Quran Online BD.",
-  alternates: buildAlternates("/privacy-policy"),
-  robots: { index: false }
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/privacy-policy", {
+    title: "Privacy Policy",
+    description: "Read the privacy policy of Learn Al Quran Online BD."
+  });
+}
 
 export const revalidate = 3600;
 

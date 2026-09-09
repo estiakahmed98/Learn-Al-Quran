@@ -5,13 +5,16 @@ import { Heart } from "lucide-react";
 import { getCachedTeachers } from "@/lib/cached-data";
 import Teachers from "@/components/home/Teachers";
 import IslamicPattern from "@/components/shared/IslamicPattern";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about our mission, teaching methodology, and certified Quran teachers.",
-  alternates: buildAlternates("/about-us")
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/about-us", {
+    title: "About Us",
+    description: "Learn about our mission, teaching methodology, and certified Quran teachers."
+  });
+}
 
 export const revalidate = 3600;
 

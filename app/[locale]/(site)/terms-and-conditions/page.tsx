@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getSiteSettings } from "@/lib/site-config";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions",
-  description: "Read the terms and conditions for Learn Al Quran Online BD courses.",
-  alternates: buildAlternates("/terms-and-conditions"),
-  robots: { index: false }
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/terms-and-conditions", {
+    title: "Terms & Conditions",
+    description: "Read the terms and conditions for Learn Al Quran Online BD courses."
+  });
+}
 
 export const revalidate = 3600;
 

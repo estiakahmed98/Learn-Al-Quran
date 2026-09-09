@@ -1,7 +1,6 @@
 //app/[locale]/(site)/courses/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale } from "next-intl/server";
 import { api } from "@/lib/api-client";
 import { getCachedCourseBySlug } from "@/lib/cached-data";
 import CourseDetailView, {
@@ -9,14 +8,15 @@ import CourseDetailView, {
   type SerializedReview,
 } from "@/components/courses/CourseDetailView";
 import { pickText } from "@/lib/course-content";
-import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { buildAlternates, buildBreadcrumbJsonLd, publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
 
 export const revalidate = 3600;
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: Locale; slug: string }>;
 }
 
 // See app/[locale]/(site)/blog/[slug]/page.tsx for why this is needed:
@@ -81,17 +81,16 @@ function serializeCourse(
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const slug = decodeSlug(params.slug);
-  const [course, locale] = await Promise.all([
-    getCachedCourseBySlug(slug).catch(() => null),
-    getLocale(),
-  ]);
+  const course = await getCachedCourseBySlug(slug).catch(() => null);
+  const locale = params.locale;
 
   if (!course) {
     return {
       title: "Course Details",
       description:
         "View course details, curriculum, schedule and enrollment information.",
-      alternates: buildAlternates(`/courses/${slug}`),
+      alternates: buildAlternates(locale, `/courses/${slug}`),
+      robots: { index: false, follow: false }
     };
   }
 
@@ -102,17 +101,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     pickText(locale, course.description, course.descriptionBn);
   const image = course.thumbnail || course.bannerImage;
 
-  return {
+  return publicPageMetadata(locale, `/courses/${course.slug}`, {
     title,
     description,
-    alternates: buildAlternates(`/courses/${course.slug}`),
     openGraph: {
       type: "website",
       title,
       description,
       images: image ? [{ url: image }] : undefined,
     },
-  };
+  });
 }
 
 export default async function CourseDetailPage(props: Props) {

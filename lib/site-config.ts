@@ -3,11 +3,28 @@ import { api, ApiError } from "@/lib/api-client";
 
 export const SITE_SETTINGS_CACHE_TAG = "site-settings";
 
-// Environment values are often entered with a trailing slash. Keeping one
-// canonical, slash-free origin prevents `//path` in sitemap and SEO URLs.
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://learnalquranonlinebd.com"
-).replace(/\/+$/, "");
+const PRODUCTION_SITE_URL = "https://www.learnalquranonlinebd.com";
+
+/** Returns the single, slash-free origin used by metadata, hreflang and sitemaps. */
+export function getBaseUrl() {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  try {
+    const url = new URL(configured || PRODUCTION_SITE_URL);
+    const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+
+    // A mistaken production environment value must never publish localhost canonicals.
+    if (process.env.NODE_ENV === "production" && isLocalhost) {
+      return PRODUCTION_SITE_URL;
+    }
+
+    return url.origin;
+  } catch {
+    return PRODUCTION_SITE_URL;
+  }
+}
+
+export const siteUrl = getBaseUrl();
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Learn Al Quran Online BD";
 export const ga4Id = process.env.NEXT_PUBLIC_GA4_ID || "";
 

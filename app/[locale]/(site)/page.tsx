@@ -13,15 +13,20 @@ import { api } from "@/lib/api-client";
 import { getSiteSettings } from "@/lib/site-config";
 import { getCachedActiveCourses, getCachedTeachers } from "@/lib/cached-data";
 import { pickText } from "@/lib/course-content";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 import JsonLd from "@/components/shared/JsonLd";
 
-export const metadata: Metadata = {
-  title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
-  description:
-    "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes. Book a free trial class today.",
-  alternates: buildAlternates("/"),
-};
+export async function generateMetadata({ params }: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/", {
+    title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
+    description:
+      "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes. Book a free trial class today."
+  });
+}
 
 export const revalidate = 3600;
 

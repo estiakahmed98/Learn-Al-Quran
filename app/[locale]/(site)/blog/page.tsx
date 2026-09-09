@@ -3,19 +3,20 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import AllBlogs from "@/components/admin/blog/AllBlogs";
 import { ArrowRight, BookOpenText, Mail, Newspaper, Search } from "lucide-react";
-import { buildAlternates, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 import { siteUrl } from "@/lib/site-config";
 import JsonLd from "@/components/shared/JsonLd";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations("sitePages.blog");
 
-  return {
+  return publicPageMetadata(locale, "/blog", {
     title: `${t("title")} | Learn Al Quran Online BD`,
-    description: t("heroSubtitle"),
-    alternates: buildAlternates("/blog")
-  };
+    description: t("heroSubtitle")
+  });
 }
 
 export default async function BlogsPage() {

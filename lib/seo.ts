@@ -1,20 +1,46 @@
 import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-config";
+import { routing, type Locale } from "@/i18n/routing";
+
+export function localizedPath(locale: Locale, pathname: string) {
+  const clean = pathname === "/" ? "" : `/${pathname.replace(/^\/+|\/+$/g, "")}`;
+  const prefix = `/${locale}`;
+  return `${prefix}${clean}` || "/";
+}
+
+export function buildCanonicalUrl(locale: Locale, pathname: string) {
+  return new URL(localizedPath(locale, pathname), `${siteUrl}/`).toString();
+}
 
 /**
  * Builds canonical + hreflang alternate URLs for a given locale-neutral pathname.
  * `pathname` should be the path WITHOUT a locale prefix, e.g. "/courses" or "/".
  */
-export function buildAlternates(pathname: string): Metadata["alternates"] {
-  const clean = pathname === "/" ? "" : pathname;
-
+export function buildAlternates(
+  locale: Locale,
+  pathname: string
+): Metadata["alternates"] {
   return {
-    canonical: `${siteUrl}${clean || "/"}`,
-    languages: {
-      en: `${siteUrl}${clean || "/"}`,
-      bn: `${siteUrl}/bn${clean}`,
-      "x-default": `${siteUrl}${clean || "/"}`
-    }
+    canonical: buildCanonicalUrl(locale, pathname),
+    languages: Object.fromEntries([
+      ...routing.locales.map((language) => [
+        language,
+        buildCanonicalUrl(language, pathname)
+      ]),
+      ["x-default", buildCanonicalUrl(routing.defaultLocale, pathname)]
+    ])
+  };
+}
+
+export function publicPageMetadata(
+  locale: Locale,
+  pathname: string,
+  metadata: Omit<Metadata, "alternates" | "robots">
+): Metadata {
+  return {
+    ...metadata,
+    alternates: buildAlternates(locale, pathname),
+    robots: { index: true, follow: true }
   };
 }
 

@@ -3,13 +3,16 @@ import { getLocale } from "next-intl/server";
 import EnrollmentForm from "@/components/enrollment/EnrollmentForm";
 import { getCachedActiveCourses } from "@/lib/cached-data";
 import { getSiteSettings } from "@/lib/site-config";
-import { buildAlternates } from "@/lib/seo";
+import { publicPageMetadata } from "@/lib/seo";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Enroll in a Course",
-  description: "Select a Quran course and submit your enrollment and payment details.",
-  alternates: buildAlternates("/enroll")
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return publicPageMetadata(locale, "/enroll", {
+    title: "Enroll in a Course",
+    description: "Select a Quran course and submit your enrollment and payment details."
+  });
+}
 
 export const dynamic = "force-dynamic";
 

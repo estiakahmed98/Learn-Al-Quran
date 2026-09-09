@@ -5,9 +5,29 @@ import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
+const canonicalUrl = new URL(
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.learnalquranonlinebd.com"
+);
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Consolidate only the exact www/non-www counterpart. Preview and local
+  // deployment hostnames are deliberately left alone.
+  const canonicalHost = canonicalUrl.hostname;
+  const alternateHost = canonicalHost.startsWith("www.")
+    ? canonicalHost.slice(4)
+    : `www.${canonicalHost}`;
+  const requestHost = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "")
+    .split(":")[0]
+    .toLowerCase();
+  if (requestHost === alternateHost) {
+    const destination = request.nextUrl.clone();
+    destination.protocol = canonicalUrl.protocol;
+    destination.hostname = canonicalHost;
+    destination.port = canonicalUrl.port;
+    return NextResponse.redirect(destination, 308);
+  }
 
   if (pathname.startsWith("/auth")) {
     return NextResponse.next();
@@ -46,6 +66,15 @@ export async function middleware(request: NextRequest) {
     }
 
     return NextResponse.next();
+  }
+
+  const hasLocalePrefix = routing.locales.some(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+  );
+  if (!hasLocalePrefix) {
+    const destination = request.nextUrl.clone();
+    destination.pathname = `/${routing.defaultLocale}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.redirect(destination, 308);
   }
 
   return intlMiddleware(request);
