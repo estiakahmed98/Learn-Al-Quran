@@ -398,7 +398,7 @@ export default function CourseDetailView({
       {/* ============ Curriculum ============ */}
       {sections.length > 0 && (
         <section className="bg-cream">
-          <div className="mx-auto max-w-4xl px-4 py-14 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
             <h2 className="text-center font-heading text-2xl font-bold text-primary-dark lg:text-3xl">
               {t("curriculumTitle")}
             </h2>
@@ -428,37 +428,37 @@ export default function CourseDetailView({
                 {t("faqTitle")}
               </h2>
               <div className="mt-8 space-y-3">
-              {faqs.map((faq, i) => {
-                const isOpen = openFaqIndex === i;
-                return (
-                  <div
-                    key={i}
-                    className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
-                  >
-                    <button
-                      type="button"
-                      className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold text-primary-dark"
-                      onClick={() => setOpenFaqIndex(isOpen ? null : i)}
-                      aria-expanded={isOpen}
+                {faqs.map((faq, i) => {
+                  const isOpen = openFaqIndex === i;
+                  return (
+                    <div
+                      key={i}
+                      className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
                     >
-                      <span className="flex-1">
-                        {pickText(locale, faq.questionEn, faq.questionBn)}
-                      </span>
-                      <span
-                        className={`shrink-0 text-gold transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-                        aria-hidden
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold text-primary-dark"
+                        onClick={() => setOpenFaqIndex(isOpen ? null : i)}
+                        aria-expanded={isOpen}
                       >
-                        ▼
-                      </span>
-                    </button>
-                    {isOpen && (
-                      <div className="border-t border-gray-100 px-5 py-4 text-sm leading-relaxed text-gray-600">
-                        {pickText(locale, faq.answerEn, faq.answerBn)}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                        <span className="flex-1">
+                          {pickText(locale, faq.questionEn, faq.questionBn)}
+                        </span>
+                        <span
+                          className={`shrink-0 text-gold transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                          aria-hidden
+                        >
+                          ▼
+                        </span>
+                      </button>
+                      {isOpen && (
+                        <div className="border-t border-gray-100 px-5 py-4 text-sm leading-relaxed text-gray-600">
+                          {pickText(locale, faq.answerEn, faq.answerBn)}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
