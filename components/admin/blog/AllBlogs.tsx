@@ -76,35 +76,41 @@ export default function AllBlogs() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [cache] = useState<Map<number, { blogs: Blog[]; totalPages: number }>>(
-    new Map()
+    new Map(),
   );
 
-  const fetchBlogs = useCallback(async (pageNum: number) => {
-    if (cache.has(pageNum)) {
-      const cached = cache.get(pageNum)!;
-      setBlogs(cached.blogs);
-      setTotalPages(cached.totalPages);
-      setLoading(false);
-      return;
-    }
+  const fetchBlogs = useCallback(
+    async (pageNum: number) => {
+      if (cache.has(pageNum)) {
+        const cached = cache.get(pageNum)!;
+        setBlogs(cached.blogs);
+        setTotalPages(cached.totalPages);
+        setLoading(false);
+        return;
+      }
 
-    try {
-      setLoading(true);
-      const { data, lastPage } = await listBlogsForAdmin({ page: pageNum, perPage: 10 });
+      try {
+        setLoading(true);
+        const { data, lastPage } = await listBlogsForAdmin({
+          page: pageNum,
+          perPage: 12,
+        });
 
-      cache.set(pageNum, {
-        blogs: data,
-        totalPages: lastPage || 1,
-      });
+        cache.set(pageNum, {
+          blogs: data,
+          totalPages: lastPage || 1,
+        });
 
-      setBlogs(data);
-      setTotalPages(lastPage || 1);
-    } catch (e) {
-      console.error("Failed to fetch blogs", e);
-    } finally {
-      setLoading(false);
-    }
-  }, [cache]);
+        setBlogs(data);
+        setTotalPages(lastPage || 1);
+      } catch (e) {
+        console.error("Failed to fetch blogs", e);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cache],
+  );
 
   useEffect(() => {
     fetchBlogs(page);
@@ -117,7 +123,7 @@ export default function AllBlogs() {
         href: `/blog/${blog.slug || generateSlug(blog.title)}`,
         formattedDate: formatFacebookTime(blog.createdAt),
       })),
-    [blogs]
+    [blogs],
   );
 
   if (loading) {
@@ -134,9 +140,7 @@ export default function AllBlogs() {
           <h3 className="text-2xl font-bold text-emerald-600 mb-2">
             {t("noPostsTitle")}
           </h3>
-          <p className="text-gray-600">
-            {t("noPostsBody")}
-          </p>
+          <p className="text-gray-600">{t("noPostsBody")}</p>
         </div>
       </div>
     );
