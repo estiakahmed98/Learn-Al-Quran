@@ -1,7 +1,18 @@
-import { Document, Page, Text, View, StyleSheet, renderToBuffer } from "@react-pdf/renderer";
+import path from "node:path";
+import { Document, Page, Text, View, StyleSheet, Font, renderToBuffer } from "@react-pdf/renderer";
+
+Font.register({
+  family: "Hind Siliguri",
+  fonts: [
+    { src: path.join(process.cwd(), "public/fonts/hind-siliguri/HindSiliguri-Regular.ttf"), fontWeight: 400 },
+    { src: path.join(process.cwd(), "public/fonts/hind-siliguri/HindSiliguri-Bold.ttf"), fontWeight: 700 }
+  ]
+});
+// Keep Bengali conjuncts together instead of applying English hyphenation rules.
+Font.registerHyphenationCallback((word) => [word]);
 
 const styles = StyleSheet.create({
-  page: { padding: 32, fontSize: 10, fontFamily: "Helvetica" },
+  page: { padding: 32, fontSize: 10, fontFamily: "Hind Siliguri", lineHeight: 1.5 },
   title: { fontSize: 16, fontWeight: 700, marginBottom: 4 },
   subtitle: { fontSize: 10, color: "#555", marginBottom: 16 },
   summaryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 16 },
@@ -42,7 +53,7 @@ function CourseTable({ rows }: { rows: MonthlyReportRow[] }) {
   return (
     <>
       {byCourse.map((group) => (
-        <View key={group.courseTitle} style={styles.courseSection} wrap={false}>
+        <View key={group.courseTitle} style={styles.courseSection}>
           <Text style={styles.courseTitle}>
             {group.courseTitle} — {group.rows.length} class{group.rows.length === 1 ? "" : "es"}
           </Text>
@@ -160,7 +171,7 @@ export function AllTeachersClassReportDocument({
         {teacherNames.map((teacherName) => {
           const teacherRows = rows.filter((row) => row.teacherName === teacherName);
           return (
-            <View key={teacherName} wrap={false} style={{ marginBottom: 10 }}>
+            <View key={teacherName} style={{ marginBottom: 10 }}>
               <Text style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: "#0f4c3a" }}>
                 {teacherName} — {teacherRows.length} class{teacherRows.length === 1 ? "" : "es"}
               </Text>

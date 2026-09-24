@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MonthlyPdfDownload from "@/components/teacher/MonthlyPdfDownload";
 
 export interface ClassReportRow {
@@ -21,6 +21,20 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
   const [courseFilter, setCourseFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [selectedReport, setSelectedReport] = useState<ClassReportRow | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (!selectedReport) return;
+    const dialog = dialogRef.current;
+    const previousOverflow = document.body.style.overflow;
+    dialog?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      dialog?.close();
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedReport]);
 
   const teachers = useMemo(() => {
     const map = new Map<string, string>();
@@ -145,7 +159,21 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
                   </span>
                 </td>
                 <td className="px-4 py-3 text-gray-700">{report.attended ?? "—"}</td>
-                <td className="px-4 py-3 text-gray-500">{report.notes || "—"}</td>
+                <td className="px-4 py-3 text-gray-500">
+                  <p className="max-w-[220px] break-words">
+                    {report.notes?.trim().split(/\s+/).slice(0, 5).join(" ") || "—"}
+                    {(report.notes?.trim().split(/\s+/).length ?? 0) > 5 ? "…" : ""}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedReport(report)}
+                    aria-haspopup="dialog"
+                    aria-label={`See full class report for ${report.teacher.name}, ${report.course.title}, ${report.classDate.slice(0, 10)}`}
+                    className="mt-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                  >
+                    See more
+                  </button>
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
@@ -158,6 +186,51 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
           </tbody>
         </table>
       </div>
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="class-report-title"
+        onCancel={() => setSelectedReport(null)}
+        onClose={() => setSelectedReport(null)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) setSelectedReport(null);
+        }}
+        className="m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-2xl overflow-hidden rounded-2xl bg-white p-0 shadow-2xl backdrop:bg-slate-950/60"
+      >
+        {selectedReport && (
+          <div className="flex max-h-[90dvh] flex-col">
+            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-gray-100 bg-emerald-50 px-5 py-4 sm:px-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Teacher report</p>
+                <h2 id="class-report-title" className="mt-1 text-xl font-bold text-primary-dark">Class report details</h2>
+              </div>
+              <button type="button" autoFocus onClick={() => setSelectedReport(null)} aria-label="Close class report" className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                Close
+              </button>
+            </div>
+            <div className="min-h-0 overflow-y-auto overscroll-contain p-5 sm:p-6">
+              <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {[
+                  ["Date", new Date(selectedReport.classDate).toLocaleDateString()],
+                  ["Teacher", selectedReport.teacher.name],
+                  ["Course", selectedReport.course.title],
+                  ["Time", `${selectedReport.startTime}${selectedReport.endTime ? ` – ${selectedReport.endTime}` : ""}`],
+                  ["Status", selectedReport.completed ? "Completed" : "Incomplete"],
+                  ["Attended", selectedReport.attended ?? "Not recorded"]
+                ].map(([label, value]) => (
+                  <div key={label} className="min-w-0 rounded-xl border border-gray-100 bg-gray-50 p-3">
+                    <dt className="text-xs font-medium text-gray-500">{label}</dt>
+                    <dd className="mt-1 whitespace-pre-wrap break-words text-sm font-semibold text-gray-900">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <section className="mt-5 rounded-xl border border-gray-200 p-4" aria-labelledby="class-report-notes">
+                <h3 id="class-report-notes" className="font-semibold text-primary-dark">Notes</h3>
+                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-gray-700">{selectedReport.notes?.trim() || "No notes provided."}</p>
+              </section>
+            </div>
+          </div>
+        )}
+      </dialog>
     </div>
   );
 }

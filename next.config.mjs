@@ -8,6 +8,9 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  outputFileTracingIncludes: {
+    "/*": ["./public/fonts/hind-siliguri/*.ttf"]
+  },
   experimental: {
     // Image/file uploads go through Server Actions as multipart FormData;
     // the backend already caps files at 5MB (see UploadImageRequest), so

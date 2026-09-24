@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import IslamicPattern from "@/components/shared/IslamicPattern";
 import { downloadMonthlyClassReportPdf } from "@/app/teacher/reports/actions";
 
@@ -13,7 +14,7 @@ export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }
   async function download() {
     setDownloading(true);
     try {
-      const base64 = await downloadMonthlyClassReportPdf(month, year);
+      const base64 = await downloadMonthlyClassReportPdf(month, year, teacherId);
       const byteChars = atob(base64);
       const byteNumbers = new Array(byteChars.length);
       for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
@@ -24,13 +25,15 @@ export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }
       link.download = `class-report-${year}-${String(month).padStart(2, "0")}.pdf`;
       link.click();
       URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Could not download the report. Please try again.");
     } finally {
       setDownloading(false);
     }
   }
 
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-sm">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-sm">
       <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className="rounded-lg border border-gray-200 px-2 py-1.5 text-sm">
         {Array.from({ length: 12 }, (_, index) => index + 1).map((m) => (
           <option key={m} value={m}>
