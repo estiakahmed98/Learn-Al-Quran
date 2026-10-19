@@ -44,14 +44,14 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
   }, [courses, searchQuery, locale]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-primary/[0.045] via-white to-white">
+    <main className="relative min-h-screen overflow-hidden bg-linear-to-b from-primary/4.5 via-white to-white">
       {/* Compact Page Header */}
       <section className="relative overflow-hidden border-b border-gold/10">
         <IslamicPattern tone="green" opacity={0.045} className="absolute inset-0" />
 
         {/* Small decorative shapes */}
-        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-[12px] border-primary-dark/[0.03] lg:block" />
-        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-[10px] border-gold/[0.04]" />
+        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-12 border-primary-dark/3 lg:block" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-10 border-gold/4" />
 
         <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
           <nav className="flex items-center justify-center gap-2 text-xs text-gray-400 sm:text-sm">
@@ -71,7 +71,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
               <span className="text-[10px] text-gold/30">✦</span>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-sm backdrop-blur-sm sm:text-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-xs backdrop-blur-xs sm:text-xs">
               <GraduationCap className="h-3.5 w-3.5 text-gold" />
               {t("title")}
             </span>
@@ -94,9 +94,9 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
       </section>
 
       {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -left-32 top-40 hidden h-[26rem] w-[26rem] rounded-full border-[30px] border-primary-dark/[0.035] lg:block" />
-      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-[22px] border-gold/[0.045]" />
-      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-[18px] border-gold/[0.035]" />
+      <div className="pointer-events-none absolute -left-32 top-40 hidden h-104 w-104 rounded-full border-30 border-primary-dark/[0.035] lg:block" />
+      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-22 border-gold/4.5" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-18 border-gold/[0.035]" />
 
       <section className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
         {/* Search toolbar */}
@@ -110,7 +110,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder={t("searchPlaceholder")}
                 aria-label={t("searchPlaceholder")}
-                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/80 pl-12 pr-12 text-sm text-primary-dark outline-none transition-all placeholder:text-gray-400 focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10 sm:h-13"
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/80 pl-12 pr-12 text-sm text-primary-dark outline-hidden transition-all placeholder:text-gray-400 focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10 sm:h-13"
               />
               {searchQuery && (
                 <button
@@ -180,15 +180,15 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
               return (
                 <article
                   key={course.id}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10"
                 >
                   <Link
                     href={`/courses/${course.slug}`}
                     aria-label={`${pickText(locale, course.title, course.titleBn)} - ${t("details")}`}
-                    className="absolute inset-0 z-10 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                    className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                   />
 
-                  <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-4">
+                  <div className="relative overflow-hidden bg-linear-to-br from-primary/6 via-gold/[0.07] to-primary-dark/8 p-4">
                     <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
                       {course.thumbnail ? (
                         <Image
@@ -200,7 +200,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                           className="object-contain object-center"
                         />
                       ) : (
-                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl text-white shadow">
+                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-primary to-primary-dark text-3xl text-white shadow-sm">
                           {courseIcons[course.slug] || "📖"}
                         </span>
                       )}
@@ -210,7 +210,7 @@ export default function CoursesIndexView({ courses }: { courses: CourseCardData[
                           {badges.map((b) => (
                             <span
                               key={b}
-                              className="rounded-full bg-primary-dark/85 px-2.5 py-1 text-[10px] font-semibold text-gold backdrop-blur"
+                              className="rounded-full bg-primary-dark/85 px-2.5 py-1 text-[10px] font-semibold text-gold backdrop-blur-sm"
                             >
                               {b}
                             </span>

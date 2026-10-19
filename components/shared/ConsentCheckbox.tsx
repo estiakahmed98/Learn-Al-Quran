@@ -25,9 +25,9 @@ export default function ConsentCheckbox({
         required
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary/40"
+        className="mt-1 h-4 w-4 shrink-0 rounded-sm border-gray-300 text-primary focus:ring-primary/40"
       />
-      <span className="break-words">
+      <span className="wrap-break-word">
         {t.rich("label", {
           terms: (chunks) => (
             <Link key="terms" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className={linkClass}>

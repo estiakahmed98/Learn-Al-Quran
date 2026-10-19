@@ -20,7 +20,7 @@ export default async function TeacherReportsPage() {
         <MonthlyPdfDownload teacherId={teacherId} />
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-xs">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
             <tr>

@@ -41,7 +41,7 @@ export default function ReviewForm() {
 
   if (submitted) {
     return (
-      <div className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 text-center shadow-lg sm:p-8 transition-all duration-300 hover:shadow-xl hover:border-gold/30">
+      <div className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 text-center shadow-lg sm:p-8 transition-all duration-300 hover:shadow-xl hover:border-gold/30">
         {/* Decorative pattern */}
         <IslamicPattern opacity={0.03} />
 
@@ -91,7 +91,7 @@ export default function ReviewForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:border-gold/30 sm:p-8"
+      className="relative group overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:border-gold/30 sm:p-8"
     >
       <IslamicPattern opacity={0.03} />
 
@@ -117,7 +117,7 @@ export default function ReviewForm() {
           {t("subtitle")}
         </p>
 
-        <div className="mt-1 h-px w-16 bg-gradient-to-r from-gold/60 to-transparent" />
+        <div className="mt-1 h-px w-16 bg-linear-to-r from-gold/60 to-transparent" />
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <div className="group/input">
@@ -129,7 +129,7 @@ export default function ReviewForm() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+              className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
               placeholder={t("namePlaceholder")}
             />
           </div>
@@ -141,7 +141,7 @@ export default function ReviewForm() {
             <input
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+              className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
               placeholder={t("rolePlaceholder")}
             />
           </div>
@@ -161,7 +161,7 @@ export default function ReviewForm() {
                 aria-label={t("starLabel", { count: star })}
                 className={`transition-all duration-300 hover:scale-125 ${
                   star <= rating
-                    ? "text-gold drop-shadow-sm hover:text-gold-light"
+                    ? "text-gold drop-shadow-xs hover:text-gold-light"
                     : "text-gray-300 hover:text-gray-400"
                 }`}
               >
@@ -184,7 +184,7 @@ export default function ReviewForm() {
             rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50 resize-y"
+            className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50 resize-y"
             placeholder={t("reviewPlaceholder")}
           />
         </div>
@@ -200,7 +200,7 @@ export default function ReviewForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="group/btn relative isolate w-full overflow-hidden sm:w-auto rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+            className="group/btn relative isolate w-full overflow-hidden sm:w-auto rounded-lg bg-linear-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
           >
             <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
             <span className="relative z-10 flex items-center justify-center gap-2">

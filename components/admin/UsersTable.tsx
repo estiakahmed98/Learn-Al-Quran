@@ -106,12 +106,12 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
             value={search}
             onChange={(e) => updateSearch(e.target.value)}
             placeholder="Search by name, email or phone..."
-            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
           />
           <select
             value={roleFilter}
             onChange={(e) => updateRoleFilter(e.target.value as RoleFilter)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
           >
             <option value="ALL">All Roles</option>
             <option value="ADMIN">Admin</option>
@@ -120,7 +120,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: UserRow[] }
           <select
             value={statusFilter}
             onChange={(e) => updateStatusFilter(e.target.value as StatusFilter)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
           >
             <option value="ALL">All Status</option>
             <option value="ACTIVE">Active</option>

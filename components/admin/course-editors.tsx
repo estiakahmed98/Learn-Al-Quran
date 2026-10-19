@@ -3,7 +3,7 @@
 import type { BiText, CurriculumSection, FaqItem, WhyCard } from "@/lib/course-content";
 
 const inputClass =
-  "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none";
+  "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden";
 
 const addBtnClass =
   "rounded-lg border border-dashed border-primary/40 px-4 py-2 text-xs font-semibold text-primary hover:bg-primary/5";
@@ -261,13 +261,13 @@ export function CurriculumEditor({
                 <input
                   value={lesson.titleEn}
                   onChange={(e) => updateLesson(si, li, { titleEn: e.target.value })}
-                  className={`${inputClass} min-w-[10rem] flex-1`}
+                  className={`${inputClass} min-w-40 flex-1`}
                   placeholder="Lesson (English)"
                 />
                 <input
                   value={lesson.titleBn}
                   onChange={(e) => updateLesson(si, li, { titleBn: e.target.value })}
-                  className={`${inputClass} min-w-[10rem] flex-1`}
+                  className={`${inputClass} min-w-40 flex-1`}
                   placeholder="লেসন (বাংলা)"
                 />
                 <input

@@ -32,14 +32,14 @@ export default async function AboutUsPage() {
   ];
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-primary/[0.045] via-white to-white">
+    <div className="relative overflow-hidden bg-linear-to-b from-primary/4.5 via-white to-white">
       {/* Compact Page Header */}
       <section className="relative overflow-hidden border-b border-gold/10">
         <IslamicPattern tone="green" opacity={0.045} className="absolute inset-0" />
 
         {/* Small decorative shapes */}
-        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-[12px] border-primary-dark/[0.03] lg:block" />
-        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-[10px] border-gold/[0.04]" />
+        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-12 border-primary-dark/3 lg:block" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-10 border-gold/4" />
 
         <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
           <nav className="flex items-center justify-center gap-2 text-xs text-gray-400 sm:text-sm">
@@ -59,7 +59,7 @@ export default async function AboutUsPage() {
               <span className="text-[10px] text-gold/30">✦</span>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-sm backdrop-blur-sm sm:text-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-xs backdrop-blur-xs sm:text-xs">
               <Heart className="h-3.5 w-3.5 text-gold" />
               {t("eyebrow")}
             </span>
@@ -82,9 +82,9 @@ export default async function AboutUsPage() {
       </section>
 
       {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -left-32 top-40 hidden h-[26rem] w-[26rem] rounded-full border-[30px] border-primary-dark/[0.035] lg:block" />
-      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-[22px] border-gold/[0.045]" />
-      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-[18px] border-gold/[0.035]" />
+      <div className="pointer-events-none absolute -left-32 top-40 hidden h-104 w-104 rounded-full border-30 border-primary-dark/[0.035] lg:block" />
+      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-22 border-gold/4.5" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-18 border-gold/[0.035]" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-16 lg:px-8">
         <h2 className="text-center font-heading text-3xl font-bold text-primary-dark">
@@ -141,7 +141,7 @@ export default async function AboutUsPage() {
           <h2 className="font-heading text-2xl font-bold text-primary-dark">{t("differentTitle")}</h2>
           <div className="mt-6 grid gap-5 sm:grid-cols-3">
             {differentiators.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+              <div key={item.title} className="rounded-2xl border border-primary/10 bg-white p-5 shadow-xs">
                 <h3 className="font-heading font-bold text-primary-dark">{item.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-gray-600">{item.body}</p>
               </div>

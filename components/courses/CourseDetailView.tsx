@@ -174,8 +174,8 @@ export default function CourseDetailView({
   return (
     <div>
       {/* ============ Hero ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary-dark to-primary">
-        <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-[0.04]" />
+      <section className="relative overflow-hidden bg-linear-to-br from-primary-dark via-primary-dark to-primary">
+        <div className="absolute inset-0 bg-islamic-pattern opacity-[0.04]" />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 lg:grid-cols-[1.2fr_1fr] lg:px-8 lg:py-16">
           <div>
             {/* Breadcrumb */}
@@ -282,7 +282,7 @@ export default function CourseDetailView({
               {whyCards.map((card, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md"
+                  className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs transition hover:shadow-md"
                 >
                   <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-xl">
                     {whyIcons[i % whyIcons.length]}
@@ -341,7 +341,7 @@ export default function CourseDetailView({
         <section className="bg-white">
           <div className="mx-auto grid max-w-7xl items-stretch gap-8 px-4 py-14 lg:grid-cols-2 lg:px-8">
             {glance.length > 0 && (
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs sm:p-8">
                 <h3 className="font-heading text-lg font-bold text-primary-dark">
                   {t("glanceTitle")}
                 </h3>
@@ -433,7 +433,7 @@ export default function CourseDetailView({
                   return (
                     <div
                       key={i}
-                      className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+                      className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs"
                     >
                       <button
                         type="button"
@@ -489,7 +489,7 @@ export default function CourseDetailView({
                 return (
                   <div
                     key={r.id}
-                    className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+                    className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs"
                   >
                     <p
                       className="tracking-wider text-gold"
@@ -527,7 +527,7 @@ export default function CourseDetailView({
       )}
 
       {/* ============ Bottom enroll ============ */}
-      <section className="bg-gradient-to-br from-primary-dark to-primary">
+      <section className="bg-linear-to-br from-primary-dark to-primary">
         <div className="mx-auto max-w-3xl px-4 py-14 text-center lg:px-8">
           <h2 className="font-heading text-2xl font-bold text-white lg:text-3xl">
             {t("bottomTitle")}

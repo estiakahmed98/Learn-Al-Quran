@@ -45,10 +45,10 @@ export default function ClassReportForm({
   }
 
   const inputClass =
-    "mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10";
+    "mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-hidden transition focus:border-primary focus:ring-2 focus:ring-primary/10";
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-xs">
       <label className="block text-sm font-semibold text-gray-700">
         Course
         <select required value={form.courseId} onChange={(e) => update("courseId", e.target.value)} className={inputClass}>

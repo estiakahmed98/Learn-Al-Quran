@@ -218,7 +218,7 @@ export default function SettingsForm({
                 <select
                   value={link.platform}
                   onChange={(e) => updateSocialLink(index, { platform: e.target.value })}
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                 >
                   {SOCIAL_PLATFORMS.map((platform) => (
                     <option key={platform.key} value={platform.key}>
@@ -231,7 +231,7 @@ export default function SettingsForm({
                   value={link.url}
                   onChange={(e) => updateSocialLink(index, { url: e.target.value })}
                   placeholder="https://..."
-                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                 />
                 <button
                   type="button"
@@ -294,14 +294,14 @@ export default function SettingsForm({
                     value={form[field.key]}
                     onChange={(e) => update(field.key, e.target.value)}
                     rows={3}
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                   />
                 ) : (
                   <input
                     type="text"
                     value={form[field.key]}
                     onChange={(e) => update(field.key, e.target.value)}
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20"
                   />
                 )}
               </div>
@@ -310,11 +310,11 @@ export default function SettingsForm({
         </div>
       ))}
 
-      <div className="sticky bottom-0 flex justify-end border-t border-gray-200 bg-gray-50/95 py-3 backdrop-blur">
+      <div className="sticky bottom-0 flex justify-end border-t border-gray-200 bg-gray-50/95 py-3 backdrop-blur-sm">
         <button
           type="submit"
           disabled={saving}
-          className="rounded-full bg-gradient-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl disabled:opacity-60"
+          className="rounded-full bg-linear-to-r from-primary to-primary-dark px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save Settings"}
         </button>

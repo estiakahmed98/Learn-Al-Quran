@@ -140,7 +140,7 @@ export default async function AdminDashboardPage() {
         {kpis.map((kpi) => (
           <div
             key={kpi.label}
-            className={`rounded-2xl border border-gray-100 bg-gradient-to-br ${kpi.accent} p-5 shadow-sm`}
+            className={`rounded-2xl border border-gray-100 bg-linear-to-br ${kpi.accent} p-5 shadow-xs`}
           >
             <div className="flex items-start justify-between">
               <span className="text-2xl">{kpi.icon}</span>
@@ -163,7 +163,7 @@ export default async function AdminDashboardPage() {
 
       {/* Payments breakdown + quick links */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs lg:col-span-2">
           <h2 className="font-heading text-base font-bold text-primary-dark">Payment Status Breakdown</h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
@@ -180,7 +180,7 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs">
           <h2 className="font-heading text-base font-bold text-primary-dark">Quick Actions</h2>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {quickLinks.map((link) => (
@@ -199,7 +199,7 @@ export default async function AdminDashboardPage() {
 
       {/* Recent activity */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-xs">
           <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
             <h2 className="font-heading text-base font-bold text-primary-dark">Recent Enrollments</h2>
             <Link href="/admin/payments" className="text-xs font-semibold text-primary hover:underline">
@@ -231,7 +231,7 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-xs">
           <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
             <h2 className="font-heading text-base font-bold text-primary-dark">Recent Trial Applications</h2>
             <span className="text-xs font-semibold text-gray-400">{trialTotal} total</span>

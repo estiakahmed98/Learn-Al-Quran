@@ -86,7 +86,7 @@ export default async function GoogleMapSection({
           />
 
           {/* Bottom gradient overlay */}
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-black/5 to-transparent pointer-events-none" />
         </div>
 
         {/* Location badge */}
@@ -100,7 +100,7 @@ export default async function GoogleMapSection({
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-white to-cream py-12 sm:py-16">
+    <section className="relative overflow-hidden bg-linear-to-b from-white to-cream py-12 sm:py-16">
       <IslamicPattern opacity={0.03} />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -168,7 +168,7 @@ export default async function GoogleMapSection({
             />
 
             {/* Bottom gradient overlay */}
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-black/10 to-transparent pointer-events-none" />
           </div>
         </div>
 

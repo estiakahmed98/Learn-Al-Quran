@@ -51,11 +51,11 @@ export default function TrialApplicationsManager({
   }, [courseId, initialApplications, search]);
 
   const inputClass =
-    "h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10";
+    "h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-hidden transition focus:border-primary focus:ring-2 focus:ring-primary/10";
 
   return (
     <div>
-      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full sm:max-w-md">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
@@ -81,7 +81,7 @@ export default function TrialApplicationsManager({
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[980px] text-left text-sm">
             <thead className="bg-cream text-xs uppercase tracking-wider text-gray-500">

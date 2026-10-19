@@ -20,7 +20,7 @@ export default function RecentBlogs({ blogs }: { blogs: RecentBlog[] }) {
   }
 
   return (
-    <div className="rounded-2xl border border-[#be923c]/20 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden">
+    <div className="rounded-2xl border border-[#be923c]/20 bg-white/80 backdrop-blur-xs shadow-xs overflow-hidden">
       {/* Header */}
       <div className="p-5 border-b bg-muted/40 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#be923c]/15">

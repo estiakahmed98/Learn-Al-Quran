@@ -42,7 +42,7 @@ export default function StudentCourseCard({
     ["APPROVED", "ACTIVE", "COMPLETED"].includes(enrollment.enrollmentStatus);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary/40 hover:shadow-md">
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs transition hover:border-primary/40 hover:shadow-md">
       <div className="relative h-36 w-full shrink-0 bg-cream">
         {enrollment.course.thumbnail ? (
           <img

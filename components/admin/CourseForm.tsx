@@ -230,7 +230,7 @@ export default function CourseForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden";
   const labelClass = "mb-1 block text-xs font-semibold text-gray-600";
   const sectionClass = "border-t border-gray-100 pt-5";
   const sectionTitleClass = "mb-3 text-sm font-bold text-primary-dark";

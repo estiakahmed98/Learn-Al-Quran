@@ -17,7 +17,7 @@ function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
 
   return (
     <div
-      className="group relative flex w-72 shrink-0 flex-col rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30 sm:w-80 lg:w-96"
+      className="group relative flex w-72 shrink-0 flex-col rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-5 text-center shadow-xs transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30 sm:w-80 lg:w-96"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Decorative corner elements */}
@@ -42,7 +42,7 @@ function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
             <span
               key={i}
               className={`text-lg transition-all duration-300 ${
-                i < rating ? "text-gold drop-shadow-sm" : "text-gray-300"
+                i < rating ? "text-gold drop-shadow-xs" : "text-gray-300"
               } group-hover:scale-110`}
               style={{ transitionDelay: `${i * 50}ms` }}
             >
@@ -64,12 +64,12 @@ function ReviewCard({ review, index }: { review: ReviewItem; index: number }) {
         </p>
 
         {/* Divider */}
-        <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+        <div className="my-4 h-px w-full bg-linear-to-r from-transparent via-gold/20 to-transparent" />
 
         {/* User Info */}
         <div className="flex items-center justify-center gap-3">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold/20 to-primary/20 animate-pulse" />
+            <div className="absolute inset-0 rounded-full bg-linear-to-br from-gold/20 to-primary/20 animate-pulse" />
             <div className="absolute inset-0.5 rounded-full bg-white" />
             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-gold/40 ring-offset-2 ring-offset-white transition-all duration-300 group-hover:ring-4 group-hover:ring-gold/60">
               <Image
@@ -107,13 +107,13 @@ export default async function Reviews({ reviews }: { reviews: ReviewItem[] }) {
   const loop = reviews.length > 2 ? [...reviews, ...reviews] : reviews;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-white to-primary/5">
+    <section className="relative overflow-hidden bg-linear-to-b from-white to-primary/5">
       <IslamicPattern opacity={0.03} />
 
       {/* Decorative elements */}
-      <div className="pointer-events-none absolute -right-16 top-1/2 hidden h-[16rem] w-[16rem] -translate-y-1/2 rounded-full border-[16px] border-gold/5 lg:block" />
-      <div className="pointer-events-none absolute -left-8 bottom-0 h-24 w-24 rounded-full border-[8px] border-gold/5 lg:hidden" />
-      <div className="pointer-events-none absolute -right-8 top-20 h-20 w-20 rounded-full border-[8px] border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -right-16 top-1/2 hidden h-64 w-[16rem] -translate-y-1/2 rounded-full border-16 border-gold/5 lg:block" />
+      <div className="pointer-events-none absolute -left-8 bottom-0 h-24 w-24 rounded-full border-8 border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -right-8 top-20 h-20 w-20 rounded-full border-8 border-gold/5 lg:hidden" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
         {/* Header Section */}
@@ -149,8 +149,8 @@ export default async function Reviews({ reviews }: { reviews: ReviewItem[] }) {
 
       {/* Reviews Carousel */}
       <div className="group relative overflow-hidden pb-12 sm:pb-14 lg:pb-20">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white/80 to-transparent sm:w-24 lg:w-32" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white/80 to-transparent sm:w-24 lg:w-32" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-linear-to-r from-white/80 to-transparent sm:w-24 lg:w-32" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-linear-to-l from-white/80 to-transparent sm:w-24 lg:w-32" />
 
         <div className="flex w-max gap-4 px-4 pb-4 animate-marquee group-hover:[animation-play-state:paused] sm:gap-6 lg:px-8">
           {loop.map((review, i) => (

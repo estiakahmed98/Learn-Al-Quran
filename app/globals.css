@@ -1,10 +1,55 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source(none);
+@source './';
+@source '../components';
+@plugin '@tailwindcss/typography';
 
-:root {
-  --font-heading: "Poppins";
-  --font-bangla: "Hind Siliguri";
+@theme {
+  --color-primary: #28504f;
+  --color-primary-light: #5f9a6b;
+  --color-primary-dark: #11674a;
+
+  --color-secondary: #5f9a6b;
+  --color-secondary-light: #7db287;
+
+  --color-gold: #e9c99b;
+  --color-gold-light: #f2debd;
+
+  --color-cream: #fafafa;
+
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Hind Siliguri", sans-serif;
+  --font-bangla: "Hind Siliguri", sans-serif;
+
+  --background-image-islamic-pattern: url('/images/pattern.svg');
+
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 }
 
 html {

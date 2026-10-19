@@ -124,10 +124,10 @@ export default function NewsletterPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-8">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-8">
         <div>
           {/* Header Skeleton */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-100 to-slate-200 p-8 animate-pulse">
+          <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-slate-100 to-slate-200 p-8 animate-pulse">
             <div className="h-10 bg-slate-200 rounded-lg w-64 mb-3"></div>
             <div className="h-5 bg-slate-200 rounded-lg w-96"></div>
           </div>
@@ -137,12 +137,12 @@ export default function NewsletterPage() {
             {Array.from({ length: 4 }, (_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 animate-pulse"
+                className="bg-white rounded-2xl shadow-xs border border-slate-200 p-6 animate-pulse"
               >
                 <div className="flex items-center justify-between">
                   <div className="space-y-3">
-                    <div className="h-4 bg-slate-200 rounded w-24"></div>
-                    <div className="h-8 bg-slate-200 rounded w-16"></div>
+                    <div className="h-4 bg-slate-200 rounded-sm w-24"></div>
+                    <div className="h-8 bg-slate-200 rounded-sm w-16"></div>
                   </div>
                   <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
                 </div>
@@ -151,7 +151,7 @@ export default function NewsletterPage() {
           </div>
 
           {/* Tab Skeleton */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2">
+          <div className="bg-white rounded-2xl shadow-xs border border-slate-200 p-2">
             <div className="flex space-x-2">
               {Array.from({ length: 2 }, (_, i) => (
                 <div
@@ -163,13 +163,13 @@ export default function NewsletterPage() {
           </div>
 
           {/* Content Skeleton */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+          <div className="bg-white rounded-2xl shadow-xs border border-slate-200 p-6 space-y-6">
             {Array.from({ length: 4 }, (_, i) => (
               <div key={i} className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-slate-200 rounded-xl animate-pulse"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-200 rounded w-3/4 animate-pulse"></div>
-                  <div className="h-3 bg-slate-200 rounded w-1/2 animate-pulse"></div>
+                  <div className="h-4 bg-slate-200 rounded-sm w-3/4 animate-pulse"></div>
+                  <div className="h-3 bg-slate-200 rounded-sm w-1/2 animate-pulse"></div>
                 </div>
               </div>
             ))}
@@ -180,18 +180,18 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-8">
       <div className="p-4">
         {/* Enhanced Header */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 mb-8 shadow-xl">
+        <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-8 mb-8 shadow-xl">
           {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-linear-to-tr from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
 
           <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
+                <div className="p-2 bg-white/10 rounded-xl backdrop-blur-xs">
                   <Send className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-white/60 text-sm font-medium tracking-wider uppercase">
@@ -208,15 +208,15 @@ export default function NewsletterPage() {
             </div>
 
             {/* Quick action indicator */}
-            <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+            <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl backdrop-blur-xs border border-white/10">
               <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-slate-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-400 to-blue-600 border-2 border-slate-800 flex items-center justify-center">
                   <span className="text-xs font-bold text-white">JD</span>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-slate-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-400 to-purple-600 border-2 border-slate-800 flex items-center justify-center">
                   <span className="text-xs font-bold text-white">MK</span>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 border-2 border-slate-800 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 border-2 border-slate-800 flex items-center justify-center">
                   <span className="text-xs font-bold text-white">+3</span>
                 </div>
               </div>
@@ -237,7 +237,7 @@ export default function NewsletterPage() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="group relative bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group relative bg-white rounded-2xl shadow-xs border border-slate-200/80 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
@@ -250,7 +250,7 @@ export default function NewsletterPage() {
                   <p className="text-xs font-medium text-slate-500">{stat.detail}</p>
                 </div>
                 <div
-                  className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg shadow-opacity-20 group-hover:scale-110 transition-transform duration-300`}
+                  className={`p-3 rounded-xl bg-linear-to-br ${stat.color} shadow-lg shadow-opacity-20 group-hover:scale-110 transition-transform duration-300`}
                 >
                   <stat.icon className="w-5 h-5 text-white" />
                 </div>
@@ -259,7 +259,7 @@ export default function NewsletterPage() {
               {/* Decorative progress bar */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 rounded-b-2xl overflow-hidden">
                 <div
-                  className={`h-full bg-gradient-to-r ${stat.color} transition-all duration-1000`}
+                  className={`h-full bg-linear-to-r ${stat.color} transition-all duration-1000`}
                   style={{ width: `${stat.progress}%` }}
                 ></div>
               </div>
@@ -268,7 +268,7 @@ export default function NewsletterPage() {
         </div>
 
         {/* Enhanced Tab Navigation */}
-        <Card className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl shadow-sm mb-8">
+        <Card className="bg-white/90 backdrop-blur-xs border border-slate-200/80 rounded-2xl shadow-xs mb-8">
           <CardContent className="p-2">
             <div className="flex space-x-2 bg-slate-100/80 rounded-xl p-1">
               <button

@@ -74,7 +74,7 @@ export default async function StudentDashboardPage() {
           { label: t("pending"), value: pendingCount, icon: "⏳" },
           { label: t("completed"), value: completedCount, icon: "🎓" }
         ].map((s) => (
-          <div key={s.label} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div key={s.label} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
             <p className="text-2xl">{s.icon}</p>
             <p className="mt-2 font-heading text-2xl font-bold text-primary-dark">{s.value}</p>
             <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{s.label}</p>
@@ -87,7 +87,7 @@ export default async function StudentDashboardPage() {
         <h2 className="font-heading text-lg font-bold text-primary-dark">{t("myCourses")}</h2>
 
         {enrollments.length === 0 ? (
-          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-xs">
             <p className="text-3xl">📖</p>
             <p className="mt-3 font-semibold text-gray-700">{t("noCourses")}</p>
             <Link

@@ -87,8 +87,8 @@ export default function BlogCard() {
       <div>
         <div className="mb-4 flex justify-between">
           <div>
-            <div className="h-7 w-40 animate-pulse rounded bg-gray-200"></div>
-            <div className="mt-2 h-4 w-64 animate-pulse rounded bg-gray-200"></div>
+            <div className="h-7 w-40 animate-pulse rounded-sm bg-gray-200"></div>
+            <div className="mt-2 h-4 w-64 animate-pulse rounded-sm bg-gray-200"></div>
           </div>
           <div className="h-9 w-36 animate-pulse rounded-lg bg-gray-200"></div>
         </div>
@@ -108,17 +108,17 @@ export default function BlogCard() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-16 animate-pulse rounded-lg bg-gray-200"></div>
-                      <div className="h-4 w-40 animate-pulse rounded bg-gray-200"></div>
+                      <div className="h-4 w-40 animate-pulse rounded-sm bg-gray-200"></div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="h-4 w-20 animate-pulse rounded bg-gray-200"></div>
+                    <div className="h-4 w-20 animate-pulse rounded-sm bg-gray-200"></div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="h-4 w-24 animate-pulse rounded bg-gray-200"></div>
+                    <div className="h-4 w-24 animate-pulse rounded-sm bg-gray-200"></div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="h-4 w-16 animate-pulse rounded bg-gray-200"></div>
+                    <div className="h-4 w-16 animate-pulse rounded-sm bg-gray-200"></div>
                   </td>
                 </tr>
               ))}
@@ -156,7 +156,7 @@ export default function BlogCard() {
             setPage(1);
           }}
           placeholder="Search blogs..."
-          className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+          className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
         />
       </div>
 

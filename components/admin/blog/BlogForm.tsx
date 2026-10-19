@@ -196,7 +196,7 @@ export default function BlogForm({ blog, onSuccess }: BlogFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg shadow-sm">
       <h2 className="text-lg font-semibold p-4">
         {blog ? "Edit Blog" : "Create New Blog"}
       </h2>

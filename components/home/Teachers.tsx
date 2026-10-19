@@ -23,7 +23,7 @@ function TeacherCardItem({
 }) {
   return (
     <div
-      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-gold/10 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gold/30"
+      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-gold/10 bg-white shadow-xs transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gold/30"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Image panel */}
@@ -37,7 +37,7 @@ function TeacherCardItem({
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/15 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-primary-dark via-primary-dark/15 to-transparent" />
         <IslamicPattern tone="gold" opacity={0.1} />
 
         {/* Corner icon badge */}
@@ -105,13 +105,13 @@ export default function Teachers({
   const subtitle = embedded ? t("embeddedSubtitle") : t("eyebrow");
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white">
+    <section className="relative overflow-hidden bg-linear-to-b from-primary/5 to-white">
       <IslamicPattern opacity={0.04} />
 
       {/* Decorative circles */}
-      <div className="pointer-events-none absolute -left-20 top-1/2 hidden h-[20rem] w-[20rem] -translate-y-1/2 rounded-full border-[20px] border-primary-dark/5 lg:block" />
-      <div className="pointer-events-none absolute -right-12 bottom-0 h-32 w-32 rounded-full border-[12px] border-gold/5 lg:hidden" />
-      <div className="pointer-events-none absolute -left-8 top-20 h-24 w-24 rounded-full border-[10px] border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -left-20 top-1/2 hidden h-80 w-[20rem] -translate-y-1/2 rounded-full border-20 border-primary-dark/5 lg:block" />
+      <div className="pointer-events-none absolute -right-12 bottom-0 h-32 w-32 rounded-full border-12 border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -left-8 top-20 h-24 w-24 rounded-full border-10 border-gold/5 lg:hidden" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:pt-16 lg:pb-8">
         {/* Header Section */}

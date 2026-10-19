@@ -208,14 +208,14 @@ export default function ContentManager({
           {items.map((item) => (
             <div
               key={`${item.type}:${item.id}`}
-              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs"
             >
-              <div className="aspect-[3/4] w-full shrink-0 bg-cream p-3">
+              <div className="aspect-3/4 w-full shrink-0 bg-cream p-3">
                 {item.image ? (
                   <img
                     src={publicMediaUrl(item.image)}
                     alt={item.title}
-                    className="h-full w-full rounded-lg bg-white object-contain object-center shadow-sm"
+                    className="h-full w-full rounded-lg bg-white object-contain object-center shadow-xs"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gold">

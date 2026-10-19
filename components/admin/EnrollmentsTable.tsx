@@ -164,7 +164,7 @@ export default function EnrollmentsTable({
                     defaultValue={row.paymentStatus}
                     disabled={savingId === row.id}
                     onChange={(e) => update(row.id, { paymentStatus: e.target.value as any })}
-                    className="rounded border border-gray-300 px-2 py-1 text-xs"
+                    className="rounded-sm border border-gray-300 px-2 py-1 text-xs"
                   >
                     {paymentStatuses.map((s) => (
                       <option key={s} value={s}>
@@ -178,7 +178,7 @@ export default function EnrollmentsTable({
                     defaultValue={row.enrollmentStatus}
                     disabled={savingId === row.id}
                     onChange={(e) => update(row.id, { enrollmentStatus: e.target.value as any })}
-                    className="rounded border border-gray-300 px-2 py-1 text-xs"
+                    className="rounded-sm border border-gray-300 px-2 py-1 text-xs"
                   >
                     {enrollmentStatuses.map((s) => (
                       <option key={s} value={s}>
@@ -253,7 +253,7 @@ export default function EnrollmentsTable({
                             value={resultForm.examName}
                             onChange={(e) => setResultForm({ ...resultForm, examName: e.target.value })}
                             placeholder="e.g. Midterm"
-                            className="w-36 rounded border border-gray-300 px-2 py-1 text-xs"
+                            className="w-36 rounded-sm border border-gray-300 px-2 py-1 text-xs"
                           />
                         </div>
                         <div>
@@ -262,7 +262,7 @@ export default function EnrollmentsTable({
                             type="number"
                             value={resultForm.marks}
                             onChange={(e) => setResultForm({ ...resultForm, marks: e.target.value })}
-                            className="w-20 rounded border border-gray-300 px-2 py-1 text-xs"
+                            className="w-20 rounded-sm border border-gray-300 px-2 py-1 text-xs"
                           />
                         </div>
                         <div>
@@ -271,7 +271,7 @@ export default function EnrollmentsTable({
                             value={resultForm.grade}
                             onChange={(e) => setResultForm({ ...resultForm, grade: e.target.value })}
                             placeholder="A+"
-                            className="w-16 rounded border border-gray-300 px-2 py-1 text-xs"
+                            className="w-16 rounded-sm border border-gray-300 px-2 py-1 text-xs"
                           />
                         </div>
                         <div>
@@ -280,7 +280,7 @@ export default function EnrollmentsTable({
                             type="date"
                             value={resultForm.examDate}
                             onChange={(e) => setResultForm({ ...resultForm, examDate: e.target.value })}
-                            className="rounded border border-gray-300 px-2 py-1 text-xs"
+                            className="rounded-sm border border-gray-300 px-2 py-1 text-xs"
                           />
                         </div>
                         <div className="min-w-[160px] flex-1">
@@ -288,13 +288,13 @@ export default function EnrollmentsTable({
                           <input
                             value={resultForm.remarks}
                             onChange={(e) => setResultForm({ ...resultForm, remarks: e.target.value })}
-                            className="w-full rounded border border-gray-300 px-2 py-1 text-xs"
+                            className="w-full rounded-sm border border-gray-300 px-2 py-1 text-xs"
                           />
                         </div>
                         <button
                           onClick={() => addResult(row.id)}
                           disabled={savingResult || !resultForm.examName.trim()}
-                          className="rounded bg-primary px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+                          className="rounded-sm bg-primary px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
                         >
                           {savingResult ? "Saving..." : "Add Result"}
                         </button>

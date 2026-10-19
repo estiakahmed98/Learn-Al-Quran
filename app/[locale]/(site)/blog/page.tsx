@@ -28,7 +28,7 @@ export default async function BlogsPage() {
   ]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-primary/[0.045] via-white to-white">
+    <main className="relative min-h-screen overflow-hidden bg-linear-to-b from-primary/4.5 via-white to-white">
       <JsonLd data={breadcrumbJsonLd} />
 
       {/* Compact Page Header */}
@@ -36,8 +36,8 @@ export default async function BlogsPage() {
         <IslamicPattern tone="green" opacity={0.045} className="absolute inset-0" />
 
         {/* Small decorative shapes */}
-        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-[12px] border-primary-dark/[0.03] lg:block" />
-        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-[10px] border-gold/[0.04]" />
+        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-12 border-primary-dark/3 lg:block" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-10 border-gold/4" />
 
         <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
           <nav className="flex items-center justify-center gap-2 text-xs text-gray-400 sm:text-sm">
@@ -57,7 +57,7 @@ export default async function BlogsPage() {
               <span className="text-[10px] text-gold/30">✦</span>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-sm backdrop-blur-sm sm:text-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-xs backdrop-blur-xs sm:text-xs">
               <Newspaper className="h-3.5 w-3.5 text-gold" />
               {t("eyebrow")}
             </span>
@@ -88,13 +88,13 @@ export default async function BlogsPage() {
                   type="search"
                   name="q"
                   placeholder={t("searchPlaceholder")}
-                  className="h-12 w-full rounded-xl border border-transparent bg-gray-50/80 pl-12 pr-4 text-sm text-primary-dark outline-none transition focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10"
+                  className="h-12 w-full rounded-xl border border-transparent bg-gray-50/80 pl-12 pr-4 text-sm text-primary-dark outline-hidden transition focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10"
                 />
               </label>
 
               <button
                 type="submit"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark px-6 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-primary to-primary-dark px-6 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:shadow-xl"
               >
                 {t("search")}
                 <ArrowRight className="h-4 w-4" />
@@ -105,9 +105,9 @@ export default async function BlogsPage() {
       </section>
 
       {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -left-32 top-40 hidden h-[26rem] w-[26rem] rounded-full border-[30px] border-primary-dark/[0.035] lg:block" />
-      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-[22px] border-gold/[0.045]" />
-      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-[18px] border-gold/[0.035]" />
+      <div className="pointer-events-none absolute -left-32 top-40 hidden h-104 w-104 rounded-full border-30 border-primary-dark/[0.035] lg:block" />
+      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-22 border-gold/4.5" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-18 border-gold/[0.035]" />
 
       {/* Blog listing */}
       <section className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
@@ -133,7 +133,7 @@ export default async function BlogsPage() {
 
       {/* Newsletter CTA */}
       <section className="relative mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-primary-dark px-6 py-10 shadow-2xl shadow-primary/20 sm:rounded-3xl sm:px-10 sm:py-12 lg:px-14">
+        <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary via-primary to-primary-dark px-6 py-10 shadow-2xl shadow-primary/20 sm:rounded-3xl sm:px-10 sm:py-12 lg:px-14">
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.06]"
             style={{
@@ -156,12 +156,12 @@ export default async function BlogsPage() {
             }}
           />
 
-          <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full border-[28px] border-white/5" />
+          <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full border-28 border-white/5" />
           <div className="pointer-events-none absolute -bottom-24 left-1/4 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
 
           <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_minmax(320px,460px)]">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-gold backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-gold backdrop-blur-sm">
                 <Mail className="h-4 w-4" />
                 {t("newsletter")}
               </div>
@@ -185,7 +185,7 @@ export default async function BlogsPage() {
                   id="newsletter-email"
                   type="email"
                   placeholder={t("newsletterPlaceholder")}
-                  className="h-12 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/10 px-4 text-sm text-white outline-none placeholder:text-white/55 focus:border-gold/70 focus:ring-4 focus:ring-gold/10"
+                  className="h-12 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/10 px-4 text-sm text-white outline-hidden placeholder:text-white/55 focus:border-gold/70 focus:ring-4 focus:ring-gold/10"
                 />
 
                 <button

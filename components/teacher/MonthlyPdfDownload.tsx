@@ -33,7 +33,7 @@ export default function MonthlyPdfDownload({ teacherId }: { teacherId?: string }
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-sm">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-xs">
       <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className="rounded-lg border border-gray-200 px-2 py-1.5 text-sm">
         {Array.from({ length: 12 }, (_, index) => index + 1).map((m) => (
           <option key={m} value={m}>

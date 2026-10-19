@@ -31,9 +31,9 @@ export default function Hero({
   const heroImage = publicMediaUrl(image, "/images/hero-banner.jpg");
 
   return (
-    <section className="relative z-10 -mb-px min-h-[28rem] overflow-hidden bg-primary-dark sm:z-auto sm:mb-0 sm:min-h-[34rem] lg:min-h-[40rem]">
+    <section className="relative z-10 -mb-px min-h-112 overflow-hidden bg-primary-dark sm:z-auto sm:mb-0 sm:min-h-136 lg:min-h-160">
       {/* Mobile gradient with soft waves */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-dark via-primary to-primary-dark sm:hidden">
+      <div className="absolute inset-0 bg-linear-to-br from-primary-dark via-primary to-primary-dark sm:hidden">
         <IslamicPattern tone="gold" opacity={0.09} patternSize={104} />
         <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold/10 blur-3xl" />
         <div className="absolute -bottom-16 -left-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
@@ -46,7 +46,7 @@ export default function Hero({
         >
           <path
             d="M0 54C190 126 360 130 552 68C760 1 938 -11 1114 38C1244 74 1340 84 1440 48V180H0V54Z"
-            className="fill-white/[0.06]"
+            className="fill-white/6"
           />
           <path
             d="M0 112C220 55 410 66 610 119C820 175 1026 164 1206 105C1300 74 1376 72 1440 89V180H0V112Z"
@@ -68,13 +68,13 @@ export default function Hero({
             className="object-cover object-center"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/60 via-primary-dark/60 via-[35%] to-transparent to-[50%]" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-dark/60 via-primary-dark/60 via-35% to-transparent to-50%" />
       </div>
 
       {/* Left-aligned copy over the image */}
-      <div className="relative mx-auto flex min-h-[28rem] max-w-7xl items-center px-4 py-12 sm:min-h-[34rem] sm:px-6 sm:py-16 lg:min-h-[40rem] lg:px-8 lg:py-20">
+      <div className="relative mx-auto flex min-h-112 max-w-7xl items-center px-4 py-12 sm:min-h-136 sm:px-6 sm:py-16 lg:min-h-160 lg:px-8 lg:py-20">
         <div className="max-w-lg text-left lg:max-w-xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-white/5 px-4 py-1.5 text-xs font-semibold text-gold backdrop-blur-sm sm:text-sm">
+          <p className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-white/5 px-4 py-1.5 text-xs font-semibold text-gold backdrop-blur-xs sm:text-sm">
             <span aria-hidden>☪️</span> {heroBadge}
           </p>
 

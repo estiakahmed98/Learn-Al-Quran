@@ -71,9 +71,9 @@ export default async function ContactUsPage() {
       </div>
 
       {/* Decorative circles */}
-      <div className="pointer-events-none absolute -left-20 top-1/3 hidden h-[20rem] w-[20rem] -translate-y-1/2 rounded-full border-[20px] border-primary-dark/5 lg:block" />
-      <div className="pointer-events-none absolute -right-12 bottom-1/4 h-32 w-32 rounded-full border-[12px] border-gold/5 lg:hidden" />
-      <div className="pointer-events-none absolute -left-8 top-20 h-24 w-24 rounded-full border-[10px] border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -left-20 top-1/3 hidden h-80 w-[20rem] -translate-y-1/2 rounded-full border-20 border-primary-dark/5 lg:block" />
+      <div className="pointer-events-none absolute -right-12 bottom-1/4 h-32 w-32 rounded-full border-12 border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -left-8 top-20 h-24 w-24 rounded-full border-10 border-gold/5 lg:hidden" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         {/* Decorative top element */}
@@ -108,7 +108,7 @@ export default async function ContactUsPage() {
           {/* Call Card */}
           <a
             href={`tel:${settings.phone}`}
-            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
+            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
           >
             {/* Background pattern */}
             <div
@@ -129,7 +129,7 @@ export default async function ContactUsPage() {
               <div className="flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-gold/10 animate-pulse" />
-                  <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <div className="relative h-16 w-16 rounded-full bg-linear-to-br from-primary/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                     📞
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export default async function ContactUsPage() {
             href={`https://wa.me/${settings.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
+            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
           >
             {/* Background pattern */}
             <div
@@ -171,7 +171,7 @@ export default async function ContactUsPage() {
               <div className="flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-green-500/10 animate-pulse" />
-                  <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-green-500/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <div className="relative h-16 w-16 rounded-full bg-linear-to-br from-green-500/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                     💬
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export default async function ContactUsPage() {
           {/* Email Card */}
           <a
             href={`mailto:${settings.email}`}
-            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
+            className="group relative overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
           >
             {/* Background pattern */}
             <div
@@ -211,7 +211,7 @@ export default async function ContactUsPage() {
               <div className="flex justify-center">
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-blue-500/10 animate-pulse" />
-                  <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-blue-500/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <div className="relative h-16 w-16 rounded-full bg-linear-to-br from-blue-500/10 to-gold/10 flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                     ✉️
                   </div>
                 </div>
@@ -240,7 +240,7 @@ export default async function ContactUsPage() {
       <div className="relative">
         {/* Decorative divider */}
         <div className="relative mx-auto max-w-7xl px-4">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <div className="h-px w-full bg-linear-to-r from-transparent via-gold/20 to-transparent" />
         </div>
 
         <GoogleMapSection

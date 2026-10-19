@@ -92,7 +92,7 @@ function isAbortError(err: unknown) {
 // ---------- Skeleton helpers ----------
 const SkeletonBox: React.FC<{ className?: string }> = React.memo(
   function SkeletonBox({ className = "" }) {
-    return <div className={`animate-pulse bg-gray-200 rounded ${className}`} />;
+    return <div className={`animate-pulse bg-gray-200 rounded-sm ${className}`} />;
   },
 );
 SkeletonBox.displayName = "SkeletonBox";
@@ -296,7 +296,7 @@ const AdminAnalytics: React.FC = () => {
   return (
     <div className="bg-[#F1F3F4] min-h-screen text-[#0F1C1C]">
       {/* ---------- NEW Analytics ---------- */}
-      <section className="bg-white rounded-xl shadow-sm p-5 mb-8">
+      <section className="bg-white rounded-xl shadow-xs p-5 mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold text-gray-800">
@@ -361,7 +361,7 @@ const AdminAnalytics: React.FC = () => {
                 : numberFormatter.format(analytics?.kpis.liveUsers ?? 0)
             }
             icon={<FaGlobeAmericas className="text-xl text-white" />}
-            color="bg-gradient-to-br from-emerald-400 to-green-600"
+            color="bg-linear-to-br from-emerald-400 to-green-600"
             loading={analyticsLoading || isPending}
           />
           <StatCard
@@ -372,7 +372,7 @@ const AdminAnalytics: React.FC = () => {
                 : numberFormatter.format(analytics?.kpis.visitors ?? 0)
             }
             icon={<FaEye className="text-xl text-white" />}
-            color="bg-gradient-to-br from-blue-500 to-indigo-600"
+            color="bg-linear-to-br from-blue-500 to-indigo-600"
             loading={analyticsLoading || isPending}
           />
           <StatCard
@@ -383,7 +383,7 @@ const AdminAnalytics: React.FC = () => {
                 : numberFormatter.format(analytics?.kpis.pageViews ?? 0)
             }
             icon={<FaRegChartBar className="text-xl text-white" />}
-            color="bg-gradient-to-br from-amber-400 to-orange-600"
+            color="bg-linear-to-br from-amber-400 to-orange-600"
             loading={analyticsLoading || isPending}
           />
           <StatCard
@@ -394,7 +394,7 @@ const AdminAnalytics: React.FC = () => {
                 : fmtSec(analytics?.kpis.activeTimeSec ?? 0)
             }
             icon={<FaFileAlt className="text-xl text-white" />}
-            color="bg-gradient-to-br from-purple-500 to-pink-600"
+            color="bg-linear-to-br from-purple-500 to-pink-600"
             loading={analyticsLoading || isPending}
           />
           <StatCard
@@ -405,7 +405,7 @@ const AdminAnalytics: React.FC = () => {
                 : fmtSec(analytics?.kpis.avgActiveTimeSec ?? 0)
             }
             icon={<FaGlobeAmericas className="text-xl text-white" />}
-            color="bg-gradient-to-br from-teal-400 to-cyan-600"
+            color="bg-linear-to-br from-teal-400 to-cyan-600"
             loading={analyticsLoading || isPending}
           />
         </div>
@@ -440,7 +440,7 @@ const AdminAnalytics: React.FC = () => {
           ) : tab === "traffic" ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Visitors Chart */}
-              <div className="bg-gradient-to-br from-white to-[#F2F4F4] rounded-2xl p-5 border border-[#E1E5E5] shadow-sm">
+              <div className="bg-linear-to-br from-white to-[#F2F4F4] rounded-2xl p-5 border border-[#E1E5E5] shadow-xs">
                 <div className="flex justify-between items-center mb-4">
                   <div>
                     <h3 className="text-base font-semibold text-gray-800">
@@ -538,7 +538,7 @@ const AdminAnalytics: React.FC = () => {
               </div>
 
               {/* Page Views Chart */}
-              <div className="bg-gradient-to-br from-white to-emerald-50 rounded-2xl p-5 border border-emerald-100 shadow-sm">
+              <div className="bg-linear-to-br from-white to-emerald-50 rounded-2xl p-5 border border-emerald-100 shadow-xs">
                 <div className="flex justify-between items-center mb-4">
                   <div>
                     <h3 className="text-base font-semibold text-gray-800">
@@ -635,8 +635,8 @@ const AdminAnalytics: React.FC = () => {
               </div>
 
               {/* Top Pages Table */}
-              <div className="lg:col-span-2 bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-                <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+              <div className="lg:col-span-2 bg-linear-to-br from-white to-gray-50 rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+                <div className="p-4 border-b border-gray-200 bg-linear-to-r from-gray-50 to-white">
                   <div className="flex justify-between items-center">
                     <h3 className="text-base font-semibold text-gray-800">
                       Top Performing Pages
@@ -752,7 +752,7 @@ const AdminAnalytics: React.FC = () => {
               </div>
             </div>
           ) : tab === "sources" ? (
-            <div className="bg-gradient-to-br from-white to-purple-50 rounded-2xl p-5 border border-purple-100 shadow-sm">
+            <div className="bg-linear-to-br from-white to-purple-50 rounded-2xl p-5 border border-purple-100 shadow-xs">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-base font-semibold text-gray-800">
@@ -847,7 +847,7 @@ const AdminAnalytics: React.FC = () => {
             </div>
           ) : tab === "geo" ? (
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-white to-[#F2F4F4] rounded-2xl p-5 border border-[#E1E5E5] shadow-sm">
+              <div className="bg-linear-to-br from-white to-[#F2F4F4] rounded-2xl p-5 border border-[#E1E5E5] shadow-xs">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-base font-semibold text-gray-800">
                     Geographic Distribution
@@ -872,8 +872,8 @@ const AdminAnalytics: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Countries */}
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                      <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[#F2F4F4]/70 to-white">
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs">
+                      <div className="p-4 border-b border-gray-200 bg-linear-to-r from-[#F2F4F4]/70 to-white">
                         <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-[#BC913A]"></div>
                           Top Countries
@@ -918,8 +918,8 @@ const AdminAnalytics: React.FC = () => {
                     </div>
 
                     {/* Cities */}
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                      <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-emerald-50/50 to-white">
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs">
+                      <div className="p-4 border-b border-gray-200 bg-linear-to-r from-emerald-50/50 to-white">
                         <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                           Top Cities
@@ -976,7 +976,7 @@ const AdminAnalytics: React.FC = () => {
                     onClick={() => setDeviceTab(t.key)}
                     className={`px-4 py-2 text-sm font-medium rounded-lg border transition ${
                       deviceTab === t.key
-                        ? "bg-white border-gray-300 text-gray-900 shadow-sm"
+                        ? "bg-white border-gray-300 text-gray-900 shadow-xs"
                         : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-white"
                     }`}
                   >
@@ -988,7 +988,7 @@ const AdminAnalytics: React.FC = () => {
               {deviceTab === "deviceType" ? (
                 <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
                   {/* Left: Device Types Pie */}
-                  <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                  <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
                     <div className="mb-1">
                       <h3 className="text-sm font-semibold text-gray-900">
                         Device Types
@@ -1048,7 +1048,7 @@ const AdminAnalytics: React.FC = () => {
                   </div>
                 </div>
               ) : deviceTab === "browser" ? (
-                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
                   <div className="mb-1">
                     <h3 className="text-sm font-semibold text-gray-900">
                       Browser Usage
@@ -1107,7 +1107,7 @@ const AdminAnalytics: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
                   <div className="mb-1">
                     <h3 className="text-sm font-semibold text-gray-900">
                       Operating Systems
@@ -1172,7 +1172,7 @@ const StatCard: React.FC<StatCardProps> = React.memo(function StatCard({
   loading,
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-xs p-5 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600">{title}</p>

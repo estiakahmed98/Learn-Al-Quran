@@ -54,7 +54,7 @@ export default function EnrollmentForm({
 
   const selectedCourse = courses.find((course) => course.slug === form.courseSlug);
   const inputClass =
-    "mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10";
+    "mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-hidden transition focus:border-primary focus:ring-2 focus:ring-primary/10";
 
   function update(key: keyof typeof form, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -96,7 +96,7 @@ export default function EnrollmentForm({
   if (status === "success") {
     return (
       <section className="mx-auto max-w-3xl px-4 py-20 lg:px-8">
-        <div className="rounded-[2rem] border border-green-100 bg-white p-8 text-center shadow-xl sm:p-12">
+        <div className="rounded-4xl border border-green-100 bg-white p-8 text-center shadow-xl sm:p-12">
           <CheckCircle2 className="mx-auto h-14 w-14 text-green-600" />
           <h1 className="mt-5 font-heading text-3xl font-bold text-primary-dark">{t("successTitle")}</h1>
           <p className="mx-auto mt-3 max-w-xl leading-7 text-gray-600">{t("successBody")}</p>
@@ -110,9 +110,9 @@ export default function EnrollmentForm({
 
   return (
     <section className="relative overflow-hidden bg-[#f5f7f5] py-14 lg:py-20">
-      <div className="absolute -left-24 top-20 h-72 w-72 rounded-full border-[32px] border-primary/5" />
+      <div className="absolute -left-24 top-20 h-72 w-72 rounded-full border-32 border-primary/5" />
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
-        <aside className="relative overflow-hidden rounded-[2rem] bg-primary-dark p-7 text-white shadow-xl sm:p-9">
+        <aside className="relative overflow-hidden rounded-4xl bg-primary-dark p-7 text-white shadow-xl sm:p-9">
           <IslamicPattern tone="gold" opacity={0.08} />
           <p className="relative text-xs font-bold uppercase tracking-[.25em] text-secondary">{t("eyebrow")}</p>
           <h1 className="relative mt-4 font-heading text-3xl font-bold leading-tight sm:text-4xl">{t("title")}</h1>
@@ -130,7 +130,7 @@ export default function EnrollmentForm({
           </div>
         </aside>
 
-        <div className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-xl sm:p-9">
+        <div className="rounded-4xl border border-gray-200 bg-white p-6 shadow-xl sm:p-9">
           <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary/20 text-primary-dark"><UserRound className="h-5 w-5" /></span><div><h2 className="font-heading text-2xl font-bold text-primary-dark">{t("formTitle")}</h2><p className="text-sm text-gray-500">{t("guestHint")}</p></div></div>
 
           <form onSubmit={submit} className="mt-6 grid gap-4 sm:grid-cols-2">

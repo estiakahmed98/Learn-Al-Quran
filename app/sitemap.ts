@@ -3,6 +3,26 @@ import { api } from "@/lib/api-client";
 import { siteUrl } from "@/lib/site-config";
 import { routing } from "@/i18n/routing";
 
+// Read current API data on every sitemap request, including changes made directly in Laravel.
+export const dynamic = "force-dynamic";
+
+type SitemapRecord = { slug: string; updatedAt?: string };
+
+async function allPages(
+  load: (page: number) => Promise<{ data: SitemapRecord[]; lastPage: number }>
+): Promise<SitemapRecord[]> {
+  const records: SitemapRecord[] = [];
+  let page = 1;
+  let lastPage = 1;
+  do {
+    const result = await load(page);
+    records.push(...result.data);
+    lastPage = result.lastPage;
+    page += 1;
+  } while (page <= lastPage);
+  return records;
+}
+
 function localePrefix(locale: string) {
   return `/${locale}`;
 }
@@ -13,7 +33,7 @@ function absoluteUrl(path: string) {
 
 function buildEntry(
   path: string,
-  options: { changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number; lastModified?: Date }
+  options: { changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number; lastModified?: string | Date }
 ): MetadataRoute.Sitemap {
   const clean = path === "/" ? "" : path;
 
@@ -56,31 +76,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...buildEntry("/return-policy", { changeFrequency: "yearly", priority: 0.2 })
   ];
 
-  try {
-    const [{ data: courses }, blogContent] = await Promise.all([
-      api.courses.list({ perPage: 100 }),
-      api.content.list("BLOG")
-    ]);
-    const blogs = blogContent.data.filter((item: any) => item.isPublished);
+  const [courses, blogs] = await Promise.all([
+    allPages((page) => api.courses.list({ page, perPage: 100 }, undefined, { cache: "no-store", next: undefined })),
+    allPages((page) => api.blogs.list({ page, perPage: 100 }, { cache: "no-store", next: undefined }))
+  ]);
 
-    const courseRoutes: MetadataRoute.Sitemap = courses.flatMap((c) =>
-      buildEntry(`/courses/${c.slug}`, {
-        changeFrequency: "monthly",
-        priority: 0.8,
-        lastModified: c.updatedAt
-      })
-    );
+  const courseRoutes = courses.flatMap((course) =>
+    buildEntry(`/courses/${course.slug}`, {
+      changeFrequency: "monthly",
+      priority: 0.8,
+      lastModified: course.updatedAt
+    })
+  );
+  const blogRoutes = blogs.flatMap((blog) =>
+    buildEntry(`/blog/${blog.slug}`, {
+      changeFrequency: "monthly",
+      priority: 0.6,
+      lastModified: blog.updatedAt
+    })
+  );
 
-    const blogRoutes: MetadataRoute.Sitemap = blogs.flatMap((b) =>
-      buildEntry(`/blog/${b.slug}`, {
-        changeFrequency: "monthly",
-        priority: 0.6,
-        lastModified: b.updatedAt
-      })
-    );
-
-    return [...staticRoutes, ...courseRoutes, ...blogRoutes];
-  } catch {
-    return staticRoutes;
-  }
+  // Let API failures return an error rather than a misleading, incomplete sitemap.
+  return [...staticRoutes, ...courseRoutes, ...blogRoutes];
 }

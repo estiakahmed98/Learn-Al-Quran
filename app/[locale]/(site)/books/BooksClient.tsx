@@ -233,15 +233,15 @@ export default function BooksClient() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-primary/[0.045] via-white to-white">
+    <main className="relative min-h-screen overflow-hidden bg-linear-to-b from-primary/4.5 via-white to-white">
       {/* Compact Page Header */}
       <section className="relative overflow-hidden border-b border-gold/10">
         <IslamicPattern tone="green" opacity={0.045} className="absolute inset-0" />
 
         {/* Small decorative shapes */}
-        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-[12px] border-primary-dark/[0.03] lg:block" />
+        <div className="pointer-events-none absolute -left-12 top-1/2 hidden h-32 w-32 -translate-y-1/2 rounded-full border-12 border-primary-dark/3 lg:block" />
 
-        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-[10px] border-gold/[0.04]" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border-10 border-gold/4" />
 
         <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
           <div className="mx-auto max-w-2xl text-center">
@@ -253,7 +253,7 @@ export default function BooksClient() {
               <span className="text-[10px] text-gold/30">✦</span>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-sm backdrop-blur-sm sm:text-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-dark shadow-xs backdrop-blur-xs sm:text-xs">
               <BookOpen className="h-3.5 w-3.5 text-gold" />
               {t("badge")}
             </span>
@@ -276,11 +276,11 @@ export default function BooksClient() {
       </section>
 
       {/* Decorative background circles */}
-      <div className="pointer-events-none absolute -left-32 top-40 hidden h-[26rem] w-[26rem] rounded-full border-[30px] border-primary-dark/[0.035] lg:block" />
+      <div className="pointer-events-none absolute -left-32 top-40 hidden h-104 w-104 rounded-full border-30 border-primary-dark/[0.035] lg:block" />
 
-      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-[22px] border-gold/[0.045]" />
+      <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full border-22 border-gold/4.5" />
 
-      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-[18px] border-gold/[0.035]" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full border-18 border-gold/[0.035]" />
 
       <section className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
         {/* Search toolbar */}
@@ -295,7 +295,7 @@ export default function BooksClient() {
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder={t("searchPlaceholder")}
                 aria-label={t("searchPlaceholder")}
-                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/80 pl-12 pr-12 text-sm text-primary-dark outline-none transition-all placeholder:text-gray-400 focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10 sm:h-13"
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/80 pl-12 pr-12 text-sm text-primary-dark outline-hidden transition-all placeholder:text-gray-400 focus:border-gold/50 focus:bg-white focus:ring-4 focus:ring-gold/10 sm:h-13"
               />
 
               {searchQuery && (
@@ -386,7 +386,7 @@ export default function BooksClient() {
                     type="button"
                     onClick={() => changePage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-xs transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <span className="hidden sm:inline">{t("previous")}</span>
@@ -415,7 +415,7 @@ export default function BooksClient() {
                         className={`flex h-10 min-w-10 items-center justify-center rounded-lg px-3 text-sm font-semibold transition-all ${
                           isActive
                             ? "bg-primary text-white shadow-lg shadow-primary/20"
-                            : "border border-gray-200 bg-white text-gray-600 shadow-sm hover:border-gold/40 hover:bg-gold/5 hover:text-primary-dark"
+                            : "border border-gray-200 bg-white text-gray-600 shadow-xs hover:border-gold/40 hover:bg-gold/5 hover:text-primary-dark"
                         }`}
                       >
                         {item}
@@ -427,7 +427,7 @@ export default function BooksClient() {
                     type="button"
                     onClick={() => changePage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-600 shadow-xs transition-all hover:border-gold/40 hover:text-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <span className="hidden sm:inline">{t("next")}</span>
                     <ChevronRight className="h-4 w-4" />
@@ -476,11 +476,11 @@ function BookCard({
           onOpen();
         }
       }}
-      className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-sm outline-none transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10 focus-visible:ring-4 focus-visible:ring-gold/20"
+      className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gold/15 bg-white/95 shadow-xs outline-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-xl hover:shadow-primary/10 focus-visible:ring-4 focus-visible:ring-gold/20"
     >
       {/* Cover */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-gold/[0.07] to-primary-dark/[0.08] p-3 sm:p-4">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-white shadow-md">
+      <div className="relative overflow-hidden bg-linear-to-br from-primary/6 via-gold/[0.07] to-primary-dark/8 p-3 sm:p-4">
+        <div className="relative aspect-3/4 overflow-hidden rounded-xl bg-white shadow-md">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -494,10 +494,10 @@ function BookCard({
             <BookPlaceholder title={book.title} />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/65 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-linear-to-t from-primary-dark/65 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center p-4 transition-transform duration-300 group-hover:translate-y-0">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-primary-dark shadow-lg backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-primary-dark shadow-lg backdrop-blur-xs">
               <Eye className="h-4 w-4 text-gold" />
               {t("viewDetails")}
             </span>
@@ -556,13 +556,13 @@ function BookDetailsModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="book-modal-title"
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6"
     >
       <button
         type="button"
         aria-label="Close book details"
         onClick={onClose}
-        className="absolute inset-0 bg-primary-dark/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-primary-dark/70 backdrop-blur-xs"
       />
 
       <div className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/20 bg-white shadow-2xl sm:rounded-3xl">
@@ -586,7 +586,7 @@ function BookDetailsModal({
         {/* Modal body */}
         <div className="overflow-y-auto">
           {/* Full image */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.08] via-gold/[0.08] to-primary-dark/[0.1] p-4 sm:p-6 lg:p-8">
+          <div className="relative overflow-hidden bg-linear-to-br from-primary/8 via-gold/8 to-primary-dark/10 p-4 sm:p-6 lg:p-8">
               <div
                 className="pointer-events-none absolute inset-0 opacity-[0.07]"
                 style={{
@@ -622,7 +622,7 @@ function BookDetailsModal({
                     />
                   </div>
                 ) : (
-                  <div className="aspect-[16/10] overflow-hidden rounded-xl sm:rounded-2xl">
+                  <div className="aspect-16/10 overflow-hidden rounded-xl sm:rounded-2xl">
                     <BookPlaceholder title={book.title} />
                   </div>
                 )}
@@ -646,7 +646,7 @@ function BookDetailsModal({
                 </p>
               )}
 
-              <div className="my-6 h-px bg-gradient-to-r from-gold/30 via-gray-100 to-transparent" />
+              <div className="my-6 h-px bg-linear-to-r from-gold/30 via-gray-100 to-transparent" />
 
               {cleanDescription ? (
                 <div>
@@ -705,16 +705,16 @@ function LoadingState({ t }: { t: ReturnType<typeof useTranslations> }) {
       {Array.from({ length: 8 }).map((_, index) => (
         <div
           key={index}
-          className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm"
+          className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-xs"
         >
-          <div className="aspect-[3/4] animate-pulse rounded-xl bg-gray-100" />
+          <div className="aspect-3/4 animate-pulse rounded-xl bg-gray-100" />
 
-          <div className="mt-5 h-5 w-3/4 animate-pulse rounded bg-gray-100" />
-          <div className="mt-3 h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+          <div className="mt-5 h-5 w-3/4 animate-pulse rounded-sm bg-gray-100" />
+          <div className="mt-3 h-4 w-1/2 animate-pulse rounded-sm bg-gray-100" />
 
           <div className="mt-5 space-y-2">
-            <div className="h-3 w-full animate-pulse rounded bg-gray-100" />
-            <div className="h-3 w-5/6 animate-pulse rounded bg-gray-100" />
+            <div className="h-3 w-full animate-pulse rounded-sm bg-gray-100" />
+            <div className="h-3 w-5/6 animate-pulse rounded-sm bg-gray-100" />
           </div>
         </div>
       ))}
@@ -804,7 +804,7 @@ function NoResultsState({
 
 function BookPlaceholder({ title }: { title: string }) {
   return (
-    <div className="flex h-full min-h-full w-full flex-col items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-6 text-center">
+    <div className="flex h-full min-h-full w-full flex-col items-center justify-center bg-linear-to-br from-primary to-primary-dark p-6 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
         <BookOpen className="h-7 w-7 text-gold" />
       </div>

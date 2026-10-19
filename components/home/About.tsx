@@ -26,7 +26,7 @@ export default function About({ title, description, image }: AboutProps) {
       <IslamicPattern opacity={0.05} />
 
       {/* Decorative circle behind the image */}
-      <div className="pointer-events-none absolute -left-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
+      <div className="pointer-events-none absolute -left-24 top-1/2 hidden h-112 w-md -translate-y-1/2 rounded-full border-24 border-primary-dark/10 lg:block" />
 
       {/* Decorative small circles - Mobile */}
       <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full border-8 border-gold/5 lg:hidden" />
@@ -46,7 +46,7 @@ export default function About({ title, description, image }: AboutProps) {
               height={576}
               quality={85}
               sizes="(max-width: 640px) 320px, 384px"
-              className="aspect-[4/3] h-auto w-full object-cover"
+              className="aspect-4/3 h-auto w-full object-cover"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function About({ title, description, image }: AboutProps) {
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 sm:mt-8">
             <Link
               href="/about-us"
-              className="relative isolate inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 sm:px-8 sm:py-2.5"
+              className="relative isolate inline-flex items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-primary to-primary-dark px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 sm:px-8 sm:py-2.5"
             >
               <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
               <span className="relative z-10">{t("learnMore")}</span>

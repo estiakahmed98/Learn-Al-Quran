@@ -13,7 +13,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       type={type}
       className={cn(
-        "relative isolate inline-flex items-center justify-center overflow-hidden rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50",
+        "relative isolate inline-flex items-center justify-center overflow-hidden rounded-md font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50",
         variant === "outline"
           ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           : variant === "destructive"

@@ -64,7 +64,7 @@ function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-hidden"
             />
           </div>
           <div>
@@ -77,14 +77,14 @@ function LoginForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12 focus:border-primary focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12 focus:border-primary focus:outline-hidden"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((visible) => !visible)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 aria-pressed={showPassword}
-                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 transition hover:text-primary focus:outline-none"
+                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 transition hover:text-primary focus:outline-hidden"
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />

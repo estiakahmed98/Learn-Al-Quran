@@ -219,7 +219,7 @@ export default function NewsletterManagement() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-dark py-3 font-semibold"
+                className="w-full rounded-xl bg-linear-to-r from-primary to-primary-dark py-3 font-semibold"
               >
                 {submitting ? "Creating..." : "Create Newsletter"}
               </Button>
@@ -393,7 +393,7 @@ export default function NewsletterManagement() {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-dark py-3 font-semibold"
+              className="w-full rounded-xl bg-linear-to-r from-primary to-primary-dark py-3 font-semibold"
             >
               {submitting ? "Updating..." : "Update Newsletter"}
             </Button>

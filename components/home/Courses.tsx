@@ -27,14 +27,14 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
   return (
     <section
       id="courses"
-      className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-white"
+      className="relative overflow-hidden bg-linear-to-b from-primary/5 to-white"
     >
       <IslamicPattern opacity={0.04} />
 
       {/* Decorative circles */}
-      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border-[24px] border-primary-dark/10 lg:block" />
-      <div className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 rounded-full border-[16px] border-gold/5 lg:hidden" />
-      <div className="pointer-events-none absolute -right-8 top-20 h-32 w-32 rounded-full border-[12px] border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-112 w-md -translate-y-1/2 rounded-full border-24 border-primary-dark/10 lg:block" />
+      <div className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 rounded-full border-16 border-gold/5 lg:hidden" />
+      <div className="pointer-events-none absolute -right-8 top-20 h-32 w-32 rounded-full border-12 border-gold/5 lg:hidden" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
         {/* Centered heading like the reference */}
@@ -70,13 +70,13 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
             {visibleCourses.map((course, index) => (
               <div
                 key={course.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs shadow-xs transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-gold/30"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <Link
                   href={`/courses/${course.slug}`}
                   aria-label={`${pickText(locale, course.title, course.titleBn)} - ${t("details")}`}
-                  className="absolute inset-0 z-10 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                  className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                 />
 
                 {/* Decorative corner */}
@@ -84,7 +84,7 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                 <div className="absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Illustration / thumbnail */}
-                <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 to-gold/5">
+                <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden bg-linear-to-br from-primary/5 to-gold/5">
                   {course.thumbnail ? (
                     <Image
                       src={publicMediaUrl(course.thumbnail)}
@@ -95,13 +95,13 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                       className="object-contain object-center"
                     />
                   ) : (
-                    <span className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl sm:text-4xl text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <span className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-linear-to-br from-primary to-primary-dark text-3xl sm:text-4xl text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                       {courseIcons[course.slug] || "📖"}
                     </span>
                   )}
 
                   {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/5 to-transparent" />
                 </div>
 
                 <div className="flex flex-1 flex-col p-4 sm:p-6 text-center">
@@ -128,7 +128,7 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
                     </Link>
                     <Link
                       href={`/enroll?course=${course.slug}`}
-                      className="relative isolate flex-1 overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-3 py-2 text-center text-xs font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 sm:py-2.5 sm:text-sm"
+                      className="relative isolate flex-1 overflow-hidden rounded-lg bg-linear-to-r from-primary to-primary-dark px-3 py-2 text-center text-xs font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105 sm:py-2.5 sm:text-sm"
                     >
                       <IslamicPattern
                         tone="gold"
@@ -148,7 +148,7 @@ export default function Courses({ courses }: { courses: CourseListItem[] }) {
           <div className="mt-10 sm:mt-12 text-center">
             <Link
               href="/courses"
-              className="group relative isolate inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-primary to-primary-dark px-8 sm:px-10 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+              className="group relative isolate inline-flex items-center gap-2 overflow-hidden rounded-lg bg-linear-to-r from-primary to-primary-dark px-8 sm:px-10 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
               <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
               <span className="relative z-10">{t("viewAll")}</span>

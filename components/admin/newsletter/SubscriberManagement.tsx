@@ -155,7 +155,7 @@ export default function SubscriberManagement() {
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-dark py-3 font-semibold"
+                  className="w-full rounded-xl bg-linear-to-r from-primary to-primary-dark py-3 font-semibold"
                 >
                   {submitting ? "Adding..." : "Add Subscriber"}
                 </Button>
@@ -174,16 +174,16 @@ export default function SubscriberManagement() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary sm:h-10 sm:w-10">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary sm:h-10 sm:w-10">
                     <Mail className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="break-words text-sm font-semibold text-gray-800 sm:text-base">
+                    <p className="wrap-break-word text-sm font-semibold text-gray-800 sm:text-base">
                       {subscriber.email}
                     </p>
                     <div className="mt-1 flex items-center gap-2">
                       <div
-                        className={`h-2 w-2 flex-shrink-0 rounded-full ${
+                        className={`h-2 w-2 shrink-0 rounded-full ${
                           subscriber.status === "subscribed" ? "bg-secondary" : "bg-gray-400"
                         }`}
                       />
@@ -201,7 +201,7 @@ export default function SubscriberManagement() {
                   variant="destructive"
                   size="sm"
                   onClick={() => openDeleteDialog(subscriber.email)}
-                  className="flex-shrink-0"
+                  className="shrink-0"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -239,7 +239,7 @@ export default function SubscriberManagement() {
             <DialogTitle className="text-red-600">Confirm Deletion</DialogTitle>
           </DialogHeader>
           <p className="py-4 text-sm text-gray-700 sm:text-base">
-            Are you sure you want to remove <strong className="break-words">{deletingEmail}</strong>{" "}
+            Are you sure you want to remove <strong className="wrap-break-word">{deletingEmail}</strong>{" "}
             from subscribers?
           </p>
           <div className="flex flex-col justify-end gap-3 sm:flex-row">

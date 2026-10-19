@@ -30,11 +30,11 @@ export default async function StudentPaymentsPage() {
       <p className="mt-1 text-sm text-gray-500">Your course fee payments and their verification status.</p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
           <p className="text-xs font-semibold text-gray-500">Total Payments</p>
           <p className="mt-1 text-2xl font-bold text-primary-dark">{enrollments.length}</p>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
           <p className="text-xs font-semibold text-gray-500">Total Paid (৳)</p>
           <p className="mt-1 text-2xl font-bold text-primary-dark">{totalPaid.toLocaleString()}</p>
         </div>

@@ -184,11 +184,12 @@ export const api = {
   },
 
   courses: {
-    list: (params?: { perPage?: number }, token?: string) =>
+    list: (params?: { perPage?: number; page?: number }, token?: string, options?: Pick<FetchOptions, "cache" | "next">) =>
       apiFetchPaginated<any>("courses", {
         token,
-        searchParams: { per_page: params?.perPage },
-        next: { revalidate: 3600, tags: ["courses"] }
+        searchParams: { per_page: params?.perPage, page: params?.page },
+        next: { revalidate: 3600, tags: ["courses"] },
+        ...options
       }),
     get: (id: string, token?: string) => apiFetch<any>(`courses/${id}`, { token }),
     getBySlug: (slug: string, token?: string) => apiFetch<any>(`courses/slug/${slug}`, { token }),
@@ -201,10 +202,11 @@ export const api = {
   },
 
   blogs: {
-    list: (params?: { page?: number; perPage?: number }) =>
+    list: (params?: { page?: number; perPage?: number }, options?: Pick<FetchOptions, "cache" | "next">) =>
       apiFetchPaginated<any>("blogs", {
         searchParams: { page: params?.page, per_page: params?.perPage },
-        next: { revalidate: 900, tags: ["blogs"] }
+        next: { revalidate: 900, tags: ["blogs"] },
+        ...options
       }),
     get: (id: number | string) => apiFetch<any>(`blogs/${id}`),
     getBySlug: (slug: string) => apiFetch<any>(`blogs/slug/${slug}`),

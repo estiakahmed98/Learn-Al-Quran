@@ -107,25 +107,25 @@ export default function NotesManager({
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           placeholder="Note title *"
-          className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
         />
         <textarea
           value={form.content}
           onChange={(e) => setForm({ ...form, content: e.target.value })}
           placeholder="Note content (optional)"
           rows={3}
-          className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
         />
         <input
           value={form.fileUrl}
           onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
           placeholder="Attachment URL (optional)"
-          className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
         />
         <button
           type="submit"
           disabled={saving || !form.title.trim()}
-          className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {saving ? "Saving..." : "Add Note"}
         </button>

@@ -22,7 +22,7 @@ export default async function StudentCoursesPage() {
       </p>
 
       {enrollments.length === 0 ? (
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-xs">
           <p className="text-3xl">📖</p>
           <p className="mt-3 font-semibold text-gray-700">You have not enrolled in any course yet.</p>
           <Link

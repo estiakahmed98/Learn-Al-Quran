@@ -128,13 +128,13 @@ export default function AllBlogs() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50/30 via-white to-teal-50/20 py-12" />
+      <div className="min-h-screen bg-linear-to-br from-emerald-50/30 via-white to-teal-50/20 py-12" />
     );
   }
 
   if (!blogs.length) {
     return (
-      <div className="flex items-center justify-center min-h-96 bg-gradient-to-br from-emerald-50/30 via-white to-teal-50/20">
+      <div className="flex items-center justify-center min-h-96 bg-linear-to-br from-emerald-50/30 via-white to-teal-50/20">
         <div className="text-center p-10 bg-white/80 rounded-3xl shadow-xl border border-emerald-200">
           <div className="text-4xl mb-4">📝</div>
           <h3 className="text-2xl font-bold text-emerald-600 mb-2">
@@ -147,7 +147,7 @@ export default function AllBlogs() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-emerald-50/30 via-white to-teal-50/20 py-12 px-4">
+    <main className="min-h-screen bg-linear-to-br from-emerald-50/30 via-white to-teal-50/20 py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <section aria-label="Blog posts">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -155,7 +155,7 @@ export default function AllBlogs() {
               <article key={blog.id} className="group">
                 <Link href={blog.href} aria-label={`Read: ${blog.title}`}>
                   <div className="bg-white/80 rounded-3xl shadow-xl hover:shadow-2xl transition-all border border-emerald-200/30 hover:scale-105">
-                    <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/[0.04] to-gold/[0.08]">
+                    <div className="relative aspect-video overflow-hidden bg-linear-to-br from-primary/4 to-gold/8">
                       {blog.image ? (
                         <img
                           src={publicMediaUrl(blog.image)}

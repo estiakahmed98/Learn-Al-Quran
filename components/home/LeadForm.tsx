@@ -93,14 +93,14 @@ export default function LeadForm({
     return (
       <div
         id="admission"
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark p-6 shadow-xl sm:p-8"
+        className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary-dark via-primary to-primary-dark p-6 shadow-xl sm:p-8"
       >
         <IslamicPattern tone="gold" opacity={0.06} />
 
         {/* Decorative elements */}
-        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full border-[12px] border-gold/10" />
-        <div className="absolute -bottom-12 -left-12 h-24 w-24 rounded-full border-[8px] border-gold/10" />
-        <div className="absolute top-1/2 right-0 h-px w-20 bg-gradient-to-l from-gold/20 to-transparent" />
+        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full border-12 border-gold/10" />
+        <div className="absolute -bottom-12 -left-12 h-24 w-24 rounded-full border-8 border-gold/10" />
+        <div className="absolute top-1/2 right-0 h-px w-20 bg-linear-to-l from-gold/20 to-transparent" />
 
         <div className="relative">
           {/* Header with decorative elements */}
@@ -119,10 +119,10 @@ export default function LeadForm({
             {t("bookSeat")}
           </h2>
 
-          <div className="mt-1 h-px w-16 bg-gradient-to-r from-gold/60 to-transparent" />
+          <div className="mt-1 h-px w-16 bg-linear-to-r from-gold/60 to-transparent" />
 
           {status === "success" ? (
-            <div className="mt-6 rounded-xl bg-white/10 p-6 text-center backdrop-blur-sm border border-white/10">
+            <div className="mt-6 rounded-xl bg-white/10 p-6 text-center backdrop-blur-xs border border-white/10">
               <div className="flex justify-center mb-3">
                 <span className="text-4xl">✅</span>
               </div>
@@ -139,13 +139,13 @@ export default function LeadForm({
                   type="text"
                   required
                   placeholder={t("yourName")}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 />
                 <input
                   name="guardianName"
                   type="text"
                   placeholder={t("guardianName")}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export default function LeadForm({
                 name="email"
                 type="email"
                 placeholder={t("yourEmail")}
-                className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
               />
 
               <div className="grid gap-3 sm:grid-cols-2">
@@ -161,7 +161,7 @@ export default function LeadForm({
                   name="courseSlug"
                   required
                   defaultValue={defaultCourseSlug || ""}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 >
                   <option value="" disabled className="text-gray-800">
                     {t("selectCourse")}
@@ -181,7 +181,7 @@ export default function LeadForm({
                   type="tel"
                   required
                   placeholder={t("yourPhone")}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
@@ -189,7 +189,7 @@ export default function LeadForm({
                 <select
                   name="paymentMethod"
                   required
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 >
                   {paymentMethods.map((method) => (
                     <option
@@ -205,12 +205,12 @@ export default function LeadForm({
                   name="transactionId"
                   type="text"
                   placeholder={t("transactionIdOptional")}
-                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all"
+                  className="w-full rounded-lg border border-white/20 bg-white/10 backdrop-blur-xs px-4 py-2.5 text-sm text-white placeholder-cream/60 focus:border-gold focus:outline-hidden focus:ring-2 focus:ring-gold/30 transition-all"
                 />
               </div>
 
               {/* Payment Info */}
-              <div className="rounded-lg bg-white/5 p-3 backdrop-blur-sm border border-white/10">
+              <div className="rounded-lg bg-white/5 p-3 backdrop-blur-xs border border-white/10">
                 <p className="text-xs text-cream/80 space-y-1">
                   <span className="flex items-center gap-2">
                     <span>📱</span>
@@ -239,7 +239,7 @@ export default function LeadForm({
               <ConsentCheckbox checked={consentAccepted} onChange={setConsentAccepted} dark />
 
               {status === "error" && (
-                <p className="rounded-lg bg-red-500/20 backdrop-blur-sm px-4 py-2 text-sm text-red-200 border border-red-500/30">
+                <p className="rounded-lg bg-red-500/20 backdrop-blur-xs px-4 py-2 text-sm text-red-200 border border-red-500/30">
                   {errorMsg}
                 </p>
               )}
@@ -247,7 +247,7 @@ export default function LeadForm({
               <button
                 type="submit"
                 disabled={status === "loading" || !consentAccepted}
-                className="group relative isolate w-full overflow-hidden rounded-lg bg-gradient-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+                className="group relative isolate w-full overflow-hidden rounded-lg bg-linear-to-r from-gold to-gold-light py-3 font-semibold text-primary-dark shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
                 <IslamicPattern tone="green" opacity={0.12} className="z-0" />
                 <span className="relative z-10 flex items-center justify-center gap-2">
@@ -279,7 +279,7 @@ export default function LeadForm({
   return (
     <section
       id="admission"
-      className="relative overflow-hidden bg-gradient-to-b from-cream to-white py-12 sm:py-16"
+      className="relative overflow-hidden bg-linear-to-b from-cream to-white py-12 sm:py-16"
     >
       <IslamicPattern opacity={0.04} />
 
@@ -304,13 +304,13 @@ export default function LeadForm({
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-sm p-6 shadow-lg sm:p-8 lg:p-10">
+        <div className="mt-8 rounded-2xl border border-gold/10 bg-white/90 backdrop-blur-xs p-6 shadow-lg sm:p-8 lg:p-10">
           {/* Decorative corner */}
           <div className="absolute -top-1 -right-1 h-10 w-10 border-t-2 border-r-2 border-gold/20 rounded-tr-2xl opacity-50" />
           <div className="absolute -bottom-1 -left-1 h-10 w-10 border-b-2 border-l-2 border-gold/20 rounded-bl-2xl opacity-50" />
 
           {/* Payment Info */}
-          <div className="rounded-xl bg-gradient-to-br from-primary/5 to-gold/5 p-4 text-sm text-gray-700 border border-gold/10">
+          <div className="rounded-xl bg-linear-to-br from-primary/5 to-gold/5 p-4 text-sm text-gray-700 border border-gold/10">
             <p className="font-semibold text-primary-dark flex items-center gap-2">
               <span className="text-gold">📌</span>
               {t("feeNotice")}
@@ -369,7 +369,7 @@ export default function LeadForm({
                   name="courseSlug"
                   required
                   defaultValue={defaultCourseSlug || ""}
-                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                 >
                   <option value="" disabled>
                     -- {t("chooseCourse")} --
@@ -393,7 +393,7 @@ export default function LeadForm({
                     name="studentName"
                     type="text"
                     required
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                     placeholder={t("studentName")}
                   />
                 </div>
@@ -407,7 +407,7 @@ export default function LeadForm({
                     name="whatsappNumber"
                     type="tel"
                     required
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                     placeholder="+8801XXXXXXXXX"
                   />
                 </div>
@@ -422,7 +422,7 @@ export default function LeadForm({
                   <input
                     name="guardianName"
                     type="text"
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                     placeholder={t("guardianName")}
                   />
                 </div>
@@ -434,7 +434,7 @@ export default function LeadForm({
                   <input
                     name="email"
                     type="email"
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -447,7 +447,7 @@ export default function LeadForm({
                   <select
                     name="paymentMethod"
                     required
-                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                   >
                     {paymentMethods.map((method) => (
                       <option key={method} value={method}>
@@ -466,7 +466,7 @@ export default function LeadForm({
                 <input
                   name="transactionId"
                   type="text"
-                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder={t("transactionIdPlaceholder")}
                 />
               </div>
@@ -481,7 +481,7 @@ export default function LeadForm({
                   name="contactNumber"
                   type="tel"
                   required
-                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="mt-1.5 w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-primary focus:outline-hidden focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder="+8801XXXXXXXXX"
                 />
               </div>
@@ -497,7 +497,7 @@ export default function LeadForm({
               <button
                 type="submit"
                 disabled={status === "loading" || !consentAccepted}
-                className="group relative isolate w-full overflow-hidden rounded-full bg-gradient-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+                className="group relative isolate w-full overflow-hidden rounded-full bg-linear-to-r from-primary to-primary-dark py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
               >
                 <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
                 <span className="relative z-10 flex items-center justify-center gap-2">

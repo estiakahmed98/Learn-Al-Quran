@@ -27,7 +27,7 @@ export default function TopBar({ phone }: { phone: string }) {
             ★★★★★
           </p>
         </div>
-        <p className="max-w-[10rem] text-[10px] leading-snug text-white/70">{t("trustedBy")}</p>
+        <p className="max-w-40 text-[10px] leading-snug text-white/70">{t("trustedBy")}</p>
       </div>
     </div>
   );

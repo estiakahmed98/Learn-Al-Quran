@@ -70,12 +70,12 @@ export default function FreeTrialApplication({
   }
 
   const fieldClass =
-    "w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/45 focus:border-secondary focus:bg-white/[0.14]";
+    "w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-hidden placeholder:text-white/45 focus:border-secondary focus:bg-white/[0.14]";
 
   if (submitted) {
     return (
       <section className="mx-auto max-w-3xl px-4 py-16 lg:px-8 lg:py-24">
-        <div className="overflow-hidden rounded-[2rem] bg-primary-dark p-8 text-center text-white shadow-2xl sm:p-12">
+        <div className="overflow-hidden rounded-4xl bg-primary-dark p-8 text-center text-white shadow-2xl sm:p-12">
           <CheckCircle2 className="mx-auto h-14 w-14 text-secondary" />
           <p className="mt-6 text-xs font-bold uppercase tracking-[.25em] text-secondary">
             {t("applicationReceived")}
@@ -99,7 +99,7 @@ export default function FreeTrialApplication({
 
   return (
     <section className="relative overflow-hidden bg-[#f5f7f5] py-14 lg:py-24">
-      <div className="absolute -left-32 top-16 h-80 w-80 rounded-full border-[36px] border-primary/5" />
+      <div className="absolute -left-32 top-16 h-80 w-80 rounded-full border-36 border-primary/5" />
       <div className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[.9fr_1.1fr] lg:px-8">
@@ -125,7 +125,7 @@ export default function FreeTrialApplication({
                 return (
                   <div
                     key={String(title)}
-                    className="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm"
+                    className="rounded-2xl border border-primary/10 bg-white p-5 shadow-xs"
                   >
                     <div className="flex items-center gap-3">
                       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary/20 text-sm font-bold text-primary-dark">
@@ -144,7 +144,7 @@ export default function FreeTrialApplication({
               })}
         </div>
 
-        <div className="relative order-2 overflow-hidden rounded-[2rem] bg-primary-dark shadow-2xl shadow-primary-dark/20 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+        <div className="relative order-2 overflow-hidden rounded-4xl bg-primary-dark shadow-2xl shadow-primary-dark/20 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
             <IslamicPattern tone="gold" opacity={0.08} />
             <div className="relative border-b border-white/10 px-6 py-6 sm:px-9">
               <p className="text-xs font-bold uppercase tracking-[.25em] text-secondary">

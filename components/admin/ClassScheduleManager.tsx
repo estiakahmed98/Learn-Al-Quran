@@ -116,7 +116,7 @@ export default function ClassScheduleManager({
           <select
             value={form.dayOfWeek}
             onChange={(e) => setForm({ ...form, dayOfWeek: e.target.value })}
-            className="rounded border border-gray-300 px-2 py-1.5 text-xs"
+            className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs"
           >
             {DAY_NAMES.map((d, i) => (
               <option key={d} value={i}>
@@ -131,7 +131,7 @@ export default function ClassScheduleManager({
             type="time"
             value={form.startTime}
             onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-            className="rounded border border-gray-300 px-2 py-1.5 text-xs"
+            className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs"
           />
         </div>
         <div>
@@ -140,7 +140,7 @@ export default function ClassScheduleManager({
             type="time"
             value={form.endTime}
             onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-            className="rounded border border-gray-300 px-2 py-1.5 text-xs"
+            className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs"
           />
         </div>
         <div>
@@ -148,7 +148,7 @@ export default function ClassScheduleManager({
           <input
             value={form.teacherName}
             onChange={(e) => setForm({ ...form, teacherName: e.target.value })}
-            className="w-32 rounded border border-gray-300 px-2 py-1.5 text-xs"
+            className="w-32 rounded-sm border border-gray-300 px-2 py-1.5 text-xs"
           />
         </div>
         <div className="min-w-[160px] flex-1">
@@ -157,13 +157,13 @@ export default function ClassScheduleManager({
             value={form.meetingLink}
             onChange={(e) => setForm({ ...form, meetingLink: e.target.value })}
             placeholder="https://meet.google.com/..."
-            className="w-full rounded border border-gray-300 px-2 py-1.5 text-xs"
+            className="w-full rounded-sm border border-gray-300 px-2 py-1.5 text-xs"
           />
         </div>
         <button
           type="submit"
           disabled={saving || !form.startTime}
-          className="rounded bg-primary px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+          className="rounded-sm bg-primary px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
         >
           {saving ? "Saving..." : "Add"}
         </button>

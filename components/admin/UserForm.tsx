@@ -132,7 +132,7 @@ export default function UserForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden";
   const labelClass = "mb-1 block text-xs font-semibold text-gray-600";
 
   return (

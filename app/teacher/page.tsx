@@ -26,7 +26,7 @@ export default async function TeacherDashboardPage() {
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
-            <div key={course.id} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div key={course.id} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
               <h2 className="font-heading font-bold text-primary-dark">{course.title}</h2>
               {course.titleBn && <p className="text-sm text-gray-500">{course.titleBn}</p>}
               <Link

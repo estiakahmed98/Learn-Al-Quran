@@ -36,7 +36,7 @@ export default function FAQ({ faqs }: { faqs: FaqItem[] }) {
           </h2>
         </div>
 
-        <div className="mt-1 h-px w-20 bg-gradient-to-r from-gold/60 to-transparent" />
+        <div className="mt-1 h-px w-20 bg-linear-to-r from-gold/60 to-transparent" />
 
         <div className="mt-5 space-y-3">
           {faqs.map((faq, index) => {
@@ -44,7 +44,7 @@ export default function FAQ({ faqs }: { faqs: FaqItem[] }) {
             return (
               <div
                 key={faq.id}
-                className="group relative overflow-hidden rounded-xl border border-gold/10 bg-white/90 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-md hover:border-gold/30"
+                className="group relative overflow-hidden rounded-xl border border-gold/10 bg-white/90 backdrop-blur-xs shadow-xs transition-all duration-300 hover:shadow-md hover:border-gold/30"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Background pattern */}
@@ -97,7 +97,7 @@ export default function FAQ({ faqs }: { faqs: FaqItem[] }) {
                 </button>
 
                 {isOpen && (
-                  <div className="relative border-t border-gold/10 px-4 py-3.5 sm:px-5 sm:py-4 text-sm text-gray-600 bg-gradient-to-b from-gold/5 to-transparent">
+                  <div className="relative border-t border-gold/10 px-4 py-3.5 sm:px-5 sm:py-4 text-sm text-gray-600 bg-linear-to-b from-gold/5 to-transparent">
                     {/* Decorative quote mark */}
                     <div className="absolute -top-3 -left-2 text-3xl text-gold/5 font-serif">
                       "

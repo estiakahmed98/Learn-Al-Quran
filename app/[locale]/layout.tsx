@@ -22,7 +22,7 @@ import JsonLd from "@/components/shared/JsonLd";
 import { getSiteSettings, siteUrl } from "@/lib/site-config";
 import { parseSocialLinks } from "@/lib/social-platforms";
 import { routing } from "@/i18n/routing";
-import { buildAlternates } from "@/lib/seo";
+import { buildAlternates, homeTitle, homeDescription } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,11 +42,11 @@ export async function generateMetadata(props: {
     metadataBase: new URL(siteUrl),
     title: {
       default:
-        "Bangla Quran Shikkha | Learn Al Quran Online BD | Learn Quran Online ",
+        homeTitle,
       template: "%s | Learn Al Quran Online BD",
     },
     description:
-      "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
+      homeDescription,
     keywords: [
       "Learn Quran Online",
       "Bangla Quran Shikkha",
@@ -85,9 +85,9 @@ export async function generateMetadata(props: {
       url: siteUrl,
       siteName: "Learn Al Quran Online BD",
       title:
-        "Bangla Quran Shikkha | Learn Al Quran Online BD | Learn Quran Online ",
+        homeTitle,
       description:
-        "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
+        homeDescription,
       images: [
         {
           url: "/images/og-image.jpg",
@@ -99,9 +99,9 @@ export async function generateMetadata(props: {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Learn Al Quran Online BD",
+      title: homeTitle,
       description:
-        "Learn Quran Online with expert tutors in Bangladesh. Bangla Quran Shikkha for kids & adults — Tajweed, Hifz & Nazera classes. Join Learn Al Quran Online BD today!",
+        homeDescription,
       images: ["/images/og-image.jpg"],
     },
     robots: {

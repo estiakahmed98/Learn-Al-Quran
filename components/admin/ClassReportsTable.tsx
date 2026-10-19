@@ -63,7 +63,7 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
     return matchesSearch && matchesTeacher && matchesCourse && matchesFrom && matchesTo;
   });
 
-  const selectClass = "rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-primary focus:outline-none";
+  const selectClass = "rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-primary focus:outline-hidden";
 
   return (
     <div>
@@ -126,7 +126,7 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
         Showing {filtered.length} of {initialReports.length} reports
       </p>
 
-      <div className="mt-2 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="mt-2 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-xs">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
             <tr>
@@ -160,7 +160,7 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
                 </td>
                 <td className="px-4 py-3 text-gray-700">{report.attended ?? "—"}</td>
                 <td className="px-4 py-3 text-gray-500">
-                  <p className="max-w-[220px] break-words">
+                  <p className="max-w-[220px] wrap-break-word">
                     {report.notes?.trim().split(/\s+/).slice(0, 5).join(" ") || "—"}
                     {(report.notes?.trim().split(/\s+/).length ?? 0) > 5 ? "…" : ""}
                   </p>
@@ -169,7 +169,7 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
                     onClick={() => setSelectedReport(report)}
                     aria-haspopup="dialog"
                     aria-label={`See full class report for ${report.teacher.name}, ${report.course.title}, ${report.classDate.slice(0, 10)}`}
-                    className="mt-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                    className="mt-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary"
                   >
                     See more
                   </button>
@@ -194,7 +194,7 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
         onClick={(event) => {
           if (event.target === event.currentTarget) setSelectedReport(null);
         }}
-        className="m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-2xl overflow-hidden rounded-2xl bg-white p-0 shadow-2xl backdrop:bg-slate-950/60"
+        className="m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-2xl overflow-hidden rounded-2xl bg-white p-0 shadow-2xl backdrop:bg-slate-950/60"
       >
         {selectedReport && (
           <div className="flex max-h-[90dvh] flex-col">
@@ -219,13 +219,13 @@ export default function ClassReportsTable({ initialReports }: { initialReports: 
                 ].map(([label, value]) => (
                   <div key={label} className="min-w-0 rounded-xl border border-gray-100 bg-gray-50 p-3">
                     <dt className="text-xs font-medium text-gray-500">{label}</dt>
-                    <dd className="mt-1 whitespace-pre-wrap break-words text-sm font-semibold text-gray-900">{value}</dd>
+                    <dd className="mt-1 whitespace-pre-wrap wrap-break-word text-sm font-semibold text-gray-900">{value}</dd>
                   </div>
                 ))}
               </dl>
               <section className="mt-5 rounded-xl border border-gray-200 p-4" aria-labelledby="class-report-notes">
                 <h3 id="class-report-notes" className="font-semibold text-primary-dark">Notes</h3>
-                <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-gray-700">{selectedReport.notes?.trim() || "No notes provided."}</p>
+                <p className="mt-3 whitespace-pre-wrap wrap-break-word text-sm leading-7 text-gray-700">{selectedReport.notes?.trim() || "No notes provided."}</p>
               </section>
             </div>
           </div>

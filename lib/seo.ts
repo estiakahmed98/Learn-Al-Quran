@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-config";
 import { routing, type Locale } from "@/i18n/routing";
 
+export const homeTitle = "Learn Quran Online BD | Online Quran Academy for Kids & Adults";
+export const homeDescription = "Learn Quran Online BD is an online Quran academy for kids and adults, offering live one-to-one Nazera, Tajweed, and Hifz classes taught in Bangla or English. Book a free trial class today!";
+
 export function localizedPath(locale: Locale, pathname: string) {
   const clean = pathname === "/" ? "" : `/${pathname.replace(/^\/+|\/+$/g, "")}`;
   const prefix = `/${locale}`;

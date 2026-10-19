@@ -123,7 +123,7 @@ export default function CourseWorkspace({
           </span>
         </div>
       )}
-      <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-xl font-bold text-primary-dark">
             {course.title}
@@ -171,12 +171,12 @@ export default function CourseWorkspace({
         ))}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
         {tab === "details" && (
           <div className="space-y-3 text-sm text-gray-700">
             <p>{course.description}</p>
             {enrollment.adminNote && (
-              <p className="rounded bg-cream px-3 py-2 text-xs text-gray-600">
+              <p className="rounded-sm bg-cream px-3 py-2 text-xs text-gray-600">
                 📝 {enrollment.adminNote}
               </p>
             )}

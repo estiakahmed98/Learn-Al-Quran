@@ -13,7 +13,7 @@ import { api } from "@/lib/api-client";
 import { getSiteSettings } from "@/lib/site-config";
 import { getCachedActiveCourses, getCachedTeachers } from "@/lib/cached-data";
 import { pickText } from "@/lib/course-content";
-import { publicPageMetadata } from "@/lib/seo";
+import { publicPageMetadata, homeTitle, homeDescription } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import JsonLd from "@/components/shared/JsonLd";
 
@@ -22,9 +22,11 @@ export async function generateMetadata({ params }: {
 }): Promise<Metadata> {
   const { locale } = await params;
   return publicPageMetadata(locale, "/", {
-    title: "Learn Al Quran Online BD | Online Quran, Tajweed & Hifz Classes",
+    title: { absolute: homeTitle },
     description:
-      "Learn the Holy Quran online with certified Huffaz and Qaris. One-to-one Nazera, Tajweed, Hifz, Maktab and Adult Quran learning classes. Book a free trial class today."
+      homeDescription,
+    openGraph: { title: homeTitle, description: homeDescription },
+    twitter: { title: homeTitle, description: homeDescription }
   });
 }
 
@@ -125,9 +127,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* FAQ and review form */}
+      {/* Full-width FAQ accommodates 8?10 questions above the review form. */}
       <section className="bg-primary/5 py-12 lg:py-16">
-        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-2 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-12 px-4 lg:px-8">
           <FAQ faqs={faqs} />
 
           <div className="mx-auto w-full max-w-2xl">

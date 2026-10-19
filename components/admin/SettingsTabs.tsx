@@ -128,7 +128,7 @@ export default function SettingsTabs({
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition ${
+            className={`rounded-full px-4 py-2 text-sm font-semibold shadow-xs transition ${
               tab === t.id ? t.colorClasses.active : t.colorClasses.inactive
             }`}
           >

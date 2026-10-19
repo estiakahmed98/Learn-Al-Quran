@@ -76,7 +76,7 @@ export default function CoursesTable({
           {courses.map((course) => (
             <div
               key={course.id}
-              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs"
             >
               <div className="relative h-36 w-full shrink-0 bg-cream">
                 {course.thumbnail ? (

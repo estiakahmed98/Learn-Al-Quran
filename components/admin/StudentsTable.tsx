@@ -119,7 +119,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
               setStatusTab(t.id);
               setPage(1);
             }}
-            className={`rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition ${
+            className={`rounded-full px-4 py-2 text-sm font-semibold shadow-xs transition ${
               statusTab === t.id ? t.colorClasses.active : t.colorClasses.inactive
             }`}
           >
@@ -135,7 +135,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
             value={search}
             onChange={(e) => updateSearch(e.target.value)}
             placeholder="Search by name, email or phone..."
-            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
           />
           <select
             value={activeFilter}
@@ -143,7 +143,7 @@ export default function StudentsTable({ initialStudents }: { initialStudents: St
               setActiveFilter(e.target.value as ActiveFilter);
               setPage(1);
             }}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-hidden"
           >
             <option value="ALL">All Status</option>
             <option value="ACTIVE">Active</option>
