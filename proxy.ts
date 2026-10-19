@@ -9,7 +9,7 @@ const canonicalUrl = new URL(
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.learnalquranonlinebd.com"
 );
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Consolidate only the exact www/non-www counterpart. Preview and local

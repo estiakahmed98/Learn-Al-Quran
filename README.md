@@ -125,7 +125,7 @@ src/
     (public pages: /, /courses, /courses/[slug], /books, /about-us,
      /blog, /blog/[slug], /contact-us, /free-trial-class,
      /privacy-policy, /terms-and-conditions)
-    admin/             # Admin panel (protected by middleware.ts)
+    admin/             # Admin panel (protected by proxy.ts)
     api/               # /api/enroll, /api/auth, /api/admin/*
     sitemap.ts, robots.ts, manifest.ts
   components/
