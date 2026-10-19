@@ -127,9 +127,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Full-width FAQ accommodates 8?10 questions above the review form. */}
+      {/* FAQ and review form */}
       <section className="bg-primary/5 py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl space-y-12 px-4 lg:px-8">
+        <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 lg:grid-cols-2 lg:px-8">
           <FAQ faqs={faqs} />
 
           <div className="mx-auto w-full max-w-2xl">
