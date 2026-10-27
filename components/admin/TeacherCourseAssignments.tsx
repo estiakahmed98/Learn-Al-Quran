@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { changeTeacherCourseAssignment } from "./teacher-course-actions";
 
 type Option = { id: string; label: string };
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export default function TeacherCourseAssignments({ ownerId, mode, options, assigned }: Props) {
-  const router = useRouter();
   const [selected, setSelected] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,14 +25,17 @@ export default function TeacherCourseAssignments({ ownerId, mode, options, assig
     setError(null);
     setMessage("");
     try {
-      await changeTeacherCourseAssignment({
+      const result = await changeTeacherCourseAssignment({
         teacherId: mode === "teacher" ? ownerId : id,
         courseId: mode === "course" ? ownerId : id,
         remove
       });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
       setSelected("");
-      setMessage(remove ? "Assignment removed." : "Assigned successfully.");
-      router.refresh();
+      setMessage(result.warning ?? (remove ? "Assignment removed." : "Assigned successfully."));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not update assignment.");
     } finally {
