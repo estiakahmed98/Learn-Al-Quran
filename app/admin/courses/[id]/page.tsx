@@ -6,6 +6,8 @@ import CourseForm from "@/components/admin/CourseForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
 import ClassScheduleManager from "@/components/admin/ClassScheduleManager";
 import NotesManager from "@/components/admin/NotesManager";
+import TeacherCourseAssignments from "@/components/admin/TeacherCourseAssignments";
+import { getAllTeachers } from "@/lib/course-assignments";
 import {
   getCurriculumSections,
   getFaqs,
@@ -24,7 +26,7 @@ export default async function AdminCourseDetailPage(props: { params: Promise<{ i
   const [course, teachersResult, enrollmentsResult] = await Promise.all([
     api.courses.get(params.id, token).catch(() => null),
     token
-      ? api.users.adminList(token, { perPage: 200 }).catch(() => ({ data: [] as any[] }))
+      ? getAllTeachers(token)
       : Promise.resolve({ data: [] as any[] }),
     // The Laravel admin/enrollments index has no course_id filter param, so we
     // fetch a broader page and filter client-side. Pragmatic at current data
@@ -138,6 +140,17 @@ export default async function AdminCourseDetailPage(props: { params: Promise<{ i
             curriculumSections: getCurriculumSections(course),
             faqs: getFaqs(course)
           }}
+        />
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+        <h2 className="mb-1 font-heading text-lg font-bold text-primary-dark">Assigned Teachers</h2>
+        <p className="mb-4 text-sm text-gray-500">Add or remove teachers for this course. Each teacher can teach multiple courses.</p>
+        <TeacherCourseAssignments
+          ownerId={course.id}
+          mode="course"
+          options={teachers.map((teacher: { id: string; name: string }) => ({ id: teacher.id, label: teacher.name }))}
+          assigned={(course.teachers ?? []).map((teacher: { id: string; name: string }) => ({ id: teacher.id, label: teacher.name }))}
         />
       </div>
 

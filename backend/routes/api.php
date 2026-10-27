@@ -58,6 +58,8 @@ Route::prefix('v1')->group(function (): void {
         });
 
         Route::prefix('admin')->middleware('role:ADMIN')->group(function (): void {
+            Route::put('courses/{course}/teachers/{user}', [CourseController::class, 'assignTeacher']);
+            Route::delete('courses/{course}/teachers/{user}', [CourseController::class, 'removeTeacher']);
             Route::apiResource('users', UserController::class);
             Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
             Route::apiResource('blogs', BlogController::class)->except(['index', 'show']);

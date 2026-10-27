@@ -18,7 +18,9 @@ class UserController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         return UserResource::collection(
-            User::withCount('enrollments')->latest()->paginate($request->integer('per_page', 25))
+            User::withCount('enrollments')
+                ->when($request->filled('role'), fn ($query) => $query->where('role', $request->string('role')->toString()))
+                ->latest()->paginate($request->integer('per_page', 25))
         );
     }
 
@@ -51,7 +53,7 @@ class UserController extends Controller
 
     public function show(User $user): UserResource
     {
-        return new UserResource($user->loadCount('enrollments'));
+        return new UserResource($user->loadCount('enrollments')->load('taughtCourses:id,title'));
     }
 
     public function update(UserRequest $request, User $user, MediaService $media): UserResource

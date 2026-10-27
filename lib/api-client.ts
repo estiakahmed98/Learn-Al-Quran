@@ -168,6 +168,7 @@ export type ApiUser = {
   isActive: boolean;
   permissions: string[];
   enrollmentsCount?: number;
+  taughtCourses?: { id: string; title: string }[];
   createdAt?: string;
   updatedAt?: string;
 };
@@ -184,6 +185,10 @@ export const api = {
   },
 
   courses: {
+    assignTeacher: (courseId: string, teacherId: string, token: string) =>
+      apiFetch<any>(`admin/courses/${courseId}/teachers/${teacherId}`, { method: "PUT", token }),
+    removeTeacher: (courseId: string, teacherId: string, token: string) =>
+      apiFetch<any>(`admin/courses/${courseId}/teachers/${teacherId}`, { method: "DELETE", token }),
     list: (params?: { perPage?: number; page?: number }, token?: string, options?: Pick<FetchOptions, "cache" | "next">) =>
       apiFetchPaginated<any>("courses", {
         token,
@@ -307,8 +312,8 @@ export const api = {
   },
 
   users: {
-    adminList: (token: string, params?: { perPage?: number }) =>
-      apiFetchPaginated<ApiUser>("admin/users", { token, searchParams: { per_page: params?.perPage }, cache: "no-store" }),
+    adminList: (token: string, params?: { perPage?: number; page?: number; role?: ApiUser["role"] }) =>
+      apiFetchPaginated<ApiUser>("admin/users", { token, searchParams: { per_page: params?.perPage, page: params?.page, role: params?.role }, cache: "no-store" }),
     adminGet: (id: string, token: string) => apiFetch<ApiUser>(`admin/users/${id}`, { token, cache: "no-store" }),
     adminCreate: (payload: unknown, token: string) => apiFetch<ApiUser>("admin/users", { method: "POST", body: payload, token }),
     adminUpdate: (id: string, payload: unknown, token: string) =>

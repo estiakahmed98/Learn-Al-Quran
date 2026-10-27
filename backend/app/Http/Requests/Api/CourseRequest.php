@@ -31,7 +31,7 @@ class CourseRequest extends FormRequest
             'level' => ['nullable', 'string', 'max:255'],
             'level_bn' => ['nullable', 'string', 'max:255'],
             'instructor_name' => ['nullable', 'string', 'max:255'],
-            'instructor_id' => ['nullable', 'exists:users,id'],
+            'instructor_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'TEACHER')],
             'total_lessons' => ['nullable', 'integer', 'min:0'],
             'total_hours' => ['nullable', 'integer', 'min:0'],
             'start_date' => ['nullable', 'date'],

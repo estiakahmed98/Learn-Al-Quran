@@ -192,7 +192,7 @@ export default function CourseForm({
       level: values.level.trim() || null,
       levelBn: values.levelBn.trim() || null,
       instructorName: values.instructorName.trim() || null,
-      instructorId: values.instructorId || null,
+      ...(!courseId ? { instructorId: values.instructorId || null } : {}),
       totalLessons: values.totalLessons ? Number(values.totalLessons) : null,
       totalHours: values.totalHours ? Number(values.totalHours) : null,
       startDate: values.startDate ? new Date(values.startDate).toISOString() : null,
@@ -343,8 +343,8 @@ export default function CourseForm({
       <div className={sectionClass}>
         <h3 className={sectionTitleClass}>Course Info</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <label className={labelClass}>Assigned Teacher</label>
+          {!courseId && <div>
+            <label className={labelClass}>Initial Teacher (add more after creating the course)</label>
             <select
               value={values.instructorId}
               onChange={(e) => {
@@ -359,7 +359,7 @@ export default function CourseForm({
                 <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
               ))}
             </select>
-          </div>
+          </div>}
           <div>
             <label className={labelClass}>Instructor Name (display)</label>
             <input value={values.instructorName} onChange={(e) => set("instructorName", e.target.value)} className={inputClass} placeholder="Ustad ..." />

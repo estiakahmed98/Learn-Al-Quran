@@ -11,7 +11,7 @@ export default async function TeacherDashboardPage() {
 
   const allCourses = await getCachedActiveCourses();
   const courses = allCourses
-    .filter((course: any) => course.instructorId === teacherId)
+    .filter((course: any) => course.teachers?.some((teacher: { id: string }) => teacher.id === teacherId))
     .sort((a: any, b: any) => a.title.localeCompare(b.title));
 
   return (

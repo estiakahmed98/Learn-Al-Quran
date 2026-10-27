@@ -6,6 +6,8 @@ import { formatDate } from "@/lib/utils";
 import UserForm from "@/components/admin/UserForm";
 import EnrollmentsTable from "@/components/admin/EnrollmentsTable";
 import AssignCourseForm from "@/components/admin/AssignCourseForm";
+import TeacherCourseAssignments from "@/components/admin/TeacherCourseAssignments";
+import { getAllCourses } from "@/lib/course-assignments";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +18,8 @@ export default async function AdminUserDetailPage(props: { params: Promise<{ id:
 
   const [user, courses, allEnrollments] = await Promise.all([
     api.users.adminGet(params.id, auth.token).catch(() => null),
-    api.courses
-      .list({ perPage: 100 }, auth.token)
-      .then((res) => res.data.map((c: any) => ({ id: c.id, title: c.title, fee: c.fee })))
-      .catch(() => []),
+    getAllCourses(auth.token)
+      .then((courses) => courses.map((c: any) => ({ id: c.id, title: c.title, fee: c.fee }))),
     api.enrollments
       .adminList(auth.token, { perPage: 500 })
       .then((res) => res.data)
@@ -140,6 +140,18 @@ export default async function AdminUserDetailPage(props: { params: Promise<{ id:
             </div>
           </div>
         </>
+      )}
+      {user.role === "TEACHER" && (
+        <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
+          <h2 className="mb-1 font-heading text-lg font-bold text-primary-dark">Teaching Courses</h2>
+          <p className="mb-4 text-sm text-gray-500">Assign multiple courses to this teacher. Each course can have multiple teachers.</p>
+          <TeacherCourseAssignments
+            ownerId={user.id}
+            mode="teacher"
+            options={courses.map((course: { id: string; title: string }) => ({ id: course.id, label: course.title }))}
+            assigned={(user.taughtCourses ?? []).map((course) => ({ id: course.id, label: course.title }))}
+          />
+        </div>
       )}
     </div>
   );

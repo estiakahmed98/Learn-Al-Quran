@@ -1,6 +1,7 @@
 import { unstable_cache, revalidateTag } from "next/cache";
 import { api } from "@/lib/api-client";
 import { SITE_SETTINGS_CACHE_TAG } from "@/lib/site-config";
+import { getAllCourses } from "@/lib/course-assignments";
 
 /** Next.js 16's revalidateTag requires a cache-life profile; "max" matches our tag-based (not time-based) invalidation strategy. */
 export function invalidateTag(tag: string) {
@@ -26,8 +27,7 @@ export const CACHE_TAGS = {
 
 export const getCachedActiveCourses = unstable_cache(
   async () => {
-    const { data } = await api.courses.list({ perPage: 100 });
-    return data;
+    return getAllCourses();
   },
   ["active-courses"],
   { revalidate: 3600, tags: [CACHE_TAGS.courses] }
