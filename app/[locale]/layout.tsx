@@ -19,7 +19,7 @@ import GoogleTagManager, {
 } from "@/components/shared/GoogleTagManager";
 import AnalyticsTracker from "@/components/admin/AnalyticsTracker";
 import JsonLd from "@/components/shared/JsonLd";
-import { getSiteSettings, siteUrl } from "@/lib/site-config";
+import { getSiteSettings, siteName, siteUrl } from "@/lib/site-config";
 import { parseSocialLinks } from "@/lib/social-platforms";
 import { routing } from "@/i18n/routing";
 import { buildAlternates, homeTitle, homeDescription } from "@/lib/seo";
@@ -47,6 +47,7 @@ export async function generateMetadata(props: {
     },
     description:
       homeDescription,
+    applicationName: siteName,
     keywords: [
       "Learn Quran Online",
       "Bangla Quran Shikkha",
@@ -83,7 +84,7 @@ export async function generateMetadata(props: {
       locale: ogLocale,
       alternateLocale: ogAlternateLocale,
       url: siteUrl,
-      siteName: "Learn Al Quran Online BD",
+      siteName,
       title:
         homeTitle,
       description:
@@ -148,7 +149,8 @@ export default async function RootLayout(props: {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    name: "Learn Al Quran Online BD",
+    "@id": `${siteUrl}/#organization`,
+    name: siteName,
     url: siteUrl,
     logo: `${siteUrl}/Learn_Al_Quran_Logo.png`,
     description:
@@ -168,8 +170,11 @@ export default async function RootLayout(props: {
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Learn Al Quran Online BD",
+    "@id": `${siteUrl}/#website`,
+    name: siteName,
+    alternateName: "Learn Quran Online BD",
     url: siteUrl,
+    publisher: { "@id": `${siteUrl}/#organization` },
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/blog?q={search_term_string}`,

@@ -10,10 +10,10 @@ import LeadForm from "@/components/home/LeadForm";
 import GoogleMapSection from "@/components/home/GoogleMapSection";
 import { getLocale } from "next-intl/server";
 import { api } from "@/lib/api-client";
-import { getSiteSettings } from "@/lib/site-config";
+import { getSiteSettings, siteName } from "@/lib/site-config";
 import { getCachedActiveCourses, getCachedTeachers } from "@/lib/cached-data";
 import { pickText } from "@/lib/course-content";
-import { publicPageMetadata, homeTitle, homeDescription } from "@/lib/seo";
+import { buildCanonicalUrl, publicPageMetadata, homeTitle, homeDescription } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import JsonLd from "@/components/shared/JsonLd";
 
@@ -25,8 +25,17 @@ export async function generateMetadata({ params }: {
     title: { absolute: homeTitle },
     description:
       homeDescription,
-    openGraph: { title: homeTitle, description: homeDescription },
-    twitter: { title: homeTitle, description: homeDescription }
+    openGraph: {
+      type: "website",
+      title: homeTitle,
+      description: homeDescription,
+      siteName,
+      url: buildCanonicalUrl(locale, "/"),
+      locale: locale === "bn" ? "bn_BD" : "en_US",
+      alternateLocale: locale === "bn" ? "en_US" : "bn_BD",
+      images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: siteName }]
+    },
+    twitter: { card: "summary_large_image", title: homeTitle, description: homeDescription, images: ["/images/og-image.jpg"] }
   });
 }
 

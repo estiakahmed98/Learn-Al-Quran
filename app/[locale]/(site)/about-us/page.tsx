@@ -5,14 +5,27 @@ import { Heart } from "lucide-react";
 import { getCachedTeachers } from "@/lib/cached-data";
 import Teachers from "@/components/home/Teachers";
 import IslamicPattern from "@/components/shared/IslamicPattern";
-import { publicPageMetadata } from "@/lib/seo";
+import { buildCanonicalUrl, publicPageMetadata } from "@/lib/seo";
+import { siteName } from "@/lib/site-config";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
+  const title = "About Learn Al Quran Online BD | Online Quran Academy";
+  const description = "Learn Al Quran Online BD is an online Quran academy in Dhaka for Bangladeshi families abroad. Live 1-to-1 classes, male and female teachers, free trial.";
   return publicPageMetadata(locale, "/about-us", {
-    title: "About Us",
-    description: "Learn about our mission, teaching methodology, and certified Quran teachers."
+    title: { absolute: title },
+    description,
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      siteName,
+      url: buildCanonicalUrl(locale, "/about-us"),
+      locale: locale === "bn" ? "bn_BD" : "en_US",
+      images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: siteName }]
+    },
+    twitter: { card: "summary_large_image", title, description, images: ["/images/og-image.jpg"] }
   });
 }
 
@@ -164,6 +177,7 @@ export default async function AboutUsPage() {
         {/* CTA */}
         <div className="mt-14 text-center">
           <h2 className="font-heading text-2xl font-bold text-primary-dark">{t("ctaTitle")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl leading-7 text-gray-700">{t("ctaBody")}</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
             <Link href="/courses" className="relative isolate overflow-hidden rounded-full bg-primary px-7 py-3 text-sm font-bold text-white hover:bg-primary-dark">
               <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
