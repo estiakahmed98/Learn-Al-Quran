@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { trackEvent } from "@/components/shared/GoogleAnalytics";
 import IslamicPattern from "../shared/IslamicPattern";
@@ -98,6 +98,15 @@ export default function Hero({
             </Link>
             <Link
               href="/#courses"
+              scroll={false}
+              onClick={(e) => {
+                const el = document.getElementById("courses");
+                if (el) {
+                  e.preventDefault();
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  window.history.replaceState(null, "", "#courses");
+                }
+              }}
               className="relative isolate w-full overflow-hidden rounded-lg border border-white/25 px-8 py-3.5 text-center font-semibold text-white transition hover:border-gold hover:text-gold sm:w-auto"
             >
               <IslamicPattern tone="gold" opacity={0.12} className="z-0" />
