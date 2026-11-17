@@ -43,7 +43,7 @@ export async function generateMetadata(props: {
     title: {
       default:
         homeTitle,
-      template: "%s | Learn Al Quran Online BD",
+      template: `%s | ${siteName}`,
     },
     description:
       homeDescription,
@@ -76,8 +76,8 @@ export async function generateMetadata(props: {
       "স্পোকেন ইংলিশ কোর্স",
       "অনলাইন মাদ্রাসা",
     ],
-    authors: [{ name: "Learn Al Quran Online BD" }],
-    creator: "Learn Al Quran Online BD",
+    authors: [{ name: siteName }],
+    creator: siteName,
     alternates: buildAlternates(locale, "/"),
     openGraph: {
       type: "website",
@@ -94,7 +94,7 @@ export async function generateMetadata(props: {
           url: "/images/og-image.jpg",
           width: 1200,
           height: 630,
-          alt: "Learn Al Quran Online BD",
+          alt: siteName,
         },
       ],
     },
@@ -151,6 +151,7 @@ export default async function RootLayout(props: {
     "@type": "EducationalOrganization",
     "@id": `${siteUrl}/#organization`,
     name: siteName,
+    alternateName: "Learn Al Quran Online BD",
     url: siteUrl,
     logo: `${siteUrl}/Learn_Al_Quran_Logo.png`,
     description:
@@ -172,7 +173,7 @@ export default async function RootLayout(props: {
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     name: siteName,
-    alternateName: "Learn Quran Online BD",
+    alternateName: "Learn Al Quran Online BD",
     url: siteUrl,
     publisher: { "@id": `${siteUrl}/#organization` },
     potentialAction: {

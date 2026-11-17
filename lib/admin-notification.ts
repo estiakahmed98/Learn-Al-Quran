@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer10";
+import { siteName } from "@/lib/site-config";
 
 type NotificationValue = string | number | null | undefined;
 
@@ -60,7 +61,7 @@ export async function sendAdminNotification({ subject, heading, fields, replyTo 
 
     await transporter.sendMail({
       from: {
-        name: process.env.NEXT_PUBLIC_SITE_NAME?.trim() || "Learn Al Quran Online BD",
+        name: siteName,
         address: from,
       },
       to: recipient,

@@ -25,7 +25,14 @@ export function getBaseUrl() {
 }
 
 export const siteUrl = getBaseUrl();
-export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Learn Al Quran Online BD";
+export const siteName = "Learn Quran Online BD";
+
+function normalizeSiteName(value?: string) {
+  const name = value?.trim();
+  // Existing admin settings may still contain the former name.
+  return !name || name === "Learn Quran Online BD" ? siteName : name;
+}
+
 export const ga4Id = process.env.NEXT_PUBLIC_GA4_ID || "";
 
 export const fallbackSettings = {
@@ -97,6 +104,7 @@ export async function getSiteSettings() {
         merged[key] = value;
       }
     }
+    merged.siteName = normalizeSiteName(merged.siteName as string);
     return merged as typeof fallbackSettings;
   } catch {
     return fallbackSettings;

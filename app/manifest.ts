@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { siteName } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Learn Al Quran Online BD",
-    short_name: "Al Quran Online BD",
+    name: siteName,
+    short_name: siteName,
     description: "Online Quran, Tajweed and Hifz classes with certified teachers.",
     start_url: "/",
     display: "standalone",
